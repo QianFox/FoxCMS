@@ -1,0 +1,39 @@
+.header-405 {
+    max-width: 800px;
+    margin: 120px auto 0;
+}
+
+.header-405-inner {
+    display: flex;
+    justify-content: center;
+}
+
+.header-405-inner img {
+    width: 100px;
+    margin-right: 12px;
+}
+
+.header-405-inner h6 {
+    margin: 0;
+    font-size: 16px;
+}
+
+.header-405-inner p {
+    margin: 0;
+    font-size: 14px;
+}
+
+.main-405 {
+    background-color: #f5f5f7;
+    padding: 80px 0;
+    margin-top: 12px;
+}
+
+.main-405-inner {
+    width: 580px;
+    margin: auto;
+}
+
+.main-405-inner img {
+    width: 100%;
+}
