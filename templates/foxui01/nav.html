@@ -1,0 +1,255 @@
+<div class="foxcms-container foxcms-header-pc foxui-hidden-sm foxui-hidden-xs">
+    <div class="foxcms-logo">
+        <div class="logo">
+            <img style="height: 28px" src="{fox:basic name='web_logo'/}" alt="" />
+        </div>
+        <p class="foxui-border foxui-radius-round foxui-color-regular foxui-hidden-md foxui-hidden-sm foxui-hidden-xs">基础版演示</p>
+    </div>
+    <div class="foxcms-nav">
+        <div class="nav">
+            <ul class="foxui-menu">
+                {fox:at value="index" currentstyle="is-current"}
+                <li class="foxui-menu-item [$field.currentstyle]">
+                    <a class="foxui-link" href="{fox:index name='index' /}">首页</a>
+                </li>
+                {/fox:at}
+                {fox:nav name='field' currentstyle="is-current" limit="0,2"}
+                <li class="foxui-menu-submenu [$field.currentstyle]">
+                    <div class="foxui-menu-handle foxui-menu-icon">
+                        <a class="foxui-link" href="[$field.link]">[$field.name]</a>
+                    </div>
+                    <div class="foxui-menu-menu">
+                        <div class="foxui-menu-slide foxcms-container">
+                            <div class="nav-swiper nav-swiper-text">
+                                <ul class="foxui-display-flex foxui-justify-content-center">
+                                    {fox:nav name="v" pname="field" notypeid="self" type="son" calltype="parent"}
+                                    <li>
+                                        <a href="[$v.link]" class="swiper-content foxui-link">[$v.name]</a>
+                                    </li>
+                                    {/fox:nav}
+                                </ul>
+                            </div>
+                        </div>
+                    </div>
+                </li>
+                {/fox:nav}
+                {fox:nav name='field' currentstyle='is-current' typeid="3,4"}
+                <li class="foxui-menu-submenu [$field.currentstyle]">
+                    <div class="foxui-menu-handle foxui-menu-icon">
+                        <a class="foxui-link" href="[$field.link]">[$field.name]</a>
+                    </div>
+                    <div class="foxui-menu-menu">
+                        <div class="foxui-menu-slide foxcms-container">
+                            <div class="swiper nav-swiper nav-swiper-image">
+                                <div class="swiper-wrapper">
+                                    {fox:arclist name='v' type="son" calltype="parent" flag="c" apply="nav" addfields="author,team_status" row="12"}
+                                    <div class="swiper-slide">
+                                        <a href="[$v.link]" class="swiper-content foxui-link">
+                                            <div class="{if $field.id == 4} case-img {else/} product-img {/if}">
+                                                <img src="[$v.img_url]" alt="" />
+                                            </div>
+                                            <p>[$v.title]</p>
+                                        </a>
+                                    </div>
+                                    {/fox:arclist}
+                                </div>
+                            </div>
+                        </div>
+                    </div>
+                </li>
+                {/fox:nav}
+                {fox:nav name='field' currentstyle="is-current" typeid='5'}
+                <li class="foxui-menu-submenu [$field.currentstyle]">
+                    <div class="foxui-menu-handle foxui-menu-icon">
+                        <a class="foxui-link" href="[$field.link]">[$field.name]</a>
+                    </div>
+                    <div class="foxui-menu-menu">
+                        <div class="foxui-menu-slide foxcms-container">
+                            <div class="nav-swiper nav-swiper-text">
+                                <ul class="foxui-display-flex foxui-justify-content-center">
+                                    {fox:nav name="v" pname="field" notypeid="self" type="son" calltype="parent"}
+                                    <li>
+                                        <a href="[$v.link]" class="swiper-content foxui-link">[$v.name]</a>
+                                    </li>
+                                    {/fox:nav}
+                                </ul>
+                            </div>
+                        </div>
+                    </div>
+                </li>
+                {/fox:nav}
+                {fox:nav name='field' currentstyle="is-current" typeid='6'}
+                <li class="foxui-menu-item [$field.currentstyle]">
+                    <a class="foxui-link" href="[$field.link]">[$field.name]</a>
+                </li>
+                {/fox:nav}
+            </ul>
+        </div>
+        <div class="phone foxui-hidden-sm foxui-hidden-xs">
+            <div class="phone-inner">
+                <i class="foxui-icon-dianhua-o foxui-margin-right-4 foxui-hidden-lg foxui-hidden-md"></i>
+                <h3 class="foxui-hidden-lg foxui-hidden-md">{fox:contact name='company_tel'/}</h3>
+                <i class="foxui-icon-sousuo-o search-icon"></i>
+            </div>
+        </div>
+    </div>
+    <div class="foxcms-search">
+        <div class="search-head foxcms-container">
+            {fox:searchform name="field"}
+            <form method="get" action="[$field.link]">
+                <div class="foxui-input-group">
+                    <div class="foxui-input-prefix">
+                        <i class="foxui-icon-sousuo-o foxui-prefix-icon"></i>
+                        <input name="fields" value="title" type="hidden" />
+                        <input name="kwtype" value="1" type="hidden" />
+                        <input name="keyword" placeholder="输入关键词" value="" />
+                    </div>
+                </div>
+                <input type="submit" style="display: none" />
+            </form>
+            {/fox:Searchform}
+            <i class="foxui-icon-guanbi-o search-close"></i>
+        </div>
+        <div class="search-menu">
+            <div class="foxcms-container">
+                <div class="search-menu-inner">
+                    <div class="title">大家都在搜</div>
+                    <div class="list">
+                        {fox:searchgrounp showall='0' }
+                        <a class="foxui-link">[$field.name]</a>
+                        {/fox:searchgrounp}
+                    </div>
+                </div>
+            </div>
+        </div>
+    </div>
+</div>
+<div class="foxcms-header-h5 foxui-visible-sm foxui-visible-xs">
+    <div class="nav-mask"></div>
+    <div class="nav-content">
+        <div class="nav-head foxui-border-bottom">
+            <i class="foxui-icon-liebiao-o"></i>
+            <a href="/" class="foxcms-logo">
+                <img style="height: 26px" src="{fox:basic name='web_logo'/}" alt="" />
+            </a>
+            <i class="foxui-icon-sousuo-o"></i>
+        </div>
+        <div class="nav-menu">
+            <div class="nav-menu-inner">
+                <ul class="foxui-collapse" data-fold="accordion">
+                    {fox:nav name='field' currentstyle="is-current" limit='0,5'}
+                    <li class="foxui-collapse-item">
+                        <div class="foxui-collapse-head foxui-collapse-handle">
+                            <a href="[$field.link]" style="margin-right: 20px">[$field.name]</a>
+                            <i class="foxui-icon-xiangyou-o foxui-collapse-icon"></i>
+                        </div>
+                        <div class="foxui-collapse-content">
+                            <ul>
+                                {fox:nav name="v" pname="field" notypeid="self" type="son" calltype="parent"}
+                                <li>
+                                    <a class="foxui-link text-link" href="[$v.link]">[$v.name]</a>
+                                </li>
+                                {/fox:nav}
+                            </ul>
+                        </div>
+                    </li>
+                    {/fox:nav}
+                    {fox:nav name='field' currentstyle="is-current" typeid="6"}
+                    <li class="foxui-collapse-item">
+                        <div class="foxui-collapse-head">
+                            <a href="[$field.link]" style="margin-right: 20px">[$field.name]</a>
+                            <i class="foxui-icon-xiangyou-o foxui-collapse-icon right-icon"></i>
+                        </div>
+                    </li>
+                    {/fox:nav}
+                </ul>
+            </div>
+        </div>
+        <div class="search-menu">
+            <div class="search-menu-inner foxui-padding-top-20 foxui-padding-bottom-28">
+                {fox:searchform name="field"}
+                <form method="get" action="[$field.link]">
+                    <input name="fields" value="title" type="hidden" />
+                    <input name="kwtype" value="1" type="hidden" />
+                    <input name="keyword" placeholder="输入关键词" value="" />
+                    <button class="foxui-solid-primary foxui-block foxui-margin-top-20">搜索</button>
+                </form>
+                {/fox:Searchform}
+            </div>
+        </div>
+    </div>
+</div>
+<script>
+    new Swiper('.nav-swiper-image', {
+        slidesPerView: 2.5,
+        spaceBetween: 16,
+        freeMode: true,
+        pagination: {
+            el: '.swiper-pagination',
+            clickable: true,
+        },
+        navigation: {
+            nextEl: '.swiper-button-next',
+            prevEl: '.swiper-button-prev',
+        },
+        breakpoints: {
+            992: { slidesPerView: 5.5 },
+        },
+    });
+
+    $(document).on('click', '.foxcms-header-pc .search-icon', function () {
+        let $container = $(this).closest('.foxcms-header-pc');
+        $container.find('.nav, .phone').fadeOut(300);
+        $container.find('.search').fadeIn(300);
+        $container.find('.foxcms-search').slideDown(300);
+    });
+    $(document).on('click', '.foxcms-header-pc .search-close', function () {
+        let $container = $(this).closest('.foxcms-header-pc');
+        $container.find('.nav, .phone').fadeIn(300);
+        $container.find('.search').fadeOut(300);
+        $container.find('.foxcms-search').slideUp(300);
+    });
+
+    $(document).on('click', '.foxcms-header-pc .search-menu .list a', function () {
+        $('.foxcms-header-pc .foxui-input-group input[name="keyword"]').val($(this).text());
+        $('.foxcms-search input[type="submit"]').click();
+    });
+
+    $(document).on('click', '.foxcms-header-h5 .foxui-icon-liebiao-o', function () {
+        let $this = $(this),
+            $container = $this.closest('.foxcms-header-h5');
+        $container.find('.search-menu').slideUp(300);
+        $this.removeClass('foxui-icon-liebiao-o').addClass('foxui-icon-guanbi-o');
+        $container.find('.nav-mask').fadeIn(300);
+        $container.find('.nav-menu').slideDown(300);
+        $('body').css('overflow', 'hidden');
+    });
+    $(document).on('click', '.foxcms-header-h5 .foxui-icon-guanbi-o', function () {
+        let $this = $(this),
+            $container = $this.closest('.foxcms-header-h5');
+        $this.removeClass('foxui-icon-guanbi-o').addClass('foxui-icon-liebiao-o');
+        $container.find('.nav-mask').fadeOut(300);
+        $container.find('.nav-menu').slideUp(300);
+        $('body').css('overflow', 'auto');
+    });
+
+    $(document).on('click', '.foxcms-header-h5 .nav-mask', function () {
+        $('.foxcms-header-h5 .foxui-icon-guanbi-o').click();
+        let $container = $(this).closest('.foxcms-header-h5');
+        if ($container.find('.search-menu').css('display') === 'block') {
+            $container.find('.nav-mask').fadeOut(300);
+            $container.find('.search-menu').slideUp(300);
+            $('body').css('overflow', 'auto');
+        }
+    });
+
+    $(document).on('click', '.foxcms-header-h5 .foxui-icon-sousuo-o', function () {
+        let $this = $(this),
+            $container = $this.closest('.foxcms-header-h5');
+        $container.find('.foxui-icon-guanbi-o').removeClass('foxui-icon-guanbi-o').addClass('foxui-icon-liebiao-o');
+        $container.find('.nav-menu').slideUp(300);
+        $container.find('.nav-mask').fadeIn(300);
+        $container.find('.search-menu').slideDown(300);
+        $('body').css('overflow', 'hidden');
+    });
+</script>

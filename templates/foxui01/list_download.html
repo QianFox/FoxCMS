@@ -1,0 +1,229 @@
+<!--
+ * @Descripttion : FOXCMS是一款高效的PHP多端跨平台内容管理系统
+ * @Author       : FoxCMS Team
+ * @Date         : 2023-02-02 08:42:29
+ * @version      : V1.08
+ * @copyright    : ©2021-现在 贵州黔狐科技股份有限公司 版权所有
+ * @LastEditTime : 2024-02-23 14:21:12
+-->
+<!DOCTYPE html>
+<html lang="cn">
+    <head>
+        {include file="header"/}
+        <title>[$column.name]-{fox:basic name='title'/}</title>
+        <meta name="keywords" content="[$column.keywords]" />
+        <meta name="description" content="[$column.description]" />
+    </head>
+    <body>
+        <!-- 顶部 -->
+        <header class="foxui-border-bottom foxui-bg-white">{include file="nav"/}</header>
+        <!-- 主体内容 -->
+        <main>
+            <!-- 通栏图 -->
+            <div class="foxcms-common-banner foxui-bg-lighter">{include file="banner"/}</div>
+            <!-- 内容 -->
+            <div class="foxcms-main list-download-main">
+                <div class="foxcms-container list-download-pc foxui-bg-white foxui-hidden-xs foxui-hidden-sm">
+                    <div class="list-download">
+                        <ul class="download-collapse">
+                            <li class="foxui-display-flex foxui-border-bottom wow slideInUp">
+                                <div class="th foxui-ellipsis">资料名称</div>
+                                <div class="th foxui-ellipsis">发布时间</div>
+                                <div class="th foxui-ellipsis">文件类别</div>
+                                <div class="th foxui-ellipsis">大小</div>
+                                <div class="th foxui-ellipsis">操作</div>
+                                <div class="th foxui-ellipsis"></div>
+                            </li>
+                            {fox:download name='field' row='10' channel="download"}
+                            <li class="download-collapse-item foxui-border-bottom wow slideInUp">
+                                <div class="download-collapse-head">
+                                    <div class="td foxui-ellipsis">[$field.title]</div>
+                                    <div class="td foxui-ellipsis">[$field.release_time|date='Y-m-d']</div>
+                                    <div class="td foxui-ellipsis">[$field.file_category]</div>
+                                    <div class="td foxui-ellipsis">[$field.file_size]</div>
+                                    <div class="td foxui-ellipsis">
+                                        <button
+                                            class="foxui-solid-primary foxui-shape-round foxui-size-medium"
+                                            data-target="{if $field.file_type==1}webLoad{else/}localLoad{/if}"
+                                            data-href="[$field.file_url]"
+                                            data-pwd="[$field.extract_code]"
+                                            data-disk="[$field.server_name]"
+                                        >
+                                            <i class="foxui-icon-xiazai-o"></i>
+                                            <span>[$field.server_name]</span>
+                                        </button>
+                                    </div>
+                                    <div class="td foxui-ellipsis foxui-align-center">
+                                        <span class="collapse-icon download-collapse-handle">+</span>
+                                    </div>
+                                </div>
+                                <div class="download-collapse-content foxui-border-top">
+                                    <p>[$field.content | cn_substr=240]</p>
+                                </div>
+                            </li>
+                            {/fox:download}
+                        </ul>
+                        <ul class="download-collapse load-more-menu">
+                            {fox:download name='field' offset="10" channel="download"}
+                            <li class="download-collapse-item foxui-border-bottom">
+                                <div class="download-collapse-head">
+                                    <div class="td foxui-ellipsis">[$field.title]</div>
+                                    <div class="td foxui-ellipsis">[$field.release_time|date='Y-m-d']</div>
+                                    <div class="td foxui-ellipsis">[$field.file_category]</div>
+                                    <div class="td foxui-ellipsis">[$field.file_size]</div>
+                                    <div class="td foxui-ellipsis">
+                                        <button
+                                            class="foxui-solid-primary foxui-shape-round foxui-size-medium"
+                                            data-target="{if $field.file_type==1}webLoad{else/}localLoad{/if}"
+                                            data-href="[$field.file_url]"
+                                        >
+                                            <i class="foxui-icon-xiazai-o"></i>
+                                            <span>[$field.server_name]</span>
+                                        </button>
+                                    </div>
+                                    <div class="td foxui-ellipsis foxui-align-center">
+                                        <span class="collapse-icon download-collapse-handle">+</span>
+                                    </div>
+                                </div>
+                                <div class="download-collapse-content foxui-border-top">
+                                    <p>[$field.content | cn_substr=240]</p>
+                                </div>
+                            </li>
+                            {/fox:download}
+                        </ul>
+                        <div class="load-more-container wow slideInUp">
+                            {fox:channel name='field' type="self"} {if $field.sum>10}
+                            <button class="load-more-btn foxui-text-primary">
+                                <i class="foxui-icon-shuangxiangyou-o"></i>
+                                <span>加载更多</span>
+                            </button>
+                            {/if} {/fox:channel}
+                        </div>
+                    </div>
+                </div>
+                <div class="list-download-h5 foxui-bg-white foxui-visible-xs foxui-visible-sm">
+                    <div class="list-download">
+                        <ul class="foxui-collapse" data-fold="accordion">
+                            {fox:download name='field' channel="download"}
+                            <li class="foxui-collapse-item wow slideInUp">
+                                <div class="foxui-collapse-head foxui-collapse-handle">
+                                    <span class="title foxui-ellipsis">[$field.title]</span>
+                                    <span class="date">[$field.release_time|date='Y-m-d']</span>
+                                    <i class="foxui-icon-xiangyou-o foxui-collapse-icon"></i>
+                                </div>
+                                <div class="foxui-collapse-content">
+                                    <div class="info">
+                                        <span>文件类别：[$field.file_category]</span>
+                                        <span>大小：[$field.file_size]</span>
+                                    </div>
+                                    <p class="foxui-align-justify">[$field.content | cn_substr=240]</p>
+                                    <div class="btn">
+                                        <button
+                                            class="foxui-block foxui-solid-primary foxui-shape-round foxui-size-medium"
+                                            data-target="{if $field.file_type==1}webLoad-h5{else/}localLoad{/if}"
+                                            data-href="[$field.file_url]"
+                                            data-pwd="[$field.extract_code]"
+                                            data-disk="[$field.server_name]"
+                                        >
+                                            <i class="foxui-icon-xiazai-o"></i>
+                                            <span>[$field.server_name]</span>
+                                        </button>
+                                    </div>
+                                </div>
+                            </li>
+                            {/fox:download}
+                        </ul>
+                    </div>
+                </div>
+            </div>
+            <!-- 右侧浮动内容 -->
+            <div class="foxcms-fixed-container">{include file="fixed"/}</div>
+        </main>
+        <!-- 底部 -->
+        <footer class="wow slideInUp">{include file="footer"/}</footer>
+    </body>
+    <script src="_STATIC_/skin/js/foxui-1.21.min.js"></script>
+    <script src="_STATIC_/skin/js/common.js"></script>
+
+    <script>
+        $(document).on('click', '.download-collapse .download-collapse-handle', function () {
+            let $this = $(this),
+                $item = $this.closest('.download-collapse-item'),
+                isActive = $(this).is('.is-active');
+            if (isActive) {
+                $this.removeClass('is-active');
+                $this.text('+');
+                $item.children('.download-collapse-content').slideUp('fast');
+                $item.css('background-color', '#ffffff');
+            } else {
+                $('.download-collapse-item').find('.download-collapse-handle.is-active').click();
+                $this.addClass('is-active');
+                $this.text('-');
+                $item.children('.download-collapse-content').slideDown('fast');
+                $item.css('background-color', '#f5f7fa');
+            }
+        });
+
+        $(document).on('click', '.load-more-container .load-more-btn', function () {
+            let $this = $(this),
+                $menu = $('.load-more-menu'),
+                isActive = $this.is('.is-active');
+
+            if (isActive) {
+                $this.removeClass('is-active');
+                $menu.slideUp('fast');
+            } else {
+                $this.addClass('is-active');
+                $menu.slideDown('fast');
+            }
+        });
+
+        $(document).on('click', 'button[data-target=localLoad]', function (e) {
+            let href = $(e.currentTarget).attr('data-href');
+            window.open(href, '_blank');
+        });
+        $(document).on('click', 'button[data-target=webLoad]', function (e) {
+            let href = $(e.currentTarget).attr('data-href'),
+                pwd = $(e.currentTarget).attr('data-pwd'),
+                title = $(e.currentTarget).attr('data-disk');
+
+            foxui.dialog({
+                title,
+                content: _webloadHtml(href, pwd),
+                confirmText: '前往下载',
+                cancelText: '关闭',
+                border: true,
+                longButton: true,
+                buttonAlign: 'center',
+                buttonSize: 'small',
+                className: 'download-dialog',
+                confirm: function (callback) {
+                    window.open(href + '?pwd=' + pwd, '_blank');
+                },
+            });
+        });
+        $(document).on('click', 'button[data-target=webLoad-h5]', function (e) {
+            let href = $(e.currentTarget).attr('data-href'),
+                pwd = $(e.currentTarget).attr('data-pwd');
+
+            window.open(href + '?pwd=' + pwd, '_blank');
+        });
+
+        function _webloadHtml(href, pwd) {
+            return [
+                '<div class="download-dialog_body">',
+                '<ul>',
+                '<li>',
+                '<div class="label">链接：</div>',
+                `<div class="link">${href}</div>`,
+                '</li>',
+                '<li>',
+                '<div class=label>提取码：</div>',
+                `<div class="pwd">${pwd}</div>`,
+                '</li>',
+                '</ul>',
+                '</div>',
+            ].join('');
+        }
+    </script>
+</html>

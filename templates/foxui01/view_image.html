@@ -1,0 +1,286 @@
+<!--
+ * @Descripttion : FOXCMS是一款高效的PHP多端跨平台内容管理系统
+ * @Author       : FoxCMS Team
+ * @Date         : 2023-04-10 16:46:42
+ * @version      : V1.08
+ * @copyright    : ©2021-现在 贵州黔狐科技股份有限公司 版权所有
+ * @LastEditTime : 2023-08-09 15:10:07
+-->
+<!DOCTYPE html>
+<html lang="cn">
+    <head>
+        {include file="header"/}
+        <title>[$images.title]-{fox:basic name='title'/}</title>
+        <meta name="keywords" content="[$images.keywords]" />
+        <meta name="description" content="[$images.description]" />
+    </head>
+    <body>
+        <!-- 顶部 -->
+        <header class="foxui-border-bottom foxui-bg-white">{include file="nav"/}</header>
+        <!-- 主体内容 -->
+        <main>
+            <!-- 内容 -->
+            <div class="foxcms-main view-image-main">
+                <div class="foxcms-container">
+                    <ul class="foxui-breadcrumb icon-separator foxui-hidden-sm foxui-hidden-xs wow slideInUp">
+                        {fox:positionshut name='field'}
+                        <li class="foxui-breadcrumb-item">
+                            <a href="[$field.link]">[$field.name]</a>
+                            <i class="foxui-icon-xiangyou-o"></i>
+                        </li>
+                        {/fox:positionshut}
+                    </ul>
+                    <!-- 电脑端 -->
+                    <div class="swiper-box-pc">
+                        <div class="main-swiper">
+                            <div class="swiper" style="--swiper-navigation-color: #fff; --swiper-pagination-color: #fff">
+                                <div class="swiper-wrapper">
+                                    {fox:imageslist name="field" calltype="parent" model="images"}
+                                    <div class="swiper-slide">
+                                        <div class="pic">
+                                            <img src="[$field.imgsrc]" />
+                                        </div>
+                                    </div>
+                                    {/fox:imageslist}
+                                </div>
+                                <div class="swiper-button-next"></div>
+                                <div class="swiper-button-prev"></div>
+                            </div>
+                        </div>
+                        <div class="thumbs-swiper">
+                            <div class="swiper">
+                                <div class="swiper-wrapper">
+                                    {fox:imageslist name="field" calltype="parent" model="images"}
+                                    <div class="swiper-slide">
+                                        <div class="pic">
+                                            <img src="[$field.imgsrc]" />
+                                        </div>
+                                    </div>
+                                    {/fox:imageslist}
+                                </div>
+                            </div>
+                        </div>
+                    </div>
+                    <!-- 移动端 -->
+                    <div class="swiper-box-h5">
+                        <div style="--swiper-navigation-color: #fff; --swiper-pagination-color: #fff" class="swiper main-swiper">
+                            <div class="swiper-wrapper">
+                                {fox:imageslist name="field" calltype="parent" model="images"}
+                                <div class="swiper-slide">
+                                    <div class="pic">
+                                        <img src="[$field.imgsrc]" />
+                                    </div>
+                                </div>
+                                {/fox:imageslist}
+                            </div>
+                            <div class="swiper-button-next"></div>
+                            <div class="swiper-button-prev"></div>
+                        </div>
+                        <div class="swiper thumbs-swiper">
+                            <div class="swiper-wrapper">
+                                {fox:imageslist name="field" calltype="parent" model="images"}
+                                <div class="swiper-slide">
+                                    <div class="pic">
+                                        <img src="[$field.imgsrc]" />
+                                    </div>
+                                </div>
+                                {/fox:imageslist}
+                            </div>
+                        </div>
+                    </div>
+                </div>
+                <div class="foxui-bg-white">
+                    <div class="foxcms-container">
+                        <div class="article-head wow slideInUp">
+                            <h1>[$images.title]</h1>
+                            <p class="foxui-hidden-sm foxui-hidden-xs foxui-margin-bottom-0">
+                                <span>日期：[$images.release_time|date='Y-m-d H:m']</span>
+                                <span>来源：[$images.article_source]</span>
+                                <span>作者：[$images.author]</span>
+                                <span>浏览量：[$images.click]</span>
+                            </p>
+                            <div class="head-info-h5 foxui-display-none foxui-visible-sm foxui-visible-xs">
+                                <p>
+                                    <span>日期：[$images.release_time|date='Y-m-d H:m']</span>
+                                    <span>来源：[$images.article_source]</span>
+                                </p>
+                                <p>
+                                    <span>作者：[$images.author]</span>
+                                    <span>浏览量：[$images.click]</span>
+                                </p>
+                            </div>
+                        </div>
+                        <div class="article-content wow slideInUp">
+                            <div class="article-content-inner">
+                                <div class="rich-text">[$images.content]</div>
+                                <div class="share-list">
+                                    <ul class="share-list-inner">
+                                        <li class="share-item wx-share">
+                                            <i class="foxui-icon-weixin-f"></i>
+                                            <span>微信分享</span>
+                                        </li>
+                                        <li class="share-item qq-share">
+                                            <i class="foxui-icon-QQ-f"></i>
+                                            <span>转发QQ</span>
+                                        </li>
+                                        <li class="share-item xl-share">
+                                            <i class="foxui-icon-xinlang-f"></i>
+                                            <span>转发微博</span>
+                                        </li>
+                                    </ul>
+                                </div>
+                                <div class="foxcms-detail-pagination">
+                                    <div class="detail-pagination-pc foxui-hidden-sm foxui-hidden-xs">
+                                        {fox:prenext get='pre' disstyle='disabled'/}
+                                        <div class="pre [$field.disstyle]">
+                                            <p>上一篇</p>
+                                            <a href="[$field.link]" class="foxui-ellipsis-2">[$field.title ?? '没有了']</a>
+                                        </div>
+                                        {/fox:prenext} {fox:channel name='field' type='self'}
+                                        <div class="center">
+                                            <a href="[$field.link]">
+                                                <i class="foxui-icon-zhenlie-f"></i>
+                                            </a>
+                                        </div>
+                                        {/fox:channel} {fox:prenext get='next' disstyle='disabled'/}
+                                        <div class="next [$field.disstyle]">
+                                            <p>下一篇</p>
+                                            <a href="[$field.link]" class="foxui-ellipsis-2">[$field.title ?? '没有了']</a>
+                                        </div>
+                                        {/fox:prenext}
+                                    </div>
+                                    <div class="detail-pagination-h5 foxui-visible-sm foxui-visible-xs">
+                                        <ul>
+                                            {fox:prenext get='pre' disstyle='disabled'/}
+                                            <li class="pre [$field.disstyle]">
+                                                <a class="foxui-border" href="[$field.link]">上一篇</a>
+                                            </li>
+                                            {/fox:prenext} {fox:channel name='field' type='self'}
+                                            <li class="center">
+                                                <a href="[$field.link]">
+                                                    <i class="foxui-icon-zhenlie-f"></i>
+                                                </a>
+                                            </li>
+                                            {/fox:channel} {fox:prenext get='next' disstyle='disabled'/}
+                                            <li class="next [$field.disstyle]">
+                                                <a class="foxui-border" href="[$field.link]">下一篇</a>
+                                            </li>
+                                            {/fox:prenext}
+                                        </ul>
+                                    </div>
+                                </div>
+                            </div>
+                        </div>
+                    </div>
+                </div>
+                <div class="foxcms-container">
+                    <div class="recommend-list">
+                        <div class="title">
+                            <h1>相关推荐</h1>
+                        </div>
+                        <div class="swiper recommend-swiper">
+                            <div class="swiper-wrapper">
+                                {fox:images name='field' flag='c' }
+                                <div class="swiper-slide">
+                                    <a href="[$field.link]">
+                                        <div class="list-case-item wow slideInUp">
+                                            <div class="pic">
+                                                <img src="[$field.img_url]" alt="" />
+                                                {if $field.model == 'video'}
+                                                <i class="foxui-icon-bofang-f"></i>
+                                                {/if}
+                                            </div>
+                                            <div class="cover">
+                                                <div class="cover-head">
+                                                    <h2>[$field.title]</h2>
+                                                </div>
+                                                <div class="cover-foot">
+                                                    <h3>[$field.column]</h3>
+                                                    <p>[$field.tags]</p>
+                                                </div>
+                                            </div>
+                                        </div>
+                                    </a>
+                                </div>
+                                {/fox:images}
+                            </div>
+                            <div class="swiper-pagination"></div>
+                            <div class="swiper-button-prev"></div>
+                            <div class="swiper-button-next"></div>
+                        </div>
+                    </div>
+                </div>
+            </div>
+            <!-- 右侧浮动内容 -->
+            <div class="foxcms-fixed-container">{include file="fixed"/}</div>
+        </main>
+        <!-- 底部 -->
+        <footer class="wow slideInUp">{include file="footer"/}</footer>
+    </body>
+    <script src="_STATIC_/skin/js/foxui-1.21.min.js"></script>
+    <script src="_STATIC_/skin/js/common.js"></script>
+
+    <script>
+        let thumbsSwiperH5 = new Swiper('.swiper-box-h5 .thumbs-swiper', {
+            loop: true,
+            spaceBetween: 10,
+            slidesPerView: 4,
+            freeMode: true,
+            watchSlidesProgress: true,
+        });
+        let mainSwiperH5 = new Swiper('.swiper-box-h5 .main-swiper', {
+            loop: true,
+            spaceBetween: 10,
+            navigation: {
+                nextEl: '.swiper-box-h5 .swiper-button-next',
+                prevEl: '.swiper-box-h5 .swiper-button-prev',
+            },
+            thumbs: {
+                swiper: thumbsSwiperH5,
+            },
+        });
+
+        let thumbsSwiperPC = new Swiper('.swiper-box-pc .thumbs-swiper .swiper', {
+            speed: 300,
+            freeMode: true,
+            direction: 'vertical',
+            setWrapperSize: true,
+            spaceBetween: 10,
+            slidesPerView: 'auto',
+            grid: {
+                rows: 2,
+                fill: 'row',
+            },
+            scrollbar: {
+                el: '.swiper-scrollbar',
+            },
+        });
+        let mainSwiperPC = new Swiper('.swiper-box-pc .main-swiper .swiper', {
+            loop: true,
+            spaceBetween: 10,
+            navigation: {
+                nextEl: '.swiper-box-pc .swiper-button-next',
+                prevEl: '.swiper-box-pc .swiper-button-prev',
+            },
+            thumbs: {
+                swiper: thumbsSwiperPC,
+            },
+        });
+
+        new Swiper('.recommend-swiper', {
+            slidesPerView: 1,
+            spaceBetween: 30,
+            breakpoints: {
+                991: { slidesPerView: 3 },
+            },
+            pagination: {
+                el: '.recommend-swiper .swiper-pagination',
+                clickable: true,
+            },
+            navigation: {
+                nextEl: '.recommend-swiper .swiper-button-next',
+                prevEl: '.recommend-swiper .swiper-button-prev',
+            },
+        });
+    </script>
+</html>

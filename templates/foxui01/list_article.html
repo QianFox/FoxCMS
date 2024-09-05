@@ -1,0 +1,67 @@
+<!--
+ * @Descripttion : FOXCMS是一款高效的PHP多端跨平台内容管理系统
+ * @Author       : FoxCMS Team
+ * @Date         : 2023-01-10 09:50:08
+ * @version      : V1.08
+ * @copyright    : ©2021-现在 贵州黔狐科技股份有限公司 版权所有
+ * @LastEditTime : 2024-08-13 15:25:54
+-->
+<!DOCTYPE html>
+<html lang="cn">
+    <head>
+        {include file="header"/}
+        <title>[$column.name]-{fox:basic name='title'/}</title>
+        <meta name="keywords" content="[$column.keywords]" />
+        <meta name="description" content="[$column.description]" />
+    </head>
+    <body>
+        <!-- 顶部 -->
+        <header class="foxui-border-bottom foxui-bg-white">{include file="nav"/}</header>
+        <!-- 主体内容 -->
+        <main>
+            <!-- 通栏图 -->
+            <div class="foxcms-common-banner foxui-bg-lighter">{include file="banner"/}</div>
+            <!-- 内容 -->
+            <div class="foxcms-main list-article-main">
+                <div class="foxcms-container">
+                    <div class="foxui-row foxui-gutter-x-7 foxui-gutter-y-11">
+                        {fox:list name='field' pagesize="12"}
+                        <div class="foxui-col-md-8">
+                            <a href="[$field.link]" class="list-article-item wow slideInUp" style="visibility: hidden;animation-name: none;">
+                                <div class="pic">
+                                    <img src="[$field.img_url]" alt="" />
+                                </div>
+                                <div class="text">
+                                    <div class="info">
+                                        <div class="left">
+                                            <span>[$field.column]</span>
+                                            <span>[$field.release_time|date='Y-m-d']</span>
+                                        </div>
+                                        <div class="right">
+                                            <i class="foxui-icon-xianshi-o"></i>
+                                            <span>{fox:arcclick type='look' calltype="parent"/}</span>
+                                        </div>
+                                    </div>
+                                    <h1 class="foxui-ellipsis-2">[$field.title]</h1>
+                                    <p class="foxui-ellipsis-3">[$field.content | cn_substr=120]</p>
+                                </div>
+                            </a>
+                        </div>
+                        {/fox:list}
+                    </div>
+                    <!-- 分页 -->
+                    <div class="foxcms-list-pagination">
+                        <div class="list-pagination-pc foxui-hidden-sm foxui-hidden-xs">{fox:pagelist listsize='12' listitem="pre,pageno,next" currentstyle="active" disstyle="disabled" diystyle="pre_foxui-icon-xiangzuo-o,next_foxui-icon-xiangyou-o" /}</div>
+                        <div class="list-pagination-h5 foxui-visible-sm foxui-visible-xs">{fox:pagelist listsize='1' listitem="pre,pageno,next" currentstyle="active" disstyle="disabled" /}</div>
+                    </div>
+                </div>
+            </div>
+            <!-- 右侧浮动内容 -->
+            <div class="foxcms-fixed-container">{include file="fixed"/}</div>
+        </main>
+        <!-- 底部 -->
+        <footer class="wow slideInUp">{include file="footer"/}</footer>
+    </body>
+    <script src="_STATIC_/skin/js/foxui-1.21.min.js"></script>
+    <script src="_STATIC_/skin/js/common.js"></script>
+</html>

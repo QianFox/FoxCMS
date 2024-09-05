@@ -1,0 +1,415 @@
+<!--
+ * @Descripttion : FOXCMS是一款高效的PHP多端跨平台内容管理系统
+ * @Author       : FoxCMS Team
+ * @Date         : 2023-01-10 09:33:37
+ * @version      : V1.08
+ * @copyright    : ©2021-现在 贵州黔狐科技股份有限公司 版权所有
+ * @LastEditTime : 2024-07-06 10:15:54
+-->
+<!DOCTYPE html>
+<html lang="cn">
+    <head>
+        {include file="header"/}
+        <title>{fox:basic name='title'/}</title>
+        <meta name="keywords" content="{fox:basic name='keyword'/}" />
+        <meta name="description" content="{fox:basic name='description'/}" />
+    </head>
+    <body>
+        <!-- 顶部 -->
+        <header class="foxui-border-bottom foxui-bg-white">{include file="nav"/}</header>
+        <!-- 主体内容 -->
+        <main class="index-main">
+            <!-- 通栏图 -->
+            <div class="foxcms-index-banner">
+                <div class="foxcms-banner-pc foxui-hidden-sm foxui-hidden-xs">
+                    <div class="swiper index-swiper-pc" style="--swiper-navigation-color: #666; --swiper-pagination-bullet-inactive-color: #666; --swiper-pagination-color: #666">
+                        <div class="swiper-wrapper">
+                            {fox:adv pid='2' sid="ad1"}
+                            <div class="swiper-slide">
+                                <div class="swiper-item" style="background-image: url([$ad.img_url])">
+                                    <div class="foxcms-container">
+                                        <div class="foxui-row foxui-gutter-10">
+                                            <div class="foxui-col-sm-24 foxui-col-lg-24">
+                                                <div class="content left">
+                                                    <h1 style="color: #333">[$ad.title]</h1>
+                                                    <p style="color: #666">[$ad.adv_info]</p>
+                                                    <a style="color: #666; border-color: #666" href="[$ad.link]" class="view-btn">
+                                                        <span>查看详情</span>
+                                                        <i class="foxui-icon-qianwang-o"></i>
+                                                    </a>
+                                                </div>
+                                            </div>
+                                        </div>
+                                    </div>
+                                </div>
+                            </div>
+                            {/fox:adv}
+                        </div>
+                        <div class="swiper-button-next"></div>
+                        <div class="swiper-button-prev"></div>
+                        <div class="swiper-pagination"></div>
+                    </div>
+                </div>
+                <div class="foxcms-banner-h5 foxui-visible-sm foxui-visible-xs">
+                    <div class="swiper index-swiper-h5" style="--swiper-navigation-color: #fff; --swiper-pagination-bullet-inactive-color: #fff; --swiper-pagination-color: #fff">
+                        <div class="swiper-wrapper">
+                            {fox:adv pid='2'}
+                            <div class="swiper-slide">
+                                <div class="swiper-item" style="background-image: url([$ad.img_url])">
+                                    <div class="foxcms-container">
+                                        <div class="foxui-row foxui-gutter-10">
+                                            <div class="foxui-col-sm-24">
+                                                <div class="content left">
+                                                    <h1 style="color: #333">[$ad.title]</h1>
+                                                    <p style="color: #666">[$ad.adv_info]</p>
+                                                    <a style="color: #666; border-color: #666" href="[$ad.link]" class="view-btn">
+                                                        <span>查看详情</span>
+                                                        <i class="foxui-icon-qianwang-o"></i>
+                                                    </a>
+                                                </div>
+                                            </div>
+                                        </div>
+                                    </div>
+                                </div>
+                            </div>
+                            {/fox:adv}
+                        </div>
+                    </div>
+                </div>
+            </div>
+            <!-- 案例展示 -->
+            <div class="tabs-section">
+                <div class="foxcms-container">
+                    {fox:channel name="field" typeid = "4"}
+                    <div class="tabs-head">
+                        <h1>[$field.name]</h1>
+                        <p>[$field.en_name]</p>
+                    </div>
+                    <div class="foxui-tabs foxui-type-line foxui-position-right">
+                        <div class="foxui-tabs-header">
+                            {fox:channel name="cv" pname="field" calltype="parent" type="son" notypeid="self"}
+                            <div class="foxui-tabs-item{if $index==1} is-active{/if}">[$cv.name]</div>
+                            {/fox:channel}
+                        </div>
+                        <div class="foxui-tabs-content">
+                            {fox:channel name="cv" pname="field" calltype="parent" type="son" notypeid="self"}
+                            <div class="foxui-tabs-pane">
+                                <div class="foxui-row foxui-gutter-1">
+                                    {fox:arclist name='av' pname='cv' calltype="parent" row="6" flag='c'}
+                                    <div class="foxui-col-sm-12 foxui-col-lg-8">
+                                        <a href="[$av.link]" class="list-case-item" style="display: block">
+                                            <div class="pic">
+                                                <img src="[$av.img_url]" alt="" />
+                                                {if $av.model == 'video'}
+                                                <i class="foxui-icon-bofang-f"></i>
+                                                {/if}
+                                            </div>
+                                            <div class="cover">
+                                                <div class="cover-head">
+                                                    <h2>[$av.title]</h2>
+                                                </div>
+                                                <div class="cover-foot">
+                                                    <h3>[$av.column]</h3>
+                                                    <p>[$av.tags]</p>
+                                                </div>
+                                            </div>
+                                        </a>
+                                    </div>
+                                    {/fox:arclist}
+                                </div>
+                            </div>
+                            {/fox:channel}
+                        </div>
+                    </div>
+                    <div class="more-btn wow slideInUp" style="margin-top: 40px; margin-bottom: 80px">
+                        <a class="more-plain-btn" href="[$field.link]">
+                            <span>MORE</span>
+                            <i class="foxui-icon-qianwang-o"></i>
+                        </a>
+                    </div>
+                    {/fox:channel}
+                </div>
+            </div>
+            <!-- 公司简介 -->
+            <div class="company-info">
+                <div class="foxui-row foxui-gutter-0">
+                    {fox:channel name="field" typeid="7" type="self"}
+                    <div class="foxui-col-md-12">
+                        <div class="pic wow slideInUp">
+                            <img src="[$field.pic_url]" alt="{fox:basic name='name'/}"/>
+                        </div>
+                    </div>
+                    <div class="foxui-col-md-12">
+                        <div class="text wow slideInUp">
+                            <div class="text-inner">
+                                <h1>[$field.name]</h1>
+                                <h4>[$field.en_name]</h4>
+                                <p>{fox:single calltype="parent" name='content' filter='cn_substr,320'/}</p>
+                                <div>
+                                    <a class="foxui-link" href="[$field.link]">
+                                        <span>查看详情</span>
+                                        <i class="foxui-icon-qianwang-o"></i>
+                                    </a>
+                                </div>
+                            </div>
+                        </div>
+                    </div>
+                    {/fox:channel}
+                </div>
+            </div>
+            <!-- 新闻资讯 -->
+            <div class="foxui-bg-white">
+                <div class="tabs-section news-section">
+                    {fox:channel name="field" typeid = "2"}
+                    <div class="foxcms-container">
+                        <div class="tabs-head">
+                            <h1>[$field.name]</h1>
+                            <p>[$field.en_name]</p>
+                        </div>
+                        <div class="foxui-tabs foxui-type-line foxui-position-right foxui-margin-top-0">
+                            <div class="foxui-tabs-header">
+                                {fox:channel name="cv" pname="field" calltype="parent" type="son" notypeid="self"}
+                                <div class="foxui-tabs-item{if $index==1} is-active{/if}">[$cv.name]</div>
+                                {/fox:channel}
+                            </div>
+                            <div class="foxui-tabs-content">
+                                {fox:channel name="cv" pname="field" calltype="parent" type="son" notypeid="self"}
+                                <div class="foxui-tabs-pane">
+                                    <div class="swiper recommend-swiper enterprise-swiper">
+                                        <div class="swiper-wrapper">
+                                            {fox:article name='av' pname='cv' calltype="parent" row="6" flag='c'}
+                                            <div class="swiper-slide">
+                                                <a href="[$av.link]" class="list-article-item wow slideInUp">
+                                                    <div class="pic">
+                                                        <img src="[$av.img_url]" alt="" />
+                                                    </div>
+                                                    <div class="text">
+                                                        <div class="info">
+                                                            <div class="left">
+                                                                <span>[$av.column]</span>
+                                                                <span>[$field.release_time|date='Y-m-d']</span>
+                                                            </div>
+                                                            <div class="right">
+                                                                <i class="foxui-icon-xianshi-o"></i>
+                                                                <span>[$av.click]</span>
+                                                            </div>
+                                                        </div>
+                                                        <h1 class="foxui-ellipsis-2">[$av.title]</h1>
+                                                        <p class="foxui-ellipsis-3">[$av.content | cn_substr=120]</p>
+                                                    </div>
+                                                </a>
+                                            </div>
+                                            {/fox:article}
+                                        </div>
+                                        <div class="swiper-pagination"></div>
+                                        <div class="swiper-button-prev"></div>
+                                        <div class="swiper-button-next"></div>
+                                    </div>
+                                    <div class="more-btn" style="margin-top: 40px; margin-bottom: 40px">
+                                        <a class="more-plain-btn" href="[$cv.link]">
+                                            <span>MORE</span>
+                                            <i class="foxui-icon-qianwang-o"></i>
+                                        </a>
+                                    </div>
+                                </div>
+                                {/fox:channel}
+                            </div>
+                        </div>
+                    </div>
+                    {/fox:channel}
+                </div>
+            </div>
+            <!-- 产品中心 -->
+            <div class="link-section">
+                <div class="foxcms-container">
+                    {fox:channel name="field" typeid = "3"}
+                    <div class="link-section-head">
+                        <div class="foxui-row foxui-gutter-xs-4 foxui-gutter-sm-4 foxui-align-items-center">
+                            <div class="foxui-col-sm-24 foxui-col-xs-24 foxui-col-md-8">
+                                <h1>[$field.name]</h1>
+                                <p>[$field.en_name]</p>
+                            </div>
+                            <div class="foxui-col-sm-24 foxui-col-xs-24 foxui-col-md-16">
+                                <ul>
+                                    {fox:channel name="cv" pname="field" calltype="parent" type="son" notypeid="self"}
+                                    <li>
+                                        <a class="foxui-link" href="[$cv.link]">[$cv.name]</a>
+                                    </li>
+                                    {/fox:channel}
+                                </ul>
+                            </div>
+                        </div>
+                    </div>
+                    <div class="link-section-list">
+                        <div class="foxui-row foxui-gutter-6">
+                            {fox:product name='av' pname='field' type="son" calltype="parent" row="8" flag='c' model="product" orderby="release_time"}
+                            <div class="foxui-col-md-12 foxui-col-lg-6">
+                                <a href="[$av.link]" class="list-product-item wow slideInUp">
+                                    <div class="pic">
+                                        <img src="[$av.img_url]" alt="" />
+                                    </div>
+                                    <div class="text">
+                                        <h1 class="foxui-ellipsis">[$av.title]</h1>
+                                        <p class="foxui-ellipsis-2">[$av.description]</p>
+                                        <div class="price">
+                                            <span>￥</span>
+                                            <strong>[$av.price]</strong>
+                                        </div>
+                                    </div>
+                                </a>
+                            </div>
+                            {/fox:product}
+                        </div>
+                        <div class="more-btn" style="margin-top: 40px; margin-bottom: 80px">
+                            <a class="more-plain-btn" href="[$field.link]">
+                                <span>MORE</span>
+                                <i class="foxui-icon-qianwang-o"></i>
+                            </a>
+                        </div>
+                    </div>
+                    {/fox:channel}
+                </div>
+            </div>
+            <!-- 合作客户 -->
+            <div class="more-section foxui-bg-white">
+                <div class="foxcms-container">
+                    {fox:channel name="field" typeid="10" type="self"}
+                    <div class="more-section-head">
+                        <div class="title">
+                            <h1>[$field.name]</h1>
+                            <p>[$field.en_name]</p>
+                        </div>
+                        <div class="more-btn">
+                            <a class="more-plain-btn" href="[$field.link]">
+                                <span>MORE</span>
+                                <i class="foxui-icon-qianwang-o"></i>
+                            </a>
+                        </div>
+                    </div>
+                    <div class="more-section-list">
+                        <div class="list-customer foxui-row foxui-gutter-0">
+                            {fox:article name='av' pname='field' calltype="parent" row="12" flag='c'}
+                            <div class="col foxui-col-xs-12 foxui-col-sm-8 foxui-col-lg-6 foxui-col-xxl-4">
+                                <div class="pic wow slideInUp">
+                                    <img src="[$av.img_url]" alt="" />
+                                </div>
+                            </div>
+                            {/fox:article}
+                        </div>
+                    </div>
+                    {/fox:channel}
+                </div>
+            </div>
+            <!-- 需求表单 -->
+            <div class="foxcms-container requried-container">
+                <div class="foxui-bg-white required-form wow slideInUp">
+                    <form id="requiredForm" action="/plus/Diyform/receive" method="post">
+                        <input type="hidden" name="id" style="flex: 1" value="1" />
+                        <div class="foxui-row foxui-gutter-6">
+                            <div class="foxui-col-sm-12 foxui-col-lg-4">
+                                <div class="input-item">
+                                    <input type="text" name="text0" placeholder="阁下贵姓" autocomplete="off" value="" />
+                                </div>
+                            </div>
+                            <div class="foxui-col-sm-12 foxui-col-lg-4">
+                                <div class="input-item">
+                                    <input type="text" name="text1" placeholder="手机号码" autocomplete="off" value="" />
+                                </div>
+                            </div>
+                            <div class="foxui-col-sm-24 foxui-col-lg-12">
+                                <div class="input-item">
+                                    <input type="text" name="text2" placeholder="告诉我们您的需求" autocomplete="off" value="" />
+                                </div>
+                            </div>
+                            <div class="foxui-col-sm-24 foxui-col-lg-4">
+                                <div class="input-item">
+                                    <button class="foxui-solid-primary foxui-block submit-btn">
+                                        <span>需求提交</span>
+                                        <i class="foxui-icon-qianwang-o"></i>
+                                    </button>
+                                </div>
+                            </div>
+                        </div>
+                        <input type="submit" value="提交" style="display: none" />
+                    </form>
+                </div>
+            </div>
+            <!-- 右侧浮动内容 -->
+            <div class="foxcms-fixed-container">{include file="fixed"/}</div>
+        </main>
+        <!-- 底部 -->
+        <footer class="wow slideInUp">{include file="footer"/}</footer>
+    </body>
+    <script src="_STATIC_/skin/js/foxui-1.21.min.js"></script>
+    <script src="_STATIC_/skin/js/common.js"></script>
+    <script src="_STATIC_/skin/js/form.js"></script>
+
+    <script>
+        setTimeout(() => {
+            new Swiper('.index-swiper-pc', {
+                loop: true,
+                autoplay: true,
+                pagination: {
+                    el: '.index-swiper-pc .swiper-pagination',
+                },
+                navigation: {
+                    nextEl: '.index-swiper-pc .swiper-button-next',
+                    prevEl: '.index-swiper-pc .swiper-button-prev',
+                },
+            });
+
+            new Swiper('.index-swiper-h5', {
+                loop: true,
+                autoplay: true,
+            });
+
+            new Swiper('.enterprise-swiper', {
+                slidesPerView: 1,
+                spaceBetween: 30,
+                breakpoints: {
+                    991: { slidesPerView: 3 },
+                },
+                pagination: {
+                    el: '.enterprise-swiper .swiper-pagination',
+                    clickable: true,
+                },
+                navigation: {
+                    nextEl: '.enterprise-swiper .swiper-button-next',
+                    prevEl: '.enterprise-swiper .swiper-button-prev',
+                },
+            });
+
+            new Swiper('.industry-swiper', {
+                slidesPerView: 1,
+                spaceBetween: 30,
+                breakpoints: {
+                    991: { slidesPerView: 3 },
+                },
+                pagination: {
+                    el: '.industry-swiper .swiper-pagination',
+                    clickable: true,
+                },
+                navigation: {
+                    nextEl: '.industry-swiper .swiper-button-next',
+                    prevEl: '.industry-swiper .swiper-button-prev',
+                },
+            });
+
+            new Swiper('.media-swiper', {
+                slidesPerView: 1,
+                spaceBetween: 30,
+                breakpoints: {
+                    991: { slidesPerView: 3 },
+                },
+                pagination: {
+                    el: '.media-swiper .swiper-pagination',
+                    clickable: true,
+                },
+                navigation: {
+                    nextEl: '.media-swiper .swiper-button-next',
+                    prevEl: '.media-swiper .swiper-button-prev',
+                },
+            });
+        }, 300);
+    </script>
+</html>

@@ -1,0 +1,113 @@
+<!--
+ * @Descripttion : FOXCMS是一款高效的PHP多端跨平台内容管理系统
+ * @Author       : FoxCMS Team
+ * @Date         : 2023-04-07 17:57:48
+ * @version      : V1.08
+ * @copyright    : ©2021-现在 贵州黔狐科技股份有限公司 版权所有
+ * @LastEditTime : 2023-04-27 08:35:17
+-->
+<!DOCTYPE html>
+<html lang="cn">
+    <head>
+        {include file="header"/}
+        <title>[$article.title]-{fox:basic name='title'/}</title>
+        <meta name="keywords" content="[$article.keywords]" />
+        <meta name="description" content="[$article.description]" />
+    </head>
+    <body>
+        <!-- 顶部 -->
+        <header class="foxui-border-bottom foxui-bg-white">{include file="nav"/}</header>
+        <!-- 主体内容 -->
+        <main>
+            <!-- 内容 -->
+            <div class="foxcms-main view-team-main foxui-bg-white">
+                <div class="foxcms-container">
+                    <div class="breadcrumb">
+                        <ul class="foxui-breadcrumb icon-separator">
+                            {fox:positionshut name='field'}
+                            <li class="foxui-breadcrumb-item">
+                                <a href="[$field.link]">[$field.name]</a>
+                                <i class="foxui-icon-xiangyou-o"></i>
+                            </li>
+                            {/fox:positionshut}
+                        </ul>
+                    </div>
+                    <div class="main-content">
+                        <div class="foxui-row foxui-gutter-x-lg-9 foxui-gutter-x-xl-10 foxui-gutter-x-xxl-11 foxui-gutter-x-xxxl-12">
+                            <div class="foxui-col-xxl-6 foxui-col-xl-7 foxui-col-lg-8 foxui-col-md-8 foxui-col-sm-10 foxui-col-xs-10">
+                                <div class="pic">
+                                    <img src="[$article.img_url]" alt="" />
+                                </div>
+                            </div>
+                            <div class="foxui-col-xxl-18 foxui-col-xl-17 foxui-col-lg-16 foxui-col-md-16 foxui-col-sm-14 foxui-col-xs-14">
+                                <div class="text">
+                                    <h1>
+                                        <strong>[$article.title]</strong>
+                                        <span class="foxui-text-capitalize">[$article.brief_title]</span>
+                                    </h1>
+                                    <h5>[$article.tags]</h5>
+                                    <p>[$article.keywords]</p>
+                                </div>
+                                <div class="rich-text">[$article.content]</div>
+                            </div>
+                        </div>
+                    </div>
+                    <div class="pagination">
+                        <div class="foxcms-detail-pagination-plain">
+                            <div class="detail-pagination-pc foxui-hidden-sm foxui-hidden-xs">
+                                <div class="pre-icon">
+                                    <i class="foxui-icon-qianwang-o"></i>
+                                </div>
+                                {fox:prenext get='pre' disstyle='disabled'/}
+                                <div class="pre [$field.disstyle]">
+                                    <a href="[$field.link]" class="foxui-ellipsis-2 foxui-align-right">[$field.title ?? '没有了']</a>
+                                    <p class="foxui-margin-top-4">[$field.tags]</p>
+                                </div>
+                                {/fox:prenext} {fox:channel name='field' type='self'}
+                                <div class="center">
+                                    <a class="foxui-link" href="[$field.link]">
+                                        <i class="foxui-icon-zhenlie-f"></i>
+                                    </a>
+                                </div>
+                                {/fox:channel} {fox:prenext get='next' disstyle='disabled'/}
+                                <div class="next [$field.disstyle]">
+                                    <a href="[$field.link]" class="foxui-ellipsis-2">[$field.title ?? '没有了']</a>
+                                    <p class="foxui-margin-top-4">[$field.tags]</p>
+                                </div>
+                                {/fox:prenext}
+                                <div class="next-icon">
+                                    <i class="foxui-icon-qianwang-o"></i>
+                                </div>
+                            </div>
+                            <div class="detail-pagination-h5 foxui-visible-sm foxui-visible-xs">
+                                <ul>
+                                    {fox:prenext get='pre' disstyle='disabled'/}
+                                    <li class="pre [$field.disstyle]">
+                                        <a class="foxui-border" href="[$field.link]">上一篇</a>
+                                    </li>
+                                    {/fox:prenext} {fox:channel name='field' type='self'}
+                                    <li class="center">
+                                        <a class="foxui-link" href="[$field.link]">
+                                            <i class="foxui-icon-zhenlie-f"></i>
+                                        </a>
+                                    </li>
+                                    {/fox:channel} {fox:prenext get='next' disstyle='disabled'/}
+                                    <li class="next [$field.disstyle]">
+                                        <a class="foxui-border" href="[$field.link]">下一篇</a>
+                                    </li>
+                                    {/fox:prenext}
+                                </ul>
+                            </div>
+                        </div>
+                    </div>
+                </div>
+            </div>
+            <!-- 右侧浮动内容 -->
+            <div class="foxcms-fixed-container">{include file="fixed"/}</div>
+        </main>
+        <!-- 底部 -->
+        <footer class="wow slideInUp">{include file="footer"/}</footer>
+    </body>
+    <script src="_STATIC_/skin/js/foxui-1.21.min.js"></script>
+    <script src="_STATIC_/skin/js/common.js"></script>
+</html>

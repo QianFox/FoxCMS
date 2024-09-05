@@ -1,0 +1,284 @@
+<!DOCTYPE html>
+<html lang="cn">
+    <head>
+        {include file="header"/}
+        <title>[$article.title]-{fox:basic name='title'/}</title>
+        <meta name="keywords" content="[$article.keywords]" />
+        <meta name="description" content="[$article.description]" />
+    </head>
+    <body>
+        <!-- 顶部 -->
+        <header class="foxui-border-bottom foxui-bg-white">{include file="nav"/}</header>
+        <!-- 主体内容 -->
+        <main>
+            <!-- 内容 -->
+            <div class="foxcms-main view-video-main">
+                <div class="foxcms-container">
+                    <ul class="foxui-breadcrumb icon-separator foxui-hidden-sm foxui-hidden-xs wow slideInUp">
+                        {fox:positionshut name='field'}
+                        <li class="foxui-breadcrumb-item">
+                            <a href="[$field.link]">[$field.name]</a>
+                            <i class="foxui-icon-xiangyou-o"></i>
+                        </li>
+                        {/fox:positionshut}
+                    </ul>
+                    <div class="video-box">
+                        <div class="left">
+                            <div class="video">
+                                <video controls src="{fox:videogroup field='videos'}{if $index==1 }[$video.url]{/if}{/fox:videogroup}"></video>
+                                <div class="unfold-btn foxui-hidden-sm foxui-hidden-xs">
+                                    <a>
+                                        <i class="foxui-icon-shuangxiangzuo-o"></i>
+                                        <span>列表</span>
+                                    </a>
+                                </div>
+                            </div>
+                        </div>
+                        <div class="right video-group-pc foxui-hidden-sm foxui-hidden-xs">
+                            <div class="right-inner">
+                                <div class="fold-btn">
+                                    <a>
+                                        <span>列表</span>
+                                        <i class="foxui-icon-shuangxiangyou-o"></i>
+                                    </a>
+                                </div>
+                                <ul class="video-group">
+                                    {fox:videogroup field="videos"}
+                                    <li>
+                                        <a class="{if $index==1 }current{/if}" data-videourl="[$video.url]">
+                                            <div class="col sort">[$index]</div>
+                                            <div class="col circle"></div>
+                                            <div class="col title">[$video.title]</div>
+                                            <div class="col time">[$video.duration]</div>
+                                            <div class="col icon">
+                                                <i class="foxui-icon-kaishi-f"></i>
+                                            </div>
+                                        </a>
+                                    </li>
+                                    {/fox:videogroup}
+                                </ul>
+                            </div>
+                        </div>
+                        <div class="video-group-h5 foxui-visible-xs foxui-visible-sm">
+                            <div class="foxui-row foxui-gutter-y-4 video-group">
+                                {fox:videogroup field="videos"}
+                                <div class="foxui-col-xs-8 foxui-col-sm-8">
+                                    <div class="foxui-ellipsis">
+                                        <a class="foxui-link {if $index==1 }current{/if}" data-videourl="[$video.url]">[$index].[$video.title]</a>
+                                    </div>
+                                </div>
+                                {/fox:videogroup}
+                            </div>
+                        </div>
+                    </div>
+                </div>
+                <div class="foxui-bg-white">
+                    <div class="foxcms-container">
+                        <div class="article-head wow slideInUp">
+                            <h1>[$article.title]</h1>
+                            <p class="foxui-hidden-sm foxui-hidden-xs foxui-margin-bottom-0">
+                                <span>日期：[$article.release_time|date='Y-m-d H:m']</span>
+                                <span>来源：[$article.article_source]</span>
+                                <span>作者：[$article.author]</span>
+                                <span>浏览量：[$article.click]</span>
+                            </p>
+                            <div class="head-info-h5 foxui-display-none foxui-visible-sm foxui-visible-xs">
+                                <p>
+                                    <span>日期：[$article.release_time|date='Y-m-d H:m']</span>
+                                    <span>来源：[$article.article_source]</span>
+                                </p>
+                                <p>
+                                    <span>作者：[$article.author]</span>
+                                    <span>浏览量：[$article.click]</span>
+                                </p>
+                            </div>
+                        </div>
+                        <div class="article-content wow slideInUp">
+                            <div class="article-content-inner">
+                                <div class="rich-text">[$article.content]</div>
+                                <div class="share-list">
+                                    <ul class="share-list-inner">
+                                        <li class="share-item wx-share">
+                                            <i class="foxui-icon-weixin-f"></i>
+                                            <span>微信分享</span>
+                                        </li>
+                                        <li class="share-item qq-share">
+                                            <i class="foxui-icon-QQ-f"></i>
+                                            <span>转发QQ</span>
+                                        </li>
+                                        <li class="share-item xl-share">
+                                            <i class="foxui-icon-xinlang-f"></i>
+                                            <span>转发微博</span>
+                                        </li>
+                                    </ul>
+                                </div>
+                                <div class="foxcms-detail-pagination">
+                                    <div class="detail-pagination-pc foxui-hidden-sm foxui-hidden-xs">
+                                        {fox:prenext get='pre' disstyle='disabled'/}
+                                        <div class="pre [$field.disstyle]">
+                                            <p>上一篇</p>
+                                            <a href="[$field.link]" class="foxui-ellipsis-2">[$field.title ?? '没有了']</a>
+                                        </div>
+                                        {/fox:prenext} {fox:channel name='field' type='self'}
+                                        <div class="center">
+                                            <a href="[$field.link]">
+                                                <i class="foxui-icon-zhenlie-f"></i>
+                                            </a>
+                                        </div>
+                                        {/fox:channel} {fox:prenext get='next' disstyle='disabled'/}
+                                        <div class="next [$field.disstyle]">
+                                            <p>下一篇</p>
+                                            <a href="[$field.link]" class="foxui-ellipsis-2">[$field.title ?? '没有了']</a>
+                                        </div>
+                                        {/fox:prenext}
+                                    </div>
+                                    <div class="detail-pagination-h5 foxui-visible-sm foxui-visible-xs">
+                                        <ul>
+                                            {fox:prenext get='pre' disstyle='disabled'/}
+                                            <li class="pre [$field.disstyle]">
+                                                <a class="foxui-border" href="[$field.link]">上一篇</a>
+                                            </li>
+                                            {/fox:prenext} {fox:channel name='field' type='self'}
+                                            <li class="center">
+                                                <a href="[$field.link]">
+                                                    <i class="foxui-icon-zhenlie-f"></i>
+                                                </a>
+                                            </li>
+                                            {/fox:channel} {fox:prenext get='next' disstyle='disabled'/}
+                                            <li class="next [$field.disstyle]">
+                                                <a class="foxui-border" href="[$field.link]">下一篇</a>
+                                            </li>
+                                            {/fox:prenext}
+                                        </ul>
+                                    </div>
+                                </div>
+                            </div>
+                        </div>
+                    </div>
+                </div>
+                <div class="foxcms-container">
+                    <div class="recommend-list">
+                        <div class="title">
+                            <h1>相关推荐</h1>
+                        </div>
+                        <div class="swiper recommend-swiper">
+                            <div class="swiper-wrapper">
+                                {fox:arclist name='field' flag='c'}
+                                <div class="swiper-slide">
+                                    <a href="[$field.link]">
+                                        <div class="list-case-item wow slideInUp">
+                                            <div class="pic">
+                                                <img src="[$field.img_url]" alt="" />
+                                                {if $field.model == 'video'}
+                                                <i class="foxui-icon-bofang-f"></i>
+                                                {/if}
+                                            </div>
+                                            <div class="cover">
+                                                <div class="cover-head">
+                                                    <h2>[$field.title]</h2>
+                                                </div>
+                                                <div class="cover-foot">
+                                                    <h3>[$field.column]</h3>
+                                                    <p>[$field.tags]</p>
+                                                </div>
+                                            </div>
+                                        </div>
+                                    </a>
+                                </div>
+                                {/fox:arclist}
+                            </div>
+                            <div class="swiper-pagination"></div>
+                            <div class="swiper-button-prev"></div>
+                            <div class="swiper-button-next"></div>
+                        </div>
+                    </div>
+                </div>
+            </div>
+            <!-- 右侧浮动内容 -->
+            <div class="foxcms-fixed-container">{include file="fixed"/}</div>
+        </main>
+        <!-- 底部 -->
+        <footer class="wow slideInUp">{include file="footer"/}</footer>
+    </body>
+    <script src="_STATIC_/skin/js/foxui-1.21.min.js"></script>
+    <script src="_STATIC_/skin/js/common.js"></script>
+    <script>
+        $('.fold-btn').click(function () {
+            $('.video-box .right').animate({ width: 0 });
+            $('.unfold-btn').css({ display: 'block' });
+        });
+
+        $('.unfold-btn').click(function () {
+            $('.video-box .right').animate({ width: '30%' });
+            $('.unfold-btn').css({ display: 'none' });
+        });
+
+        $('.video-group-pc .video-group a').click(function () {
+            let $this = $(this),
+                isCurrent = $this.is('current');
+            if (!isCurrent) {
+                let $video = $('.video video'),
+                    index = $this.closest('li').index();
+
+                $('.video-group a.current').removeClass('current');
+                $('.video-group-h5 .video-group a').eq(index).addClass('current');
+                $this.addClass('current');
+                $video.attr('src', $this.attr('data-videourl'));
+                $video[0].play();
+            }
+        });
+
+        $('.video-group-h5 .video-group a').click(function () {
+            let $this = $(this),
+                isCurrent = $this.is('current');
+            if (!isCurrent) {
+                let $video = $('.video video'),
+                    index = $this.closest('.foxui-col-xs-8').index();
+
+                $('.video-group a.current').removeClass('current');
+                $('.video-group-pc .video-group a').eq(index).addClass('current');
+                $this.addClass('current');
+                $video.attr('src', $this.attr('data-videourl'));
+                $video[0].play();
+            }
+        });
+
+        $('.video video').on('ended', function () {
+            let len = $('.video-group-pc .video-group a').length,
+                index = $('.video-group-pc .video-group a.current').closest('li').index();
+            if (index < len) {
+                $('.video-group-pc .video-group a')
+                    .eq(index + 1)
+                    .click();
+            }
+        });
+
+        setTimeout(() => {
+            new Swiper('.recommend-swiper', {
+                slidesPerView: 1,
+                spaceBetween: 30,
+                breakpoints: {
+                    991: { slidesPerView: 3 },
+                },
+                pagination: {
+                    el: '.swiper-pagination',
+                    clickable: true,
+                },
+                navigation: {
+                    nextEl: '.swiper-button-next',
+                    prevEl: '.swiper-button-prev',
+                },
+            });
+        }, 300);
+
+        $(document).on('click', '.wx-share', function () {
+            shareWeixin();
+        });
+        $(document).on('click', '.qq-share', function () {
+            shareQQ('', '[$article.title]');
+        });
+        $(document).on('click', '.xl-share', function () {
+            shareSina('', '[$article.title]');
+        });
+    </script>
+</html>

@@ -1,0 +1,19 @@
+<svg width="240" height="240" viewBox="0 0 240 240" xmlns="http://www.w3.org/2000/svg">
+        <g>
+                <circle fill="#ffffff" opacity="0.2" cx="120" cy="120" r="120">
+                        <animate attributeName="r" begin="0s" dur="1.8s" values="1; 120" calcMode="spline"
+                                keyTimes="0; 1" keySplines="0.165, 0.84, 0.44, 1" repeatCount="indefinite" />
+                        <animate attributeName="opacity" begin="0s" dur="1.8s" values="0.4; 0" calcMode="spline"
+                                keyTimes="0; 1" keySplines="0.3, 0.61, 0.355, 1" repeatCount="indefinite" />
+                </circle>
+                <circle fill="#ffffff" opacity="0.2" cx="120" cy="120" r="120">
+                        <animate attributeName="r" begin="-0.5s" dur="1.8s" values="1; 120" calcMode="spline"
+                                keyTimes="0; 1" keySplines="0.165, 0.84, 0.44, 1" repeatCount="indefinite" />
+                        <animate attributeName="opacity" begin="-0.5s" dur="1.8s" values="0.4; 0" calcMode="spline"
+                                keyTimes="0; 1" keySplines="0.3, 0.61, 0.355, 1" repeatCount="indefinite" />
+                </circle>
+                <path fill="#2979FF" d="M120,96.6c-6.3,0-12.1,3.3-15.2,8.7c-3.1,5.4-3.1,12.1,0,17.5c3.1,5.4,8.9,8.8,15.2,8.7
+		c9.6,0,17.4-7.9,17.4-17.5C137.4,104.4,129.6,96.6,120,96.6 M120,79.2c9.3,0,18.3,3.6,24.8,9.9c13.7,13.3,13.7,34.5,0,47.8
+		L120,160.8l-24.8-23.9c-13.7-13.3-13.7-34.5,0-47.8C101.7,82.7,110.7,79.2,120,79.2L120,79.2z" />
+        </g>
+</svg>

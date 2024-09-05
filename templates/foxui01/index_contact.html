@@ -1,0 +1,140 @@
+<!--
+ * @Descripttion : FOXCMS是一款高效的PHP多端跨平台内容管理系统
+ * @Author       : FoxCMS Team
+ * @Date         : 2023-01-29 11:38:11
+ * @version      : V1.08
+ * @copyright    : ©2021-现在 贵州黔狐科技股份有限公司 版权所有
+ * @LastEditTime : 2024-07-06 10:02:29
+-->
+<!DOCTYPE html>
+<html lang="cn">
+    <head>
+        {include file="header"/}
+        <title>[$column.name]-{fox:basic name='title'/}</title>
+        <meta name="keywords" content="[$column.keywords]" />
+        <meta name="description" content="[$column.description]" />
+        <script src="//api.map.baidu.com/api?v=1.0&type=webgl&ak={fox:contact name='map_ak'/}"></script>
+        <script src="_STATIC_/skin/js/RichMarker.min.js"></script>
+    </head>
+    <body>
+        <!-- 顶部 -->
+        <header class="foxui-border-bottom foxui-bg-white">{include file="nav"/}</header>
+        <!-- 主体内容 -->
+        <main>
+            <!-- 通栏图 -->
+            <div class="foxcms-map-banner">
+                <div class="map-content" id="mapContainer"></div>
+                <div class="foxcms-container">
+                    <div class="text-content foxui-bg-white">
+                        <p class="foxui-text-uppercase">[$column.en_name]</p>
+                        <h1>[$column.name]</h1>
+                    </div>
+                </div>
+            </div>
+            <!-- 内容 -->
+            <div class="index-contact-main">
+                <div class="foxcms-container">
+                    <div class="info-panel">
+                        <div class="foxui-row">
+                            <div class="foxui-col-md-11 foxui-col-xl-14">
+                                <div class="address">
+                                    <div class="subtitle">{fox:contact name='company'/}</div>
+                                    <ul>
+                                        <li>
+                                            <div class="left">
+                                                <i class="foxui-icon-zuobiao-f"></i>
+                                            </div>
+                                            <div class="right">
+                                                <p>地址</p>
+                                                <h4>{fox:contact name='contact_address'/}</h4>
+                                            </div>
+                                        </li>
+                                        <li>
+                                            <div class="left">
+                                                <i class="foxui-icon-dianhua-f"></i>
+                                            </div>
+                                            <div class="right">
+                                                <p>电话</p>
+                                                <h4>{fox:contact name='company_tel'/}</h4>
+                                            </div>
+                                        </li>
+                                        <li>
+                                            <div class="left">
+                                                <i class="foxui-icon-shouji-f"></i>
+                                            </div>
+                                            <div class="right">
+                                                <p>手机</p>
+                                                <h4>{fox:contact name='phone'/}({fox:contact name='linkman'/})</h4>
+                                            </div>
+                                        </li>
+                                        <li>
+                                            <div class="left">
+                                                <i class="foxui-icon-xinxi-f"></i>
+                                            </div>
+                                            <div class="right">
+                                                <p>邮箱</p>
+                                                <h4>{fox:contact name='email'/}</h4>
+                                            </div>
+                                        </li>
+                                    </ul>
+                                </div>
+                            </div>
+                            <div class="foxui-col-md-13 foxui-col-xl-10">
+                                <div class="qr-code">
+                                    <div class="qr-code-item">
+                                        <img src="{fox:contact name='qr_code2'/}" alt="" />
+                                        <span>关注微信公众号</span>
+                                    </div>
+                                    <div class="qr-code-item">
+                                        <img src="{fox:contact name='qr_code1'/}" alt="" />
+                                        <span>微信联系我们</span>
+                                    </div>
+                                </div>
+                            </div>
+                        </div>
+                    </div>
+                    <div class="form-panel wow slideInUp">
+                        <form action="/plus/Diyform/receive" method="post">
+                            <input type="hidden" name="id" style="flex: 1" value="1" />
+                            <div class="foxui-row foxui-gutter-6">
+                                <div class="foxui-col-md-12 foxui-col-lg-12 foxui-col-xxl-4">
+                                    <input type="text" name="text0" placeholder="阁下贵姓" autocomplete="off" value="" />
+                                </div>
+                                <div class="foxui-col-md-12 foxui-col-lg-12 foxui-col-xxl-4">
+                                    <input type="text" name="text1" placeholder="手机号码" autocomplete="off" value="" />
+                                </div>
+                                <div class="foxui-col-md-24 foxui-col-lg-12 foxui-col-xxl-12">
+                                    <input type="text" name="text2" placeholder="告诉我们您的需求" autocomplete="off" value="" />
+                                </div>
+                                <div class="foxui-col-md-24 foxui-col-lg-12 foxui-col-xxl-4">
+                                    <button class="foxui-solid-primary foxui-block submit-btn">
+                                        <span>需求提交</span>
+                                        <i class="foxui-icon-qianwang-o"></i>
+                                    </button>
+                                </div>
+                            </div>
+                            <input type="submit" value="提交" style="display: none" />
+                        </form>
+                    </div>
+                </div>
+            </div>
+            <!-- 右侧浮动内容 -->
+            <div class="foxcms-fixed-container">{include file="fixed"/}</div>
+        </main>
+        <!-- 底部 -->
+        <footer class="wow slideInUp">{include file="footer"/}</footer>
+    </body>
+    <script src="_STATIC_/skin/js/foxui-1.21.min.js"></script>
+    <script src="_STATIC_/skin/js/common.js"></script>
+    <script src="_STATIC_/skin/js/bmap.js"></script>
+    <script src="_STATIC_/skin/js/form.js"></script>
+    <script>
+        // 加载地图
+        bmap.drawMap('mapContainer', {
+            lng: '{fox:contact name="geolocation"/}'.split(',')[0],
+            lat: '{fox:contact name="geolocation"/}'.split(',')[1],
+            zoom: 16,
+            styleId: '{fox:contact name="map_id"/}',
+        });
+    </script>
+</html>

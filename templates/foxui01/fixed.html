@@ -1,0 +1,87 @@
+<div class="foxcms-fixed-content foxui-hidden-xs">
+    <ul class="fixed-nav">
+        <li>
+            <div class="edit">
+                <a class="icon foxui-link message">
+                    <i class="foxui-icon-bianji-o"></i>
+                </a>
+            </div>
+        </li>
+        <li>
+            <a class="icon foxui-link qq" href="tencent://Message/?Uin={fox:contact name='qq'/}&site=121&websiteName=www.cnblogs.com&Menu=yes">
+                <i class="foxui-icon-QQ-o"></i>
+            </a>
+        </li>
+        <li>
+            <a class="icon foxui-link ewm">
+                <i class="foxui-icon-erweima-o"></i>
+            </a>
+        </li>
+        <li>
+            <a class="icon foxui-link phone">
+                <i class="foxui-icon-dianhua-o"></i>
+            </a>
+        </li>
+    </ul>
+    <div class="fixed-top">
+        <i class="foxui-icon-xiangxia-o"></i>
+        <span>TOP</span>
+    </div>
+</div>
+
+<script>
+    $(function () {
+        foxui.confirmtip({
+            el: '.fixed-nav .message',
+            title: '留言给我们',
+            content: _messageHtml(),
+            width: '340px',
+            placement: ['left', 'center'],
+            className: 'fixed-btn-wrapper message-wrapper',
+        });
+
+        foxui.confirmtip({
+            el: '.fixed-nav .ewm',
+            content: `<img src="{fox:contact name='qr_code1'/}"/>`,
+            trigger: 'hover',
+            placement: ['left', 'center'],
+            className: 'fixed-btn-wrapper',
+        });
+
+        foxui.confirmtip({
+            el: '.fixed-nav .phone',
+            content: `<p class="phone"><i class="foxui-icon-shouji-f"></i><span>{fox:contact name='phone'/}</span></p>`,
+            trigger: 'hover',
+            placement: ['left', 'center'],
+            className: 'fixed-btn-wrapper',
+        });
+    });
+
+    $(document).on('click', '.foxcms-fixed-container .fixed-top', function () {
+        $(window).scrollTop(0);
+    });
+
+    function _messageHtml() {
+        return [
+            '<div class="message">',
+            '<form action="/plus/Diyform/receive" method="post">',
+            '<input type="hidden" name="id" style="flex: 1" value="1" />',
+            '<div class="input-item">',
+            '<input type="text" name="text0" placeholder="阁下贵姓" autocomplete="off" value="" />',
+            '</div>',
+            '<div class="input-item">',
+            '<input type="text" name="text1" placeholder="手机号码" autocomplete="off" value="" />',
+            '</div>',
+            '<div class="input-item">',
+            '<input type="text" name="text2" placeholder="告诉我们您的需求" autocomplete="off" value="" />',
+            '</div>',
+            '<div class="input-item submit-item">',
+            '<button class="foxui-solid-primary foxui-block submit-btn">',
+            '<span>提交留言</span>',
+            '</button>',
+            '</div>',
+            '</form>',
+            '</div>',
+        ].join('');
+    }
+</script>

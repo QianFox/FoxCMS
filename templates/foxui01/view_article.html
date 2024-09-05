@@ -1,0 +1,199 @@
+<!--
+ * @Descripttion : FOXCMS是一款高效的PHP多端跨平台内容管理系统
+ * @Author       : FoxCMS Team
+ * @Date         : 2023-01-10 09:50:26
+ * @version      : V1.08
+ * @copyright    : ©2021-现在 贵州黔狐科技股份有限公司 版权所有
+ * @LastEditTime : 2024-02-23 14:24:33
+-->
+<!DOCTYPE html>
+<html lang="cn">
+    <head>
+        {include file="header"/}
+        <title>[$article.title]-{fox:basic name='title'/}</title>
+        <meta name="keywords" content="[$article.keywords]" />
+        <meta name="description" content="[$article.description]" />
+    </head>
+    <body>
+        <!-- 顶部 -->
+        <header class="foxui-border-bottom foxui-bg-white">{include file="nav"/}</header>
+        <!-- 主体内容 -->
+        <main>
+            <!-- 内容 -->
+            <div class="foxcms-main view-article-main">
+                <div class="foxui-bg-white">
+                    <div class="foxcms-container">
+                        <ul class="foxui-breadcrumb icon-separator foxui-hidden-sm foxui-hidden-xs wow slideInUp">
+                            {fox:positionshut name="field"}
+                            <li class="foxui-breadcrumb-item">
+                                <a href="[$field.link]">[$field.name]</a>
+                                <i class="foxui-icon-xiangyou-o"></i>
+                            </li>
+                            {/fox:positionshut}
+                        </ul>
+                        <div class="article-head wow slideInUp">
+                            <h1>[$article.title]</h1>
+                            <p class="foxui-hidden-sm foxui-hidden-xs foxui-margin-bottom-0">
+                                <span>日期：[$article.release_time|date='Y-m-d H:m']</span>
+                                <span>来源：[$article.article_source]</span>
+                                <span>作者：[$article.author]</span>
+                                <span>浏览量：{fox:arcclick type='view'/}</span>
+                            </p>
+                            <div class="head-info-h5 foxui-display-none foxui-visible-sm foxui-visible-xs">
+                                <p>
+                                    <span>日期：[$field.release_time|date='Y-m-d H:m']</span>
+                                    <span>来源：[$article.article_source]</span>
+                                </p>
+                                <p>
+                                    <span>作者：[$article.author]</span>
+                                    <span>浏览量：{fox:arcclick type='view'/}</span>
+                                </p>
+                            </div>
+                        </div>
+                    </div>
+                </div>
+                <div class="foxui-bg-white">
+                    <div class="foxcms-container">
+                        <div class="article-content wow slideInUp">
+                            <div class="article-content-inner">
+                                <div class="rich-text">[$article.content]</div>
+                                <div class="share-list">
+                                    <ul class="share-list-inner">
+                                        <li class="share-item wx-share">
+                                            <i class="foxui-icon-weixin-f"></i>
+                                            <span>微信分享</span>
+                                        </li>
+                                        <li class="share-item qq-share">
+                                            <i class="foxui-icon-QQ-f"></i>
+                                            <span>转发QQ</span>
+                                        </li>
+                                        <li class="share-item xl-share">
+                                            <i class="foxui-icon-xinlang-f"></i>
+                                            <span>转发微博</span>
+                                        </li>
+                                    </ul>
+                                </div>
+                                <div class="foxcms-detail-pagination">
+                                    <div class="detail-pagination-pc foxui-hidden-sm foxui-hidden-xs">
+                                        {fox:prenext get='pre' disstyle='disabled'/}
+                                        <div class="pre [$field.disstyle]">
+                                            <p>上一篇</p>
+                                            <a href="[$field.link]" class="foxui-ellipsis-2">[$field.title ?? '没有了']</a>
+                                        </div>
+                                        {/fox:prenext}
+                                        <div class="center">
+                                            {fox:channel name='field' type='self'}
+                                            <a href="[$field.link]">
+                                                <i class="foxui-icon-zhenlie-f"></i>
+                                            </a>
+                                            {/fox:channel}
+                                        </div>
+                                        {fox:prenext get='next' disstyle='disabled'/}
+                                        <div class="next [$field.disstyle]">
+                                            <p>下一篇</p>
+                                            <a href="[$field.link]" class="foxui-ellipsis-2">[$field.title ?? '没有了']</a>
+                                        </div>
+                                        {/fox:prenext}
+                                    </div>
+                                    <div class="detail-pagination-h5 foxui-visible-sm foxui-visible-xs">
+                                        <ul>
+                                            {fox:prenext get='pre' disstyle='disabled'/}
+                                            <li class="pre [$field.disstyle]">
+                                                <a href="[$field.link]" class="foxui-border">上一篇</a>
+                                            </li>
+                                            {/fox:prenext}
+                                            <li class="center">
+                                            {fox:channel name='field' type='self'}
+                                            <a href="[$field.link]">
+                                                <i class="foxui-icon-zhenlie-f"></i>
+                                            </a>
+                                            {/fox:channel}
+                                            </li>
+                                            {fox:prenext get='next' disstyle='disabled'/}
+                                            <li class="next [$field.disstyle]">
+                                                <a href="[$field.link]" class="foxui-border">下一篇</a>
+                                            </li>
+                                            {/fox:prenext}
+                                        </ul>
+                                    </div>
+                                </div>
+                            </div>
+                        </div>
+                    </div>
+                </div>
+                <div class="foxcms-container">
+                    <div class="recommend-list wow slideInUp">
+                        <div class="title">
+                            <h1>相关推荐</h1>
+                        </div>
+                        <div class="swiper recommend-swiper">
+                            <div class="swiper-wrapper">
+                                {fox:article name='field' flag='c'}
+                                <div class="swiper-slide">
+                                    <a href="[$field.link]" class="list-article-item wow slideInUp">
+                                        <div class="pic">
+                                            <img src="[$field.img_url]" alt="" />
+                                        </div>
+                                        <div class="text">
+                                            <div class="info">
+                                                <div class="left">
+                                                    <span>[$field.column]</span>
+                                                    <span>[$field.release_time|date='Y-m-d']</span>
+                                                </div>
+                                                <div class="right">
+                                                    <i class="foxui-icon-xianshi-o"></i>
+                                                    <span>[$field.click]</span>
+                                                </div>
+                                            </div>
+                                            <h1 class="foxui-ellipsis-2">[$field.title]</h1>
+                                            <p class="foxui-ellipsis-3">[$field.content | cn_substr=120]</p>
+                                        </div>
+                                    </a>
+                                </div>
+                                {/fox:article}
+                            </div>
+                            <div class="swiper-pagination"></div>
+                            <div class="swiper-button-prev"></div>
+                            <div class="swiper-button-next"></div>
+                        </div>
+                    </div>
+                </div>
+            </div>
+            <!-- 右侧浮动内容 -->
+            <div class="foxcms-fixed-container">{include file="fixed"/}</div>
+        </main>
+        <!-- 底部 -->
+        <footer class="wow slideInUp">{include file="footer"/}</footer>
+    </body>
+    <script src="_STATIC_/skin/js/foxui-1.21.min.js"></script>
+    <script src="_STATIC_/skin/js/common.js"></script>
+    <script>
+        setTimeout(() => {
+            new Swiper('.recommend-swiper', {
+                slidesPerView: 1,
+                spaceBetween: 30,
+                breakpoints: {
+                    991: { slidesPerView: 3 },
+                },
+                pagination: {
+                    el: '.swiper-pagination',
+                    clickable: true,
+                },
+                navigation: {
+                    nextEl: '.swiper-button-next',
+                    prevEl: '.swiper-button-prev',
+                },
+            });
+        }, 300);
+
+        $(document).on('click', '.wx-share', function () {
+            shareWeixin();
+        });
+        $(document).on('click', '.qq-share', function () {
+            shareQQ('', '[$article.title]');
+        });
+        $(document).on('click', '.xl-share', function () {
+            shareSina('', '[$article.title]');
+        });
+    </script>
+</html>

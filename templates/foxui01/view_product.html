@@ -1,0 +1,161 @@
+<!--
+ * @Descripttion : FOXCMS是一款高效的PHP多端跨平台内容管理系统
+ * @Author       : FoxCMS Team
+ * @Date         : 2023-01-17 14:04:19
+ * @version      : V1.08
+ * @copyright    : ©2021-现在 贵州黔狐科技股份有限公司 版权所有
+ * @LastEditTime : 2024-02-23 14:26:58
+-->
+<!DOCTYPE html>
+<html lang="cn">
+    <head>
+        {include file="header"/}
+        <title>[$product.title]-{fox:basic name='title'/}</title>
+        <meta name="keywords" content="[$product.keywords]" />
+        <meta name="description" content="[$product.description]" />
+    </head>
+    <body>
+        <!-- 顶部 -->
+        <header class="foxui-border-bottom foxui-bg-white">{include file="nav"/}</header>
+        <!-- 主体内容 -->
+        <main>
+            <!-- 内容 -->
+            <div class="foxcms-main view-product-main">
+                <div class="buy-nav foxui-border-bottom">
+                    <div class="foxcms-container">
+                        <div class="left foxui-hidden-sm foxui-hidden-xs">[$product.title]</div>
+                        <div class="right">
+                            <ul>
+                                <li class="active">
+                                    <span>概览</span>
+                                </li>
+                                <li>
+                                    <span>参数规格</span>
+                                </li>
+                            </ul>
+                            <div class="btn">
+                                <a href="[$product.buy_link]" target="_blank">购买</a>
+                            </div>
+                        </div>
+                    </div>
+                </div>
+                <div class="product-panel-list">
+                    <div class="product-panel-item">
+                        <!-- 图片集banner -->
+                        <div class="bannel-swiper swiper">
+                            <div class="swiper-wrapper">
+                                {fox:imageslist name="field"}
+                                <div class="swiper-slide">
+                                    <div class="pic">
+                                        <img src="[$field.imgsrc]" alt="[$field.title]" />
+                                    </div>
+                                </div>
+                                {/fox:imageslist}
+                            </div>
+                            <div class="banner-swiper-pagination"></div>
+                        </div>
+                        <!-- 全屏图片集  -->
+                        <div class="img-list">
+                            <img src="" alt="" />
+                        </div>
+                        <!-- 富文本内容 -->
+                        <div class="rich-text foxui-bg-white foxui-padding-bottom-40 foxui-padding-top-40">
+                            <div class="foxcms-container">[$product.content]</div>
+                        </div>
+                        <!-- 推荐内容 -->
+                        <div class="foxcms-container">
+                            <div class="recommend-list">
+                                <div class="title">
+                                    <h1>产品推荐</h1>
+                                </div>
+                                <div class="swiper recommend-swiper">
+                                    <div class="swiper-wrapper">
+                                        {fox:product name='field' addfields="price"}
+                                        <div class="swiper-slide">
+                                            <a href="[$field.link]" class="list-product-item wow slideInUp">
+                                                <div class="pic">
+                                                    <img src="[$field.img_url]" alt="" />
+                                                </div>
+                                                <div class="text">
+                                                    <h1 class="foxui-ellipsis">[$field.title]</h1>
+                                                    <p class="foxui-ellipsis-2">[$field.tags]</p>
+                                                    <div class="price">
+                                                        <span>￥</span>
+                                                        <strong>[$field.price]</strong>
+                                                    </div>
+                                                </div>
+                                            </a>
+                                        </div>
+                                        {/fox:product}
+                                    </div>
+                                    <div class="swiper-pagination"></div>
+                                    <div class="swiper-button-prev"></div>
+                                    <div class="swiper-button-next"></div>
+                                </div>
+                            </div>
+                        </div>
+                    </div>
+                    <div class="product-panel-item spec-content" style="display: none">
+                        <!-- 规格 -->
+                        <div class="foxcms-container">
+                            <ul>
+                                {fox:productparam name="field"}
+                                <li>
+                                    <div class="left">[$field.name]</div>
+                                    <div class="right">
+                                        {foreach :explode(",", $field.dfvalue) as $key=>$vo }
+                                        <p>[$vo]</p>
+                                        {/foreach}
+                                    </div>
+                                </li>
+                                {/fox:productparam}
+                            </ul>
+                        </div>
+                    </div>
+                </div>
+            </div>
+            <!-- 右侧浮动内容 -->
+            <div class="foxcms-fixed-container">{include file="fixed"/}</div>
+        </main>
+        <!-- 底部 -->
+        <footer class="wow slideInUp">{include file="footer"/}</footer>
+    </body>
+    <script src="_STATIC_/skin/js/foxui-1.21.min.js"></script>
+    <script src="_STATIC_/skin/js/common.js"></script>
+    <script>
+        new Swiper('.bannel-swiper', {
+            pagination: {
+                el: '.banner-swiper-pagination',
+                dynamicBullets: true,
+            },
+        });
+
+        $(document).on('click', '.buy-nav .right li', function () {
+            let $this = $(this),
+                index = $this.index(),
+                $items = $('.product-panel-item');
+            $this.siblings('li').filter('.active').removeClass('active');
+            $this.addClass('active');
+            $items.css('display', 'none');
+            $items.eq(index).css('display', 'block');
+        });
+
+        setTimeout(() => {
+            new Swiper('.recommend-swiper', {
+                slidesPerView: 1,
+                spaceBetween: 30,
+                breakpoints: {
+                    991: { slidesPerView: 3 },
+                },
+                pagination: {
+                    el: '.swiper-pagination',
+                    clickable: true,
+                },
+                navigation: {
+                    nextEl: '.swiper-button-next',
+                    prevEl: '.swiper-button-prev',
+                },
+            });
+        }, 300);
+    </script>
+</html>

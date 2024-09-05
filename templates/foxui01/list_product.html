@@ -1,0 +1,91 @@
+<!--
+ * @Descripttion : FOXCMS是一款高效的PHP多端跨平台内容管理系统
+ * @Author       : FoxCMS Team
+ * @Date         : 2023-01-17 14:03:55
+ * @version      : V1.08
+ * @copyright    : ©2021-现在 贵州黔狐科技股份有限公司 版权所有
+ * @LastEditTime : 2024-02-23 14:17:20
+-->
+<!DOCTYPE html>
+<html lang="cn">
+    <head>
+        {include file="header"/}
+        <title>[$column.name]-{fox:basic name='title'/}</title>
+        <meta name="keywords" content="[$column.keywords]" />
+        <meta name="description" content="[$column.description]" />
+    </head>
+    <body>
+        <!-- 顶部 -->
+        <header class="foxui-border-bottom foxui-bg-white">{include file="nav"/}</header>
+        <!-- 主体内容 -->
+        <main>
+            <!-- 通栏图 -->
+            <div class="foxcms-common-banner foxui-bg-lighter">{include file="banner"/}</div>
+            <!-- 内容 -->
+            <div class="foxcms-main list-product-main">
+                <div class="recommend-list">
+                    <div class="foxcms-container">
+                        <div class="foxui-row foxui-gutter-0 foxui-align-items-center">
+                            {fox:product name="field" row="6" flag="c" addfields="price"}
+                            <div class="recommend-item foxui-col-md-13 {if $index%2 != 0} foxui-push-md-11 {/if} wow slideInUp">
+                                <a href="[$field.link]" class="pic">
+                                    <img src="[$field.big_img]" alt="" />
+                                </a>
+                            </div>
+                            <div class="recommend-item foxui-col-md-11 {if $index%2 != 0} foxui-pull-md-13 {/if} wow slideInUp">
+                                <div class="text">
+                                    <h1 class="foxui-ellipsis"><a href="[$field.link]">[$field.title]</a></h1>
+                                    <p class="foxui-ellipsis-2">[$field.description]</p>
+                                    <div class="link">
+                                        <div class="btn">
+                                            <span>￥</span>
+                                            <strong>[$field.price]</strong>
+                                        </div>
+                                        <a href="[$field.link]">
+                                            <span>了解更多</span>
+                                            <i class="foxui-icon-xiangyou-o"></i>
+                                        </a>
+                                    </div>
+                                </div>
+                            </div>
+                            {/fox:product}
+                        </div>
+                    </div>
+                </div>
+                <div class="list-product">
+                    <div class="foxcms-container">
+                        <div class="title">产品中心</div>
+                        <div class="foxui-row foxui-gutter-7">
+                            {fox:product name='field' addfields="price"}
+                            <div class="foxui-col-md-8 foxui-col-xl-6">
+                                <a href="[$field.link]" class="list-product-item wow slideInUp" data-wow-delay="0.1s">
+                                    <div class="pic">
+                                        <img src="[$field.img_url]" alt="" />
+                                    </div>
+                                    <div class="text">
+                                        <h1 class="foxui-ellipsis">[$field.title]</h1>
+                                        <p class="foxui-ellipsis-2">[$field.description]</p>
+                                        <div class="price">
+                                            <span>￥</span>
+                                            <strong>[$field.price]</strong>
+                                        </div>
+                                    </div>
+                                </a>
+                            </div>
+                            {/fox:product}
+                        </div>
+                        <div class="no-more">
+                            <p>没有更多了</p>
+                        </div>
+                    </div>
+                </div>
+            </div>
+            <!-- 右侧浮动内容 -->
+            <div class="foxcms-fixed-container">{include file="fixed"/}</div>
+        </main>
+        <!-- 底部 -->
+        <footer class="wow slideInUp">{include file="footer"/}</footer>
+    </body>
+    <script src="_STATIC_/skin/js/foxui-1.21.min.js"></script>
+    <script src="_STATIC_/skin/js/common.js"></script>
+</html>

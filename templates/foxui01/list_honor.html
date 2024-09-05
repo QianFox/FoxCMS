@@ -1,0 +1,78 @@
+<!--
+ * @Descripttion : FOXCMS是一款高效的PHP多端跨平台内容管理系统
+ * @Author       : FoxCMS Team
+ * @Date         : 2023-04-06 13:45:28
+ * @version      : V1.08
+ * @copyright    : ©2021-现在 贵州黔狐科技股份有限公司 版权所有
+ * @LastEditTime : 2024-02-23 14:05:08
+-->
+<!DOCTYPE html>
+<html lang="cn">
+    <head>
+        {include file="header"/}
+        <title>[$column.name]-{fox:basic name='title'/}</title>
+        <meta name="keywords" content="[$column.keywords]" />
+        <meta name="description" content="[$column.description]" />
+    </head>
+    <body>
+        <!-- 顶部 -->
+        <header class="foxui-border-bottom foxui-bg-white">{include file="nav"/}</header>
+        <!-- 主体内容 -->
+        <main>
+            <!-- 通栏图 -->
+            <div class="foxcms-common-banner foxui-bg-lighter">{include file="banner"/}</div>
+            <!-- 内容 -->
+            <div class="foxcms-main list-honor-main">
+                <div class="foxcms-container">
+                    <div class="foxui-row foxui-gutter-6">
+                        {fox:article name='field' }
+                        <div class="foxui-col-md-8 foxui-col-xl-6">
+                            <div class="item wow slideInUp">
+                                <div class="item-inner">
+                                    <div class="pic">
+                                        <img src="[$field.img_url]" alt="" />
+                                    </div>
+                                    <div class="text">
+                                        <h3 class="foxui-ellipsis">[$field.title]</h3>
+                                    </div>
+                                </div>
+                            </div>
+                        </div>
+                        {/fox:article}
+                    </div>
+                </div>
+            </div>
+            <!-- 右侧浮动内容 -->
+            <div class="foxcms-fixed-container">{include file="fixed"/}</div>
+        </main>
+        <!-- 底部 -->
+        <footer class="wow slideInUp">{include file="footer"/}</footer>
+    </body>
+    <script src="_STATIC_/skin/js/foxui-1.21.min.js"></script>
+    <script src="_STATIC_/skin/js/common.js"></script>
+
+    <script>
+        let honorImgList = [],
+            honorIndex = -1;
+
+        $(document).on('click', '.list-honor-main .item', function () {
+            honorIndex = $(this).parent().index();
+            $('.list-honor-main .item img').each(function () {
+                honorImgList.push({
+                    src: $(this).attr('src'),
+                    text: $(this).closest('.item-inner').find('h3').text(),
+                });
+            });
+            foxui.dialog({
+                title: honorImgList[honorIndex].text,
+                content: _honorViewHtml(honorIndex),
+                marginTop: '12vh',
+                className: 'honor-dialog',
+            });
+        });
+
+        function _honorViewHtml(index) {
+            return ['<div class="honor-dialog-content">', '<div class="pic">', `<img src="${honorImgList[index].src}"/>`, '</div>', '</div>'].join('');
+        }
+    </script>
+</html>

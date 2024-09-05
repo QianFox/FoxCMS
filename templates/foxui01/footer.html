@@ -1,0 +1,120 @@
+<div class="foxcms-container foxcms-footer-pc foxui-hidden-sm foxui-hidden-xs">
+    <div class="footer-nav">
+        <ul class="left">
+            {fox:nav name='field' limit='0,5'}
+            <li>
+                <dl>
+                    <dt>[$field.name]</dt>
+                    {fox:nav name="v" pname="field" notypeid="self" type="son" calltype="parent"}
+                    <dd>
+                        <a href="[$v.link]">[$v.name]</a>
+                    </dd>
+                    {/fox:nav}
+                </dl>
+            </li>
+            {/fox:nav}
+        </ul>
+        <div class="right">
+            <h1>{fox:contact name='company_tel'/}</h1>
+            <p>{fox:contact name='email'/}</p>
+            <p>{fox:contact name='contact_address'/}</p>
+            <div class="ewm">
+                <img src="{fox:contact name='qr_code2'/}" alt="" />
+                <span>微信关注我们</span>
+            </div>
+        </div>
+    </div>
+    <div class="footer-link">
+        <dl class="left">
+            <dt>友情链接：</dt>
+            {fox:link name="field"}
+            <dd>
+                <a href="[$field.link]" target="_blank">[$field.title]</a>
+            </dd>
+            {/fox:link}
+        </dl>
+        <div class="right">
+            <a href="{fox:contact name='xl_link'/}">
+                <i class="foxui-icon-xinlang-f"></i>
+            </a>
+            <a href="{fox:contact name='dy_link'/}">
+                <i class="foxui-icon-douyin-f"></i>
+            </a>
+            <a href="{fox:contact name='tmall_link'/}">
+                <i class="foxui-icon-tianmao-f"></i>
+            </a>
+        </div>
+    </div>
+    <div class="footer-bottom">
+        <div class="left">
+            <p class="foxui-color-secondary foxui-margin-bottom-0">{fox:basic name='copyright'/}{fox:sitemap title="网站地图" type="html"}</p>
+            <p class="foxui-color-secondary foxui-margin-top-0 foxui-display-flex">{fox:basic name='aq'/} {fox:basic name='police_aq'/}</p>
+        </div>
+        <div class="right">
+            <p class="foxui-color-secondary foxui-margin-bottom-0">
+                技术支持：
+				<a href="//www.qianfox.com/" target="_blank">黔狐科技</a>
+            </p>
+        </div>
+    </div>
+</div>
+<div class="foxcms-footer-h5 foxui-visible-sm foxui-visible-xs">
+    <div class="footer-nav">
+        <ul class="foxui-collapse" data-fold="accordion">
+            {fox:nav name='field' limit='0,5'}
+            <li class="foxui-collapse-item">
+                <div class="foxui-collapse-head foxui-collapse-handle">
+                    <span style="margin-right: 20px">[$field.name]</span>
+                    <i class="foxui-icon-xiangyou-o foxui-collapse-icon"></i>
+                </div>
+                <div class="foxui-collapse-content">
+                    <ul>
+                        {fox:nav name="v" pname="field" notypeid="self" type="son" calltype="parent"}
+                        <li>
+                            <a href="[$v.link]">[$v.name]</a>
+                        </li>
+                        {/fox:nav}
+                    </ul>
+                </div>
+            </li>
+            {/fox:nav}
+        </ul>
+    </div>
+    <div class="footer-contact">
+        <h1>{fox:contact name='company_tel'/}</h1>
+        <p>{fox:contact name='email'/}</p>
+        <p>{fox:contact name='contact_address'/}</p>
+        <div class="ewm">
+            <img src="{fox:contact name='qr_code2'/}" alt="" />
+            <span>微信关注我们</span>
+        </div>
+        <div class="list">
+            <a href="{fox:contact name='xl_link'/}">
+                <i class="foxui-icon-xinlang-f"></i>
+            </a>
+            <a href="{fox:contact name='dy_link'/}">
+                <i class="foxui-icon-douyin-f"></i>
+            </a>
+            <a href="{fox:contact name='tmall_link'/}">
+                <i class="foxui-icon-tianmao-f"></i>
+            </a>
+        </div>
+        <dl>
+            <dt>友情链接：</dt>
+            {fox:link name="field"}
+            <dd>
+                <a href="[$field.link]" target="_blank">[$field.title]</a>
+            </dd>
+            {/fox:link}
+        </dl>
+    </div>
+    <div class="footer-bottom">
+        <p class="foxui-color-secondary foxui-margin-0">{fox:basic name='copyright'/}</p>
+        <p class="foxui-color-secondary foxui-margin-0">{fox:basic name='aq'/}</p>
+        <p class="foxui-color-secondary foxui-margin-0">{fox:basic name='police_aq'/}</p>
+        <p class="foxui-color-secondary foxui-margin-top-0">
+            技术支持：
+			<a href="//www.qianfox.com/" target="_blank">黔狐科技</a>
+        </p>
+    </div>
+</div>

@@ -1,0 +1,35 @@
+{fox:channel name='field' type='ceil' notypeid='self'}
+<div class="foxcms-banner-pc foxui-hidden-sm foxui-hidden-xs" style="background-image: url([$field.pic_url])">
+    <div class="banner-inner foxcms-container">
+        <div class="banner-content">
+            <div class="banner-column">
+                <p class="foxui-text-uppercase">[$field.en_name]</p>
+                <h1>[$field.name]</h1>
+            </div>
+            <ul class="banner-nav">
+                {fox:channel name='v' type='son' at="no" calltype='parent' notypeid='self' currentstyle="is-active"} {if $v.status == 1}
+                <li class="[$v.currentstyle]">
+                    <a href="[$v.link]">[$v.name]</a>
+                </li>
+                {/if} {/fox:channel}
+            </ul>
+        </div>
+    </div>
+</div>
+{/fox:channel} {fox:channel name='field' type='ceil' notypeid='self'}
+<div class="foxcms-banner-h5 foxui-visible-sm foxui-visible-xs" style="background-image: url([$field.pic_url])">
+    <div class="banner-inner">
+        <div class="banner-column">
+            <p class="foxui-text-uppercase">[$field.en_name]</p>
+            <h1>[$field.name]</h1>
+        </div>
+        <div class="foxui-row">
+            {fox:channel name='v' type='son' at="no" calltype='parent' notypeid='self' currentstyle="is-active"} {if $v.status == 1}
+            <div class="foxui-col-xs-12 foxui-col-sm-6">
+                <a class="foxui-ellipsis [$v.currentstyle]" href="[$v.link]">[$v.name]</a>
+            </div>
+            {/if} {/fox:channel}
+        </div>
+    </div>
+</div>
+{/fox:channel}
