@@ -73,7 +73,7 @@ FoxCMS是一套可免费商用且开源的网站管理系统，采用PHP+MySQL�
 ---
 ###  💽后台UI界面
 <div align="center" >
-    <img src="//oss.foxcms.cn/images/admin_ui.jpg">
+    <img src="https://oss.foxcms.cn/images/admin_ui.jpg">
 </div>
 
 ---
@@ -142,7 +142,7 @@ foxui01
 
 #### 默认前端模板
 <div align="center" >
-    <img src="//oss.foxcms.cn/images/web_ui.jpg">
+    <img src="https://oss.foxcms.cn/images/web_ui.jpg">
 </div>
 
 ### 👨🏻‍💻参与项目
