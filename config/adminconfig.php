@@ -1,6 +1,6 @@
 <?php
 return [
-	'admin_path' => 'admin2046',
+	'admin_path' => 'admin',
 	'static_path' => '/static/',
 	'foxcms_domain' => 'http://www.foxcms.cn',
 	'member_domain' => 'i.qianfox.com',

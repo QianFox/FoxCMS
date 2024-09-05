@@ -1,0 +1,1130 @@
+{extend name="foxcms_content" /}
+
+{block name="css"}
+
+{/block}
+
+{block name="body"}
+<input name="bcid" value="{$bcid}" type="hidden" />
+<input name="columnId" value="{$columnId}" type="hidden" />
+<div class="foxcms-content-inner">
+	<!-- page content -->
+	<div class="company-news-content">
+		<div class="content-top-operation">
+			<div class="left">
+				<a href="{:url('add')}?type=1&bcid={$bcid}">
+					<button class="foxui-size-small foxui-solid-primary">
+						<i class="foxui-icon-jiahao-o"></i>
+						<span>发布文章</span>
+					</button>
+				</a>
+                {if sizeof($otherLangs) > 0}
+				<button class="foxui-size-small foxui-solid-primary syn-data">
+					<i class="foxui-icon-tongji-o"></i>
+					<span>同步文章</span>
+				</button>
+                {/if}
+			</div>
+			<div class="right display-flex">
+				<div class="foxui-input-group item-input margin-right-20">
+					<div class="foxui-input-prepend">
+						<div class="foxui-prepend-inner">
+							<div class="foxui-select">
+								<div class="foxui-select-handle foxui-select-icon">
+									<input class="foxui-select-input" readonly="readonly" data-id="3" value="标题" name="prop"/>
+								</div>
+								<div class="foxui-select-menu">
+									<ul class="foxui-select-slide">
+										<li class="foxui-select-item" data-id="1">属性</li>
+										<li class="foxui-select-item" data-id="2">栏目</li>
+										<li class="foxui-select-item" data-id="3">标题</li>
+									</ul>
+								</div>
+							</div>
+						</div>
+						<input class="foxui-size-small" placeholder="请输入关键字" required value="" name="keyword"/>
+					</div>
+				</div>
+				<button class="foxui-solid-primary foxui-size-small search-btn">搜索</button>
+			</div>
+		</div>
+		<div class="section section-panel margin-top-10">
+			<div class="foxui-table foxui-table-border-bottom foxui-table-hover foxui-checkbox-group">
+				<ul class="foxui-table-thead foxui-checkbox-head">
+					<li class="foxui-table-tr">
+						<div class="foxui-table-th">
+							<div class="foxui-checkbox foxui-checkbox-all">
+								<span class="foxui-checkbox-input">
+									<i class="foxui-checkbox-icon"></i>
+									<input type="checkbox" value="" />
+								</span>
+							</div>
+						</div>
+						<div class="foxui-table-th">ID</div>
+						<div class="foxui-table-th"></div>
+						<div class="foxui-table-th">标题</div>
+						<div class="foxui-table-th">所属栏目</div>
+						<div class="foxui-table-th">浏览量</div>
+						<div class="foxui-table-th">发布时间</div>
+						<div class="foxui-table-th">文章属性</div>
+						<div class="foxui-table-th">操作</div>
+					</li>
+				</ul>
+				<ul class="foxui-table-tbody foxui-checkbox-list loading-container" id="loadingContainer">
+					<!--表格内容-->
+				</ul>
+				<div class="table-footer foxui-checkbox-head">
+					<div class="left display-flex foxui-align-items-center">
+						<div class="foxui-checkbox foxui-checkbox-all margin-right-24">
+							<span class="foxui-checkbox-input">
+								<i class="foxui-checkbox-icon"></i>
+								<input type="checkbox" value="" />
+							</span>
+						</div>
+						<div class="display-flex">
+							<div class="foxui-dropdown">
+								<button class="foxui-dropdown-handle foxui-size-small foxui-plain-info" data-trigger="hover">
+									<i class="foxui-icon-menu"></i>
+									<span>批量操作</span>
+								</button>
+								<div class="foxui-dropdown-menu">
+									<ul class="foxui-dropdown-slide">
+										<li class="foxui-dropdown-item" data-id="1" id="addAttr">新增属性</li>
+										<li class="foxui-dropdown-item" data-id="2" id="deleteAttr">删除属性</li>
+										<li class="foxui-divided"></li>
+										<li class="foxui-dropdown-item" data-id="3" id="removeArticle">移动文章</li>
+										<li class="foxui-dropdown-item" data-id="4" id="copyArticle">复制文章</li>
+										<li class="foxui-dropdown-item" data-id="5" id="deleteArticle">删除文章</li>
+									</ul>
+								</div>
+							</div>
+						</div>
+					</div>
+				</div>
+			</div>
+			<div id="pagination"></div>
+		</div>
+	</div>
+</div>
+
+{include file="footed-copy"/}
+{/block}
+
+{block name="js"}
+
+<script>
+	// 批量操作-新增属性
+	$('#addAttr').click(function () {
+		let idList = articleIdList();
+		if (idList && idList.length > 0) {
+			foxui.dialog({
+				title: '批量新增属性',
+				content: addAttrHtml(idList.join()),
+				confirmText: '确定',
+				cancelText: '取消',
+				width: '550px',
+				border: true,
+				longButton: true,
+				buttonSize: 'small',
+				buttonAlign: 'center',
+				confirm: function (callback) {
+					let $checkbox = $('#addAttrDialog input[type="checkbox"]:checked'),
+							ids = $('#addAttrDialog input[name="article_ids"]').val();
+					let articleField = "";
+					$checkbox.each(function (){
+						let af = $(this).val();
+						articleField += af + ",";
+					});
+					if(articleField.length> 0){
+						articleField = articleField.substr(0, articleField.length -1);
+					}
+					if (!ids || articleField.length < 1) {
+						foxui.message({
+							text: '必须选择文章属性及填写文章ID！',
+							type: 'danger',
+						});
+						return false;
+					}
+					//批量添加属性
+					ajaxR("{:url('batchAddField')}","get",{'ids':ids,'articleField':articleField},{},function(res) {
+								if (res.code == 1) {
+									foxui.message({
+										text: res.msg,
+										type: 'success',
+									});
+									//初始化文章数据
+									init();
+								}else{
+									foxui.message({
+										text: res.msg,
+										type: 'warning',
+									});
+								}
+							},
+							function(res) {
+						foxui.message({
+							text: res.responseJSON.msg,
+							type: 'warning',
+						});
+					})
+					callback();
+				},
+			});
+		}
+	});
+
+	// 批量操作-删除属性
+	$('#deleteAttr').click(function () {
+		let idList = articleIdList();
+		if (idList && idList.length > 0) {
+			let ids = idList.join();
+			foxui.dialog({
+				title: '批量删除文章属性',
+				content: `您确定要删除 id 为 ${ids} 的所有文章的所有属性吗？`,
+				confirmText: '删除',
+				cancelText: '取消',
+				buttonSize: 'small',
+				buttonType: 'danger',
+				confirm: function (callback) {
+					// 上传数据
+					ajaxR("{:url('batchDelField')}","get",{ids},{},function(res) {
+								if (res.code == 1) {
+									foxui.message({
+										text: res.msg,
+										type: 'success',
+									});
+									//初始化文章数据
+									init({});
+								}else{
+									foxui.message({
+										text: res.msg,
+										type: 'warning',
+									});
+								}
+							},
+							function(res) {
+								foxui.message({
+									text: res.responseJSON.msg,
+									type: 'warning',
+								});
+							})
+					callback();
+				},
+			});
+		}
+	});
+
+	// 批量操作-移动文章
+	$('#removeArticle').click(function () {
+		let idList = articleIdList();
+		if (idList && idList.length > 0) {
+			let selectList = [
+				// { id: 1, title: '公司新闻' },
+			];
+			//查询栏目
+			ajaxR("{:url('column/getColumns')}","get",{"columnModel":'custom'},{"async":false,"isHandoverLang":0},function(res) {
+						if (res.code == 1) {
+							selectList = res.data;
+						}
+					},
+					function(res) {
+			})
+			foxui.dialog({
+				title: '批量移动文章',
+				content: removeArticleHtml(idList.join(), selectList),
+				confirmText: '确定',
+				cancelText: '取消',
+				width: '550px',
+				border: true,
+				longButton: true,
+				buttonSize: 'small',
+				buttonAlign: 'center',
+				confirm: function (callback) {
+					let articleColumn = $('#removeArticleDialog .foxui-select input').val(),
+							columnId = $('#removeArticleDialog .foxui-select input').attr("data-id"),
+							ids = $('#removeArticleDialog input[name="article_ids"]').val();
+					if (!ids || !articleColumn) {
+						foxui.message({
+							text: '必须选择目标栏目及填写文章ID！',
+							type: 'danger',
+						});
+						return false;
+					}
+					let nowColumnId = $('input[name="columnId"]').val();
+					if(nowColumnId == columnId){
+						foxui.message({
+							text: '文章已在当前栏目中！',
+							type: 'danger',
+						});
+						return false;
+					}
+
+					// 上传数据
+					ajaxR("{:url('batchMove')}","get",{'ids':ids, 'columnId':columnId},{},function(res) {
+								if (res.code == 1) {
+									foxui.message({
+										text: res.msg,
+										type: 'success',
+									});
+									//初始化文章数据
+									init();
+								}else{
+									foxui.message({
+										text: res.msg,
+										type: 'warning',
+									});
+								}
+							},
+							function(res) {
+								foxui.message({
+									text: res.responseJSON.msg,
+									type: 'warning',
+								});
+							})
+					callback();
+				},
+			});
+		}
+	});
+
+	// 批量操作-复制文件
+	$('#copyArticle').click(function () {
+		let idList = articleIdList();
+		if (idList && idList.length > 0) {
+			let ids = idList.join();
+			foxui.dialog({
+				title: '批量复制文章',
+				content: `您确定要复制 id 为 ${ids} 的所有文章吗？`,
+				confirmText: '复制',
+				cancelText: '取消',
+				buttonSize: 'small',
+				confirm: function (callback) {
+					// 上传数据
+					ajaxR("{:url('batchCope')}","get",{ids},{},function(res) {
+								if (res.code == 1) {
+									foxui.message({
+										text: res.msg,
+										type: 'success',
+									});
+									//初始化文章数据
+									init({});
+								}else{
+									foxui.message({
+										text: res.msg,
+										type: 'warning',
+									});
+								}
+							},
+							function(res) {
+								foxui.message({
+									text: res.responseJSON.msg,
+									type: 'warning',
+								});
+							})
+					callback();
+				},
+			});
+		}
+	});
+
+	// 批量操作-删除文章
+	$('#deleteArticle').click(function () {
+		let idList = articleIdList();
+		if (idList && idList.length > 0) {
+			let ids = idList.join();
+			foxui.dialog({
+				title: '批量删除文章',
+				content: `您确定要删除 id 为 ${ids} 的所有文章吗？`,
+				confirmText: '删除',
+				cancelText: '取消',
+				buttonSize: 'small',
+				buttonType: 'danger',
+				confirm: function (callback) {
+					// 上传数据
+					ajaxR("{:url('batchDel')}","get",{ids},{},function(res) {
+								if (res.code == 1) {
+									foxui.message({
+										text: res.msg,
+										type: 'success',
+									});
+									//初始化文章数据
+									init({});
+								}else{
+									foxui.message({
+										text: res.msg,
+										type: 'warning',
+									});
+								}
+							},
+							function(res) {
+								foxui.message({
+									text: res.responseJSON.msg,
+									type: 'warning',
+								});
+							})
+					callback();
+				},
+			});
+		}
+	});
+
+	/**
+	 * @description: 操作->编辑
+	 * @param {*} id
+	 * @return {*}
+	 * @Date: 2022-01-12 14:52:13
+	 */
+	function handleEdit(id) {
+		let bcid = $("input[name='bcid']").val();
+		window.location.href = "{:url('custom/edit')}?type=1&bcid="+bcid+"&id="+id;
+	}
+
+	/**
+	 * @description: 操作->删除
+	 * @param {*} id
+	 * @return {*}
+	 * @Date: 2022-01-12 14:50:15
+	 */
+	function handleDelete(id) {
+		foxui.dialog({
+			title: '删除文章',
+			content: `您确定要删除 id 为 ${id} 的文章吗`,
+			cancelText: '取消',
+			confirmText: '删除',
+			type: 'danger',
+			confirm: function (callback) {
+				ajaxR("{:url('batchDel')}","get",{"ids":id},{},function(res) {
+							if (res.code == 1) {
+								foxui.message({
+									text: res.msg,
+									type: 'success',
+								});
+								//初始化文章数据
+								init();
+							}else{
+								foxui.message({
+									text: res.msg,
+									type: 'warning',
+								});
+							}
+						},
+						function(res) {
+							foxui.message({
+								text: res.responseJSON.msg,
+								type: 'warning',
+							});
+						})
+				callback();
+			},
+			cancel: function () {},
+		});
+	}
+
+	/**
+	 * @description: 操作->浏览
+	 * @param {*} id
+	 * @return {*}
+	 * @Date: 2022-01-12 14:54:40
+	 */
+	function handleView(id) {
+		let url = "{:url('custom/look')}?id="+id;
+		window.open(url);
+	}
+
+	/**
+	 * @description: 操作->复制
+	 * @param {*} id
+	 * @return {*}
+	 * @Date: 2022-01-12 14:56:59
+	 */
+	function handleCopy(id) {
+		foxui.dialog({
+			title: '复制文章',
+			content: `您确定要复制 id 为 ${id} 的文章吗`,
+			cancelText: '取消',
+			confirmText: '确定',
+			confirm: function (callback) {
+				//复制文章信息
+				ajaxR("{:url('batchCope')}","get",{"ids":id},{},function(res) {
+							if (res.code == 1) {
+								foxui.message({
+									text: res.msg,
+									type: 'success',
+								});
+								//初始化文章数据
+								init();
+							}else{
+								foxui.message({
+									text: res.msg,
+									type: 'warning',
+								});
+							}
+						},
+						function(res) {
+					foxui.message({
+						text: res.responseJSON.msg,
+						type: 'warning',
+					});
+				})
+				callback()
+			},
+			cancel: function () {},
+		});
+	}
+</script>
+
+<script>
+	// 获取选中的文章ID
+	function articleIdList() {
+		let idList = [];
+		$('.foxui-table-tbody .foxui-checkbox.is-checked')
+				.closest('.foxui-table-td')
+				.next('.foxui-table-td')
+				.each(function () {
+					idList.push($(this).text());
+				});
+		if (idList.length < 1) {
+			foxui.message({
+				text: '请选择文章！',
+				type: 'danger',
+			});
+			return false;
+		}
+		return idList;
+	}
+
+	// 批量操作-新增属性 弹框 html
+	function addAttrHtml(ids) {
+		return [
+			'<div id="addAttrDialog" style="padding:0 24px">',
+			'<div class="foxui-row foxui-gutter-x-3 foxui-gutter-y-7">',
+			'<div class="foxui-col-xs-4 foxui-col-sm-4"><label>文章属性：</label></div>',
+			'<div class="foxui-col-xs-20 foxui-col-sm-20 display-flex">',
+			// 头条
+			'<div class="column-4 margin-bottom-10">',
+			'<div class="foxui-checkbox">',
+			'<span class="foxui-checkbox-input">',
+			'<i class="foxui-checkbox-icon"></i>',
+			'<input type="checkbox" value="t" />',
+			'</span>',
+			'<span class="foxui-checkbox-label">头条(t)</span>',
+			'</div>',
+			'</div>',
+			// 推荐
+			'<div class="column-4 margin-bottom-10">',
+			'<div class="foxui-checkbox">',
+			'<span class="foxui-checkbox-input">',
+			'<i class="foxui-checkbox-icon"></i>',
+			'<input type="checkbox" value="c" />',
+			'</span>',
+			'<span class="foxui-checkbox-label">推荐(c)</span>',
+			'</div>',
+			'</div>',
+			// 热门
+			'<div class="column-4 margin-bottom-10">',
+			'<div class="foxui-checkbox">',
+			'<span class="foxui-checkbox-input">',
+			'<i class="foxui-checkbox-icon"></i>',
+			'<input type="checkbox" value="h" />',
+			'</span>',
+			'<span class="foxui-checkbox-label">热门(h)</span>',
+			'</div>',
+			'</div>',
+			// 加粗
+			'<div class="column-4 margin-bottom-10">',
+			'<div class="foxui-checkbox">',
+			'<span class="foxui-checkbox-input">',
+			'<i class="foxui-checkbox-icon"></i>',
+			'<input type="checkbox" value="b" />',
+			'</span>',
+			'<span class="foxui-checkbox-label">加粗(b)</span>',
+			'</div>',
+			'</div>',
+			// 幻灯
+			'<div class="column-4 margin-bottom-10">',
+			'<div class="foxui-checkbox">',
+			'<span class="foxui-checkbox-input">',
+			'<i class="foxui-checkbox-icon"></i>',
+			'<input type="checkbox" value="s" />',
+			'</span>',
+			'<span class="foxui-checkbox-label">幻灯(s)</span>',
+			'</div>',
+			'</div>',
+			'</div>',
+			'<div class="foxui-col-xs-4 foxui-col-sm-4" style="height:32px; line-height:32px"><label>文章ID：</label></div>',
+			'<div class="foxui-col-xs-20 foxui-col-sm-20">',
+			`<input class="foxui-size-small" name="article_ids" placeholder="请输入文章id（多个用英文逗号分开，如：1,2,3）" value="${ids}" />`,
+			'</div>',
+			'</div>',
+			'</div>',
+		].join('');
+	}
+
+	// 批量操作-移动文章 弹框 html
+	function removeArticleHtml(ids, selectList) {
+		return [
+			'<div id="removeArticleDialog" style="padding:0 24px">',
+			'<div class="foxui-row foxui-gutter-x-3 foxui-gutter-y-7">',
+			'<div class="foxui-col-xs-4 foxui-col-sm-4" style="height:32px; line-height:32px"><label>目标栏目：</label></div>',
+			'<div class="foxui-col-xs-20 foxui-col-sm-20">',
+			'<div class="foxui-select" style="width: 100%">',
+			'<div class="foxui-select-handle foxui-select-icon">',
+			'<input class="foxui-select-input foxui-size-small" readonly="readonly" placeholder="请选择目标栏目" value="" />',
+			'</div>',
+			'<div class="foxui-select-menu">',
+			'<ul class="foxui-select-slide">',
+			`${selectHtml(selectList)}`,
+			'</ul>',
+			'</div>',
+			'</div>',
+			'</div>',
+			'<div class="foxui-col-xs-4 foxui-col-sm-4" style="height:32px; line-height:32px"><label>文章ID：</label></div>',
+			'<div class="foxui-col-xs-20 foxui-col-sm-20">',
+			`<input class="foxui-size-small" name="article_ids" placeholder="请输入文章id（多个用英文逗号分开，如：1,2,3）" value="${ids}" />`,
+			'</div>',
+			'<div class="foxui-col-xs-20 foxui-col-sm-20 foxui-offset-xs-4 foxui-offset-sm-4 info">切换栏目级别需要重新设置文章的栏目从属关系，以免导致用户浏览不到相关文章</div>',
+			'</div>',
+			'</div>',
+		].join('');
+	}
+
+	// select html
+	function selectHtml(selectList) {
+		let htmlArr = [];
+		selectList.forEach(item => {
+			htmlArr.push(`<li class="foxui-select-item" data-id="${item.id}">${item.title}</li>`);
+		});
+		return htmlArr.join('');
+	}
+</script>
+
+<script>
+	/**
+	 * @description: 初始化表格
+	 * @param {*} pageSize
+	 * @param {*} total
+	 * @param {*} currentPage
+	 * @param {*} dataList
+	 * @return {*}
+	 * @Date: 2022-01-12 10:55:11
+	 */
+	function initTable({ pageSize, total, currentPage }, dataList) {
+		if (dataList == undefined){
+			dataList = [];
+		}
+		if(total == undefined){
+			total = 0;
+		}
+		// 追加表格 html
+		_appendToTable(dataList);
+
+		// 分页
+		foxui.pagination(
+				{
+					el: '#pagination',
+					currentPage: currentPage,
+					total: total,
+					onchange: function ({ currentPage, pageSize, total }, callback) {
+						callback({ total, pageSize, currentPage });
+						let param = {pageSize, currentPage};
+						$('#loadingContainer').addClass('loading-container');
+						init(param)
+					},
+				},
+				{
+					type: 'plain',
+					isShowJump: true,
+					isShowTotal: true,
+					isShowSize: true,
+					pageSize: pageSize
+				}
+		);
+	}
+
+	/**
+	 * @description: 追加表格 html
+	 * @param {*} dataList
+	 * @return {*}
+	 * @Date: 2022-01-12 00:18:40
+	 */
+	function _appendToTable(dataList) {
+		const html = _trsHtml(dataList);
+		$('.foxui-table-tbody').empty().append(html);
+	}
+
+	/**
+	 * @description: 表格 html
+	 * @param {*} dataList
+	 * @return {*}
+	 * @Date: 2022-01-12 00:18:52
+	 */
+	function _trsHtml(dataList) {
+		let htmlArr = [];
+		dataList.forEach(item => {
+			htmlArr.push(`
+            <li class="foxui-table-tr">
+                <div class="foxui-table-td" style="flex: initial; width: 40px">
+                    <div class="foxui-checkbox">
+                        <span class="foxui-checkbox-input">
+                            <i class="foxui-checkbox-icon"></i>
+                            <input type="checkbox" value="" />
+                        </span>
+                    </div>
+                </div>
+                <div class="foxui-table-td">${item.id}</div>
+                <div class="foxui-table-td">
+                	<div class="image-box">
+						<img data-id="${item.breviary_pic_id}" src="${item.img_url}">
+					</div>
+                </div>
+                <div class="foxui-table-td">${item.title}</div>
+                <div class="foxui-table-td" style="word-wrap: break-word; word-break: break-word;">${item.column}</div>
+                <div class="foxui-table-td">${item.click}</div>
+                <div class="foxui-table-td">${item.release_time}</div>
+                <div class="foxui-table-td">${_attrHtml(item.attr_list)}</div>
+                <div class="foxui-table-td">
+                	<button class="foxui-text-primary foxui-size-medium edit-btn" onclick="handleEdit(${item.id})">编辑</button>
+                    <button class="foxui-text-primary foxui-size-medium delete-btn" onclick="handleDelete(${item.id})">删除</button>
+                    <button class="foxui-text-primary foxui-size-medium preview-btn" onclick="handleView(${item.id})">浏览</button>
+                    <button class="foxui-text-primary foxui-size-medium copy-btn" onclick="handleCopy(${item.id})">复制</button>
+                </div>
+            </li>
+        `);
+		});
+		return htmlArr.join('');
+	}
+
+	/**
+	 * @description: 文章属性 html
+	 * @param {*} list
+	 * @return {*}
+	 * @Date: 2022-01-12 00:19:04
+	 */
+	function _attrHtml(list) {
+		let htmlArr = [];
+		list.forEach(item => {
+			htmlArr.push(`<span class="state-${item.state === 1 ? 'enable' : 'disabled'}" style="cursor: pointer;" onclick="clickField(this)" data-field="${item.type}">${item.text}</span>`);
+		});
+		return htmlArr.join('');
+	}
+	//点击属性
+	function clickField(obj) {
+		let tr = $(obj).closest(".foxui-table-tr");
+		let id = $(tr).find('.foxui-table-td:nth-child(2)').text();
+		let field_type = $(obj).attr("data-field");
+		ajaxR("{:url('clickField')}","post",{id, field_type},{},function (res) {
+			if (res.code == 1) {
+				if ($(obj).hasClass('state-enable')) {
+					$(obj).removeClass("state-enable");
+					$(obj).addClass("state-disabled");
+				} else {
+					$(obj).removeClass("state-disabled");
+					$(obj).addClass("state-enable");
+				}
+			}
+		}, function (res) {
+		})
+	}
+</script>
+
+<script>
+
+	//初始化文章数据
+	init();
+
+	//搜索
+	$(".search-btn").on('click', function() {
+		$('#loadingContainer').addClass('loading-container');
+		init();
+	});
+
+	/**
+	 * 初始化文章数据
+	 * @param searchData
+	 */
+	function init(param){
+		if(param == undefined){
+			param = new Object();
+		}
+		let bcid = $("input[name='bcid']").val()
+		let prop = $('input[name="prop"]').attr("data-id");
+		let keyword = $('input[name="keyword"]').val();
+		let columnId = $('input[name="columnId"]').val();
+		param.prop = prop;
+		param.keyword = keyword;
+		param.bcid = bcid;
+		param.columnId = columnId;
+		ajaxR("{:url('index')}","post",param,{"isHandoverLang":0},function (res) {
+			if (res.code == 1 && res.data) {
+				let data = res.data;
+				let paginationData = {
+					pageSize: data.per_page,
+					total: data.total,
+					currentPage: data.current_page
+				};
+				initTable(paginationData, data.data);
+			}
+			$('#loadingContainer').removeClass('loading-container');
+		}, function (res) {
+			$('#loadingContainer').removeClass('loading-container');
+		})
+	}
+
+</script>
+<script>
+	//同步数据
+	let timerId;
+	let model = "custom";
+	function synData(param) {
+		if(param == undefined){
+			param = new Object();
+		}
+		let keyword = $('.copy-article input[name="keyword"]').val();
+		let lang = $('.copy-article input.copy-lang').attr('data-lang');
+		param.lang = lang;
+		param.keyword = keyword;
+		param.model = model;
+
+		ajaxR("{:url('synData')}","post",param,{},function (res) {
+			clearInterval(timerId);//关闭定时器
+			if (res.code == 1 && res.data) {
+				let data = res.data;
+				let paginationData = {
+					pageSize: data.per_page,
+					total: data.total,
+					currentPage: data.current_page
+				};
+				initSynTable(paginationData, data.data);
+			}
+			$("ul.copy-article-tbody").removeClass('loading-container');
+		}, function (res) {
+			$("ul.copy-article-tbody").removeClass('loading-container');
+		})
+	}
+
+	/**
+	 * @description: 追加表格 html
+	 * @param {*} dataList
+	 * @return {*}
+	 * @Date: 2022-01-12 00:18:40
+	 */
+	function _appendToTableSyn(dataList) {
+		const html = _trsHtmlSyn(dataList);
+		$("ul.copy-article-tbody").empty().append(html);
+	}
+
+	/**
+	 * @description: 表格 html
+	 * @param {*} dataList
+	 * @return {*}
+	 * @Date: 2022-01-12 00:18:52
+	 */
+	function _trsHtmlSyn(dataList) {
+		let htmlArr = [];
+		dataList.forEach(item => {
+			htmlArr.push(`
+            <li class="foxui-table-tr" data-id="${item.id}">
+                <div class="foxui-table-td" style="flex: initial; width: 40px">
+                    <div class="foxui-checkbox">
+                        <span class="foxui-checkbox-input">
+                            <i class="foxui-checkbox-icon"></i>
+                            <input type="checkbox" value="" />
+                        </span>
+                    </div>
+                </div>
+                <div class="foxui-table-td copy-syn-title" style="word-wrap: break-word; word-break: break-word;">${item.title}</div>
+                <div class="foxui-table-td">${item.release_time}</div>
+                <div class="foxui-table-td" style="flex: initial; width: 80px">
+                    <button class="foxui-text-primary foxui-size-medium add-article-item-btn">添加</button>
+                </div>
+            </li>
+        `);
+		});
+		return htmlArr.join('');
+	}
+
+	function initSynTable({ pageSize, total, currentPage }, dataList) {
+		if (dataList == undefined) {
+			dataList = [];
+		}
+		if (total == undefined) {
+			total = 0;
+		}
+		// 追加表格 html
+		_appendToTableSyn(dataList);
+		// 分页
+		foxui.pagination(
+				{
+					el: '#paginationSyn',
+					currentPage: currentPage,
+					total: total,
+					onchange: function ({currentPage, pageSize, total}, callback) {
+						callback({total, pageSize, currentPage});
+						let param = {pageSize, currentPage};
+						$("ul.copy-article-tbody").addClass('loading-container');
+						synData(param);
+					},
+				},
+				{
+					type: 'plain',
+					isShowTotal: true,
+					isShowSize: true,
+					pageSize: pageSize
+				}
+		);
+	}
+	function dialogCopyContent() {
+		return `
+			   <div class="diy_form_edit_content foxui-row" style="max-height: 620px;">
+
+				  <div class="foxui-col-sm-13 foxui-col-xs-13 copy-article">
+
+				  	 <div class="content-top-operation">
+					  <div class="display-flex">
+					  	 {if sizeof($otherLangs) > 0}
+						  <div class="foxui-select foxui-margin-left-12" style="width: 140px;">
+							<div class="foxui-select-handle foxui-select-icon">
+							  <input class="foxui-select-input copy-lang" readonly="readonly" placeholder="选择复制语言" value="{$otherLangs[0]['name']}" data-lang="{$otherLangs[0]['lang']}" style="height: 32px">
+							</div>
+							<div class="foxui-select-menu" x-placement="bottom-left" style="top: 38px; left: 0px; display: none;">
+							  <ul class="foxui-select-slide">
+							  {foreach $otherLangs as $key=>$vo}
+							   <li class="foxui-select-item" data-lang="{$vo.lang}">{$vo.name}</li>
+							  {/foreach}
+							  </ul>
+							</div>
+						  </div>
+						  {/if}
+
+						 <div class="margin-right-20 margin-left-8">
+							  <div class="foxui-input-prepend">
+								<input class="foxui-size-small" placeholder="请输入关键字" required value="" name="keyword"/>
+							  </div>
+						 </div>
+						<button class="foxui-solid-primary foxui-size-small search-btn">搜索</button>
+					  </div>
+					</div>
+
+					 <div class="section section-panel" style="max-height: 560px;">
+						<div class="diy-form-content">
+						   <div class="foxui-table foxui-table-border-bottom foxui-table-hover foxui-checkbox-group">
+
+							  <ul class="foxui-table-thead foxui-checkbox-head">
+								 <li class="foxui-table-tr">
+									<div class="foxui-table-th" style="flex: initial; width: 40px">
+									   <div class="foxui-checkbox foxui-checkbox-all">
+											<span class="foxui-checkbox-input">
+												<i class="foxui-checkbox-icon"></i>
+												<input type="checkbox" value="">
+											</span>
+									   </div>
+									</div>
+									<div class="foxui-table-th">标题</div>
+									<div class="foxui-table-th">发布时间</div>
+									<div class="foxui-table-th" style="flex: initial; width: 80px">操作</div>
+								 </li>
+							  </ul>
+
+							  <ul class="foxui-table-tbody foxui-checkbox-list copy-article-tbody">
+		</ul>
+		<div class="table-footer foxui-checkbox-head">
+		<div class="left display-flex foxui-align-items-center">
+		<div class="foxui-checkbox foxui-checkbox-all margin-right-24">
+		<span class="foxui-checkbox-input">
+		<i class="foxui-checkbox-icon"></i>
+		<input type="checkbox" value="">
+		</span>
+		</div>
+		<div class="display-flex">
+		<button class="foxui-plain-info foxui-size-mini add-article-btn">
+		<i class="foxui-icon-zhengque-o"></i>
+		<span>添加</span>
+		</button>
+		</div>
+		</div>
+		</div>
+		</div>
+		<div id="paginationSyn"></div>
+
+		</div>
+		</div>
+		</div>
+
+		<div class="foxui-col-sm-1 foxui-col-xs-1" style="background-color: #f4f6f8; width: 20px;"></div>
+
+		<div class="foxui-col-sm-9 foxui-col-xs-9 already-copy-article">
+		<div class="section section-panel" style="max-height: 560px;">
+		<div class="diy-form-content">
+		<div class="foxui-table foxui-table-border-bottom foxui-table-hover foxui-checkbox-group">
+
+		<ul class="foxui-table-thead foxui-checkbox-head">
+		<li class="foxui-table-tr">
+		<div class="foxui-table-th" style="flex: initial; width: 40px">
+		<div class="foxui-checkbox foxui-checkbox-all">
+		<span class="foxui-checkbox-input">
+		<i class="foxui-checkbox-icon"></i>
+		<input type="checkbox" value="">
+		</span>
+		</div>
+		</div>
+		<div class="foxui-table-th">标题</div>
+		<div class="foxui-table-th" style="flex: initial; width: 80px">操作</div>
+		</li>
+		</ul>
+
+		<ul class="foxui-table-tbody foxui-checkbox-list already-copy-article-tbody">
+		</ul>
+
+		<div class="table-footer foxui-checkbox-head">
+		<div class="left display-flex foxui-align-items-center">
+		<div class="foxui-checkbox foxui-checkbox-all margin-right-24">
+		<span class="foxui-checkbox-input">
+		<i class="foxui-checkbox-icon"></i>
+		<input type="checkbox" value="">
+		</span>
+		</div>
+		<div class="display-flex">
+		<button class="foxui-solid-danger foxui-size-mini remove-files-btn">
+		<i class="foxui-icon-shanchu-o"></i>
+		<span>移除</span>
+		</button>
+		</div>
+		</div>
+		</div>
+
+		</div>
+		</div>
+		</div>
+		<button class="is-long foxui-size-small foxui-solid-primary" id="copy_pack">复制</button>
+		</div>
+		</div>`;
+	}
+
+	//同步数据
+	$('button.syn-data').click(function () {
+		foxui.dialog({
+			content: dialogCopyContent(),
+			width: '1280px',
+			marginTop:"10vh"
+		});
+		// 设置定时器，每隔5秒刷新页面
+		timerId = setInterval(function() {
+			if($("ul.copy-article-tbody").length > 0){
+				$("ul.copy-article-tbody").addClass("loading-container");
+				synData();
+			}
+		}, 500); // 1000毫秒等于1秒
+	})
+
+	//同步数据搜索
+	$(document).on('click','.copy-article button.search-btn', function () {
+		synData();
+	})
+
+	//添加复制文章
+	function addCopyArticle($tr){
+		let article_id = $($tr).attr('data-id');
+		let article = $($tr).find('.copy-syn-title').text();
+		let articleTr = `
+		<li class="foxui-table-tr" data-id="${article_id}">
+		<div class="foxui-table-td" style="flex: initial; width: 40px">
+		<div class="foxui-checkbox">
+		<span class="foxui-checkbox-input">
+		<i class="foxui-checkbox-icon"></i>
+		<input type="checkbox" value="">
+		</span>
+		</div>
+		</div>
+		<div class="foxui-table-td copy-article-title">${article}</div>
+		<div class="foxui-table-td" style="flex: initial; width: 80px">
+		<button class="foxui-text-danger foxui-size-medium remove-article-btn">移除</button>
+		</div>
+		</li>
+		`;
+		$('ul.already-copy-article-tbody').append(articleTr);
+	}
+	//添加复制文章
+	$(document).on('click','ul.copy-article-tbody button.add-article-item-btn', function () {
+		addCopyArticle($(this).closest(".foxui-table-tr"))
+	})
+	//批量添加复制文章
+	$(document).on('click', '.copy-article .add-article-btn',function () {
+        let selectArticle = $("ul.copy-article-tbody").find('.foxui-checkbox.is-checked');
+        if(selectArticle.length <=0){
+            foxui.message({
+                type: 'warning',
+                text: "请先选择复制文章"
+            })
+            return;
+        }
+        selectArticle.each(function () {
+			let $tr = $(this).closest(".foxui-table-tr");
+			addCopyArticle($tr);
+		})
+	})
+
+	//执行移除复制文章
+	function removeCopyArticle($tr) {
+		$tr.slideUp('fast', function () {
+			$(this).remove();
+		});
+	}
+	//移除复制文章
+	$(document).on('click','ul.already-copy-article-tbody button.remove-article-btn', function () {
+		removeCopyArticle($(this).closest(".foxui-table-tr"))
+	})
+	//批量移除文章
+	$(document).on('click','.already-copy-article button.remove-files-btn', function () {
+        let selectArticle = $('ul.already-copy-article-tbody ').find('.foxui-checkbox.is-checked');
+        if(selectArticle.length <=0){
+            foxui.message({
+                type: 'warning',
+                text: "请先选择移除文章"
+            })
+            return;
+        }
+        selectArticle.each(function () {
+			let $tr = $(this).closest(".foxui-table-tr");
+			removeCopyArticle($tr);
+		})
+	})
+
+	//执行复制文章
+	$(document).on('click','.already-copy-article button#copy_pack',function () {
+
+	    let article_ids = [];
+		$('ul.already-copy-article-tbody').find('li.foxui-table-tr').each(function () {
+			let article_id = $(this).attr("data-id");
+            article_ids.push(article_id);
+		})
+        if(article_ids.length <=0){
+            foxui.message({
+                type: 'warning',
+                text: "请先添加复制文章"
+            })
+            return;
+        }
+        let columnId = $('input[name="columnId"]').val();
+		let param = {"article_ids":article_ids.join(","), columnId, "model":model};
+        ajaxR("{:url('synDataCopy')}","post",param,{},function (res) {
+			if (res.code == 1 ) {
+				foxui.message({
+					type:'success',
+					text:res.msg
+				})
+				myrefresh()
+			} else {
+				foxui.message({
+					type:'danger',
+					text:res.msg
+				})
+			}
+		}, function (res) {
+			foxui.message({
+				type:'danger',
+				text: "操作失败"
+			})
+		})
+	})
+</script>
+{/block}

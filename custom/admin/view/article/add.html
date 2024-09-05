@@ -1,0 +1,510 @@
+{extend name="foxcms_content" /}
+
+{block name="css"}
+{/block}
+
+{block name="body"}
+<input name="bcid" value="{$bcid}" type="hidden" />
+<div class="foxcms-content-inner">
+	<!-- page content -->
+	<div class="company-news-add-content">
+		<div class="foxui-tabs foxui-type-line" id="contentTabs">
+			<div class="foxui-tabs-header">
+				<div class="foxui-tabs-item is-active">基本</div>
+				<div class="foxui-tabs-item">详情</div>
+			</div>
+			<div class="foxui-tabs-content">
+				<div class="foxui-tabs-pane">
+					<div class="section">
+						<div class="section-title">基本信息</div>
+						<div class="section-main">
+							<div class="display-flex">
+								<div class="section-main-item">
+									<div class="foxui-input-group foxui-align-items-start">
+										<div class="input-label">
+											<label class="foxui-required">标题：</label>
+										</div>
+										<div class="input-box">
+											<div class="foxui-textarea">
+												<textarea autocomplete="off" rows="2" maxlength="120" placeholder="" name="title"></textarea>
+												<span class="foxui-textarea-count">0/120</span>
+											</div>
+										</div>
+									</div>
+								</div>
+								<div class="section-main-item second-item">
+									<div class="foxui-input-group foxui-align-items-start">
+										<div class="input-label">
+											<label>简略标题：</label>
+										</div>
+										<div class="input-box">
+											<div class="foxui-textarea">
+												<textarea autocomplete="off" rows="2" maxlength="60" placeholder="" name="brief_title"></textarea>
+												<span class="foxui-textarea-count">0/60</span>
+											</div>
+										</div>
+									</div>
+								</div>
+							</div>
+							<div class="section-main-item">
+								<div class="foxui-input-group foxui-align-items-start">
+									<div class="input-label">
+										<label>文章属性：</label>
+									</div>
+									<div class="article-field">
+
+										<div class="foxui-checkbox">
+											<span class="foxui-checkbox-input">
+												<i class="foxui-checkbox-icon"></i>
+												<input type="checkbox" value="t"/>
+											</span>
+											<span class="foxui-checkbox-label">头条(t)</span>
+										</div>
+										<div class="foxui-checkbox">
+											<span class="foxui-checkbox-input">
+												<i class="foxui-checkbox-icon"></i>
+												<input type="checkbox" value="c" />
+											</span>
+											<span class="foxui-checkbox-label">推荐(c)</span>
+										</div>
+										<div class="foxui-checkbox">
+											<span class="foxui-checkbox-input">
+												<i class="foxui-checkbox-icon"></i>
+												<input type="checkbox" value="h" />
+											</span>
+											<span class="foxui-checkbox-label">热门(h)</span>
+										</div>
+										<div class="foxui-checkbox">
+											<span class="foxui-checkbox-input">
+												<i class="foxui-checkbox-icon"></i>
+												<input type="checkbox" value="b" />
+											</span>
+											<span class="foxui-checkbox-label">加粗(b)</span>
+										</div>
+										<div class="foxui-checkbox">
+											<span class="foxui-checkbox-input">
+												<i class="foxui-checkbox-icon"></i>
+												<input type="checkbox" value="s" />
+											</span>
+											<span class="foxui-checkbox-label">幻灯(s)</span>
+										</div>
+									</div>
+								</div>
+							</div>
+							<div class="section-main-item">
+								<div class="foxui-input-group">
+									<div class="input-label">
+										<label class="foxui-required">所属栏目：</label>
+									</div>
+									<div class="input-box">
+										<div class="foxui-select">
+											<div class="foxui-select-handle foxui-select-icon">
+												<input class="foxui-select-input foxui-size-small" readonly="readonly" placeholder="请选择所属栏目" data-id="{$column.id}" value="{$column.name}" name="column" />
+												<i class="foxui-icon-close-circle" style="display: none"></i>
+											</div>
+											<div class="foxui-select-menu">
+												<ul class="foxui-select-slide">
+													{foreach $columns as $key=>$vo }
+													<li class="foxui-select-item" data-id="{$vo.id}">{$vo.title}</li>
+													{/foreach}
+												</ul>
+											</div>
+										</div>
+									</div>
+								</div>
+							</div>
+
+							<div class="section-main-item">
+								<div class="foxui-input-group">
+									<div class="input-label">
+										<label>文档标签：</label>
+									</div>
+									<div class="input-box">
+										<div class="foxui-select foxui-select-settable">
+											<div class="foxui-select-handle">
+												<input class="foxui-select-input foxui-size-small" placeholder="多个标签之间以逗号隔开" value="" name="tags"/>
+											</div>
+											<div class="foxui-select-menu">
+												<ul class="foxui-select-slide member-list">
+													{foreach tagList as $key=>$vo }
+													<li class="foxui-select-item multiple" data-id="{$vo.name}">{$vo.name}</li>
+													{/foreach}
+												</ul>
+											</div>
+										</div>
+									</div>
+								</div>
+							</div>
+
+							<div class="section-main-item">
+								<div class="foxui-input-group foxui-align-items-start">
+									<div class="input-label">
+										<label>文章缩略图：</label>
+									</div>
+									<div class="input-box">
+										<div class="foxui-images foxui-images-fluid">
+											<div class="foxui-images-card breviary_pic">
+												<ul class="foxui-images-list">
+													<div class="foxui-images-handle">
+														<div class="foxui-images-handle-inner">
+															<i class="foxui-icon-jiahao-o"></i>
+															<span class="text">添加图片</span>
+														</div>
+													</div>
+												</ul>
+											</div>
+										</div>
+									</div>
+								</div>
+								<p class="input-box-info">图片尺寸建议根据前端网站模板的尺寸制作</p>
+							</div>
+
+							<div class="section-main-item">
+								<div class="foxui-input-group">
+									<div class="input-label">
+										<label>SEO关键词：</label>
+									</div>
+									<div class="input-box">
+										<input class="foxui-size-small" placeholder="" value="" name="keywords"/>
+									</div>
+								</div>
+								<p class="input-box-info">一般不超过100个字符，多个关键词请用英文逗号隔开，建议3到5个关键词</p>
+							</div>
+							<div class="section-main-item">
+								<div class="foxui-input-group foxui-align-items-start">
+									<div class="input-label">
+										<label>SEO描述：</label>
+									</div>
+									<div class="input-box">
+										<div class="foxui-textarea">
+											<textarea autocomplete="off" rows="2" maxlength="200" placeholder="" name="description"></textarea>
+											<span class="foxui-textarea-count">0/200</span>
+										</div>
+									</div>
+								</div>
+								<p class="input-box-info">描述一般不超过200个字符，不填写时系统自动提取正文的前200个字符</p>
+							</div>
+							<div class="display-flex">
+								<div class="section-main-item">
+									<div class="foxui-input-group">
+										<div class="input-label">
+											<label>文章来源：</label>
+										</div>
+										<div class="input-box">
+											<div class="foxui-select foxui-select-settable" data-title="文章来源" id="article_source">
+												<div class="foxui-select-handle">
+													<input class="foxui-select-input foxui-size-small" placeholder="" value="" />
+													<button class="foxui-select-set foxui-size-small foxui-plain">设置</button>
+												</div>
+												<div class="foxui-select-menu">
+													<ul class="foxui-select-slide">
+														{foreach $articleSources as $key=>$vo }
+														<li class="foxui-select-item" data-id="{$articleSourceDictCode}">{$vo}</li>
+														{/foreach}
+													</ul>
+												</div>
+											</div>
+										</div>
+									</div>
+								</div>
+								<div class="section-main-item second-item">
+									<div class="foxui-input-group">
+										<div class="input-label">
+											<label>作者：</label>
+										</div>
+										<div class="input-box">
+											<div class="foxui-select foxui-select-settable" data-title="作者" id="author">
+												<div class="foxui-select-handle">
+													<input class="foxui-select-input foxui-size-small" placeholder="" value="" />
+													<button class="foxui-select-set foxui-size-small foxui-plain">设置</button>
+												</div>
+												<div class="foxui-select-menu">
+													<ul class="foxui-select-slide">
+														{foreach $authors as $key=>$vo }
+														<li class="foxui-select-item" data-id="{$authorDictCode}">{$vo}</li>
+														{/foreach}
+													</ul>
+												</div>
+											</div>
+										</div>
+									</div>
+								</div>
+							</div>
+							<div class="section-main-item">
+								<div class="foxui-input-group">
+									<div class="input-label">
+										<label>发布时间：</label>
+									</div>
+									<div class="input-box">
+										<div class="foxui-picker foxui-datetime-picker">
+											<div class="foxui-picker-handle foxui-input-prefix">
+												<i class="foxui-icon-gongzuo-o foxui-prefix-icon"></i>
+												<input class="foxui-size-small" readonly="readonly" placeholder="请选择时间" value="" name="release_time"/>
+											</div>
+										</div>
+									</div>
+								</div>
+							</div>
+							<div class="section-main-item">
+								<div class="foxui-input-group">
+									<div class="input-label">
+										<label>浏览量：</label>
+									</div>
+									<div class="input-box">
+										<input class="foxui-size-small" placeholder="" required="" value="" name="click"/>
+									</div>
+								</div>
+							</div>
+
+							<!--动态标签start-->
+							<div class="field">
+								<?php echo modelFieldTag('custom'); ?>
+							</div>
+							<!--动态标签end-->
+
+						</div>
+					</div>
+				</div>
+				<div class="foxui-tabs-pane">
+					<div class="section">
+						<div class="section-title">内容详情</div>
+						<div class="section-main-item">
+							<div class="foxui-input-group foxui-align-items-start">
+								<div class="input-label">
+									<label>状态：</label>
+								</div>
+								<div>
+									<div class="foxui-checkbox">
+										<span class="foxui-checkbox-input">
+											<i class="foxui-checkbox-icon"></i>
+											<input type="checkbox" value="" checked="checked" name="statusDown"/>
+										</span>
+										<span class="foxui-checkbox-label">下载远程图片</span>
+									</div>
+									<div class="foxui-checkbox">
+										<span class="foxui-checkbox-input">
+											<i class="foxui-checkbox-icon"></i>
+											<input type="checkbox" value="" name="statusDel"/>
+										</span>
+										<span class="foxui-checkbox-label">删除非站内链接</span>
+									</div>
+								</div>
+							</div>
+						</div>
+						<div class="section-main-item">
+							<div class="foxui-input-group foxui-align-items-start">
+								<div class="input-label">
+									<label>内容详情：</label>
+								</div>
+								<div class="block-box rich-text">
+									<!-- 富文本 -->
+									<textarea class="richText" id="initRT"></textarea>
+								</div>
+							</div>
+						</div>
+					</div>
+				</div>
+			</div>
+		</div>
+	</div>
+</div>
+
+<div class="foxcms-content-footer">
+	<button class="is-long foxui-size-small foxui-solid-primary next-btn">下一步</button>
+	<button class="is-long foxui-size-small foxui-plain-primary save-btn">保存</button>
+</div>
+
+{include file="footed-copy"/}
+{/block}
+
+{block name="js"}
+
+<script>
+	let $nextBtn = $('.foxcms-content-footer .next-btn'),
+			$tabsItem = $('#contentTabs .foxui-tabs-item'),
+			tabsLen = $tabsItem.length;
+
+	foxui.tabs.$on(getIndex);
+	function getIndex(data) {
+		const { index, id } = data;
+		if(id === 'contentTabs'){
+			if (index === tabsLen - 1) {
+				$nextBtn.hide();
+			} else {
+				$nextBtn.show();
+			}
+		}
+	}
+
+	$nextBtn.click(function () {
+		let index = $('#contentTabs .foxui-tabs-item.is-active').index();
+		$tabsItem.eq(index + 1).click();
+	});
+
+	//设置回调
+	foxui.select.$off();
+	foxui.select.$on(getSetData);
+	function getSetData(data) {
+		foxui.loading();
+		$.ajax({
+			type: "POST",
+			url: "{:url('saveDict')}",
+			dataType: "json",
+			async:false,
+			data:data,
+			success: (res)=> {
+				if (res.code == 1 && res.data) {
+					let id = data.id;
+					let liHtml = [];
+					let dataList = res.data.dataList;
+					if(dataList.length > 0){
+						dataList.forEach(item => {
+							liHtml.push(`<li class="foxui-select-item" data-id="${res.data.id}">${item}</li>`);
+						});
+					}
+					$('#' + id).find(".foxui-select-slide").empty().append(liHtml.join(""));
+				}else{
+					foxui.message({
+						type:"danger",
+						text:res.msg
+					})
+				}
+				foxui.closeLoading();
+			},
+			error: function(res) {
+				foxui.message({
+					type:"danger",
+					text:res.msg
+				})
+				foxui.closeLoading();
+			}
+		});
+	}
+</script>
+
+<script>
+
+	//保存
+	$('.save-btn').click(function() {
+
+		let bcid = $("input[name='bcid']").val();
+
+		//标题
+		let title = $('textarea[name="title"]').val();
+		//简略标题
+		let brief_title = $('textarea[name="brief_title"]').val();
+
+		//文章属性
+		let articleField = "";
+		$('.article-field .foxui-checkbox').each(function (){
+			let isCheck =  $(this).is('.is-checked');
+			if(isCheck){
+				let af = $(this).find('input[type="checkbox"]').val();
+				articleField += af + ",";
+			}
+		});
+		if(articleField.length> 0){
+			articleField = articleField.substr(0, articleField.length -1);
+		}
+
+		//所属栏目
+		let columnId = $('input[name="column"]').attr('data-id');
+		//栏目名称
+		let column = $('input[name="column"]').val();
+		//文章缩率图
+		let breviary_pic_id = $('.breviary_pic img').attr('data-id');
+		//SEO关键词
+		let keywords = $('input[name="keywords"]').val();
+		//SEO描述
+		let description = $('textarea[name="description"]').val();
+		//文章来源
+		let article_source = $('#article_source input').val();
+		//作者
+		let author = $('#author input').val();
+		//发布时间
+		let release_time = $('input[name="release_time"]').val();
+		//预览量
+		let click = $('input[name="click"]').val();
+		//下载远程图片
+		let statusDown = $('input[name="statusDown"]').closest('.foxui-checkbox').is('.is-checked') ? 'down' : '';
+		//删除非站内链接
+		let statusDel = $('input[name="statusDel"]').closest('.foxui-checkbox').is('.is-checked') ? 'del' : '';
+		//内容
+		let content = getRTtContent("initRT");
+		//文档标签
+		let tags = $('input[name="tags"]').val();
+		let datas = {
+			'title': title,
+			"brief_title": brief_title,
+			"article_field": articleField,
+			"column_id": columnId,
+			"column": column,
+			"breviary_pic_id": breviary_pic_id||"",
+			"keywords": keywords,
+			"description": description,
+			"article_source": article_source,
+			"author": author,
+			"team_status": statusDown + "," + statusDel,
+			"content": content,
+			"release_time":release_time,
+			"click":click,
+			tags
+		};
+
+		//拉取模型属性
+		// let feildUrl = ADMIN_PATH + '/custom/getField?model=custom';
+		let feildUrl = "{:url('Custom/getField')}?model=custom";
+		let saveData = getField($(".field"), feildUrl);
+		let curData = Object.assign(datas, saveData);
+
+		foxui.dialog({
+			title: '保存',
+			content: '您确定要保存吗',
+			cancelText: '取消',
+			confirmText: '保存',
+			confirm: function(callback) {
+				foxui.loading({text:"发布中"});
+				ajaxR("{:url('add')}","post",curData,{},function(res) {
+							if (res.code == 1) {
+								foxui.message({
+									type: 'success',
+									text: res.msg
+								})
+								if(res.data != ""){
+									let params = res.data;
+									if(params.oneId && params.oneId == "key3"){
+										addDataBuildDetail(params);
+										singleAllSite(params);
+									}
+									foxui.closeLoading();
+								}
+								window.location.href=document.referrer;//返回并且刷新
+							} else {
+								foxui.message({
+									type: 'warning',
+									text: res.msg
+								})
+							}
+							foxui.closeLoading();
+						},
+						function(res) {
+							foxui.message({
+								type: 'warning',
+								text: res.responseJSON.msg
+							})
+							foxui.closeLoading();
+						})
+				callback();
+			},
+			cancel: function() {
+				foxui.message({
+					type: 'warning',
+					text: res.msg
+				})
+			},
+		});
+
+	})
+</script>
+
+{/block}

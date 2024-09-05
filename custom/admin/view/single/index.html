@@ -1,0 +1,141 @@
+{extend name="foxcms_content" /}
+
+{block name="css"}
+
+{/block}
+
+{block name="body"}
+<input name="bcid" value="{$bcid}" type="hidden" />
+<input name="columnId" value="{$columnId}" type="hidden" />
+<input name="id" value="{$custom.id}" type="hidden" />
+
+<div class="foxcms-content-inner">
+	<!-- page content -->
+	<div class="team-style-content">
+		<div class="section section-panel">
+			<div class="section-title" data-name="column">{$custom.column}</div>
+			<div class="section-main">
+				<div class="section-main-item">
+					<div class="foxui-input-group">
+						<div class="input-label">
+							<label>状态：</label>
+						</div>
+						<div class="input-box ">
+							<div class="foxui-checkbox {if $custom->statusDown }is-checked{/if}">
+								<span class="foxui-checkbox-input">
+									<i class="foxui-checkbox-icon"></i>
+									<input type="checkbox" value="" checked="checked" name="statusDown"/>
+								</span>
+								<span class="foxui-checkbox-label">下载远程图片</span>
+							</div>
+							<div class="foxui-checkbox {if $custom->statusDel}is-checked{/if}">
+								<span class="foxui-checkbox-input">
+									<i class="foxui-checkbox-icon"></i>
+									<input type="checkbox" value="" name="statusDel"/>
+								</span>
+								<span class="foxui-checkbox-label">删除非站内链接</span>
+							</div>
+						</div>
+					</div>
+				</div>
+
+				<!--动态标签start-->
+				<div class="field">
+					<?php echo modelFieldTag('custom', $custom['id']); ?>
+				</div>
+				<!--动态标签end-->
+
+				<div class="section-main-item">
+					<div class="foxui-input-group foxui-align-items-start">
+						<div class="input-label">
+							<label>内容详情：</label>
+						</div>
+						<div class="block-box rich-text">
+							<!-- 富文本 -->
+							<textarea class="richText" id="initRT">
+								{$custom.content}
+							</textarea>
+						</div>
+					</div>
+				</div>
+			</div>
+		</div>
+	</div>
+</div>
+
+<div class="foxcms-content-footer">
+	<button class="is-long foxui-size-small foxui-solid-primary save-btn">保存</button>
+</div>
+{include file="footed-copy"/}
+{/block}
+
+{block name="js"}
+
+
+<script>
+
+	//保存
+	$('.save-btn').click(function() {
+
+		let id = $('input[name="id"]').val();
+		//栏目id
+		let columnId = $('input[name="columnId"]').val();
+		let column = $('div[data-name="column"]').html();
+		//下载远程图片
+		let statusDown = $('input[name="statusDown"]').closest('.foxui-checkbox').is('.is-checked') ? 'down' : '';
+		//删除非站内链接
+		let statusDel = $('input[name="statusDel"]').closest('.foxui-checkbox').is('.is-checked') ? 'del' : '';
+		//内容
+		let content = getRTtContent("initRT");
+		let datas = {
+			'id':id,
+			'column_id': columnId,
+			"team_status": statusDown + "," + statusDel,
+			"content": content,
+			column
+		};
+
+		//拉取模型属性
+		let feildUrl = "{:url('Custom/getField')}?model=custom";
+		let saveData = getField($(".field"), feildUrl);
+		let curData = Object.assign(datas, saveData);
+
+		foxui.dialog({
+			title: '保存',
+			content: '您确定要保存吗',
+			cancelText: '取消',
+			confirmText: '保存',
+			confirm: function(callback) {
+				ajaxR("{:url('save')}","post",curData,{},function (res) {
+					if (res.code == 1) {
+						foxui.message({
+							type:'success',
+							text:res.msg
+						})
+						setTimeout('myrefresh()', 1000); //指定10秒刷新一次
+					} else {
+						foxui.message({
+							type:'warning',
+							text:res.msg
+						})
+					}
+				}, function (res) {
+					foxui.message({
+						type:'warning',
+						text:res.msg
+					})
+				})
+				callback();
+			},
+			cancel: function() {
+				foxui.message({
+					type: 'warning',
+					text: '取消操作'
+				})
+			},
+		});
+
+	})
+</script>
+
+{/block}
