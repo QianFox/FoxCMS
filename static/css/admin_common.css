@@ -1,0 +1,98 @@
+.foxui-menu-handle.bg{
+    background-color: #d4e4ff;
+    color: #2879fe;
+    border-right: #2879fe solid 2px;
+}
+
+.template-file-content .foxui-icon-daima-o {
+    color: #2d8cf0;
+    font-size: 18px;
+}
+
+.template-file-content .foxui-icon-wenjianjia-f {
+    color: #ffcc00;
+    font-size: 18px;
+}
+
+.foxui-menu.foxui-type-vertical .foxui-menu-menu .foxui-menu-item:not(.foxui-menu-child), .foxui-menu.foxui-type-vertical .foxui-menu-menu .foxui-menu-item-title{
+    padding-left: 0px !important;
+}
+
+.foxui-menu.foxui-type-vertical .foxui-menu-menu .foxui-menu-item > a{
+    padding-left: 30px;
+}
+
+.foxui-menu.foxui-type-vertical .foxui-menu-menu .foxui-menu-item.foxui-menu-child .foxui-menu-item:not(.foxui-menu-child)::before,
+.foxui-menu.foxui-type-vertical .foxui-menu-menu .foxui-menu-item.foxui-menu-child .foxui-menu-item-title::before{
+    position: absolute;
+    left: 30px;
+}
+
+.foxui-menu.foxui-type-vertical .foxui-menu-menu .foxui-menu-item.foxui-menu-child .foxui-menu-item:not(.foxui-menu-child) a,
+.foxui-menu.foxui-type-vertical .foxui-menu-menu .foxui-menu-item.foxui-menu-child .foxui-menu-item-title a{
+    padding-left: 42px;
+}
+
+.show-status i{
+    display: none;
+}
+.show-status:hover>i{
+    display: inline-block;
+    color: #2879fe;
+}
+
+.loading-container {
+    position: relative;
+    min-height: 100px;
+    max-height: calc(100vh - 400px);
+    display: flex;
+    flex-direction: column;
+    align-items: center;
+    overflow: hidden;
+}
+.loading-container * {
+    opacity: 0;
+}
+.loading-container::before {
+    content: '\e8ab';
+    font-family: 'foxuifont' !important;
+    width: 48px;
+    height: 48px;
+    font-size: 38px;
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    color: #2879fe;
+    animation: loadingRotate 2s linear infinite;
+    position: absolute;
+    top: 50%;
+    transform: translateY(-50%);
+}
+.loading-container::after {
+    content: '加载中...';
+    position: absolute;
+    top: 50%;
+    transform: translateY(-50%);
+    margin-top: 60px;
+    margin-left: 10px;
+}
+@keyframes loadingRotate {
+    0% {
+        transform: rotate(0deg);
+    }
+    100% {
+        transform: rotate(360deg);
+    }
+}
+
+.lang-btn{
+    border-bottom: none;
+    border-top: none;
+    border-right: none;
+    border-color: #dcdfe6 !important;
+    border-radius: 0;
+    background: white !important;
+}
+.lang-btn:hover{
+    color: #2879fe !important;
+}
