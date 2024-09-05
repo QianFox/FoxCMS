@@ -1,0 +1,10 @@
+User-agent: *
+Disallow:/app
+Disallow:/public
+Disallow:/runtime
+Disallow:/templates
+Disallow: /custom
+Disallow:/config
+Disallow:/extend
+Disallow: /vendor
+Disallow: /*?*
