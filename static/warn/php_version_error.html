@@ -1,0 +1,41 @@
+<!--
+ * @Descripttion : QianFox让数字化营销更简单
+ * @Author       : QianFox Team
+ * @Date         : 2024-01-15 09:06:11
+ * @Version      : V1.08
+ * @Copyright    : ©2021-现在 贵州黔狐科技股份有限公司 版权所有
+ * @LastEditors  : QianFox Team
+ * @LastEditTime : 2024-01-15 09:58:57
+-->
+<!DOCTYPE html>
+<html lang="cn">
+<head>
+    <meta charset="UTF-8" />
+    <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+    <title>FoxCMS系统提示</title>
+    <link rel="stylesheet" href="/static/css/foxui-1.32.min.css" />
+    <link rel="stylesheet" href="/static/css/warning.min.css" />
+
+</head>
+<body>
+<div class="warning-container">
+    <div class="panel">
+        <div class="panel-header">
+            <h3>FoxCMS 系统提示信息</h3>
+        </div>
+        <div class="panel-main">
+            <h2>建议更换PHP版本！</h2>
+            <ul>
+                <li>推荐的PHP版本是7.1以上到8.0之间</li>
+                <li>您的站点正在运行的PHP版本（<?php echo PHP_VERSION;?>）</li>
+                <li>PHP是用来构建及运行FoxCMS的程序语言</li>
+                <li>较新的PHP版本会为您的站点带来更好的性能表现</li>
+            </ul>
+        </div>
+        <div class="panel-footer">
+            <p>Powered by FoxCMS <?php echo $vinfo['version1']?'V'.$vinfo['version']:'未知版本';?></p>
+        </div>
+    </div>
+</div>
+</body>
+</html>
