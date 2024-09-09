@@ -41,6 +41,18 @@ FoxCMS是一套可免费商用且开源的网站管理系统，采用PHP+MySQL�
 - MySQL 5.7-8.0
 
 ---
+### ⚙️安装教程
+
+1. 将源码上传至主机站点对应web根目录(www常见目录名之一)；
+2. 访问http://您的域名，根据提示进行安装。
+
+
+<div align="center" >
+    <img src="https://oss.foxcms.cn/images/foxcms_install.apng">
+</div>
+
+---
+
 ### 🎛️核心功能
 |功能名称 # | 功能描述 |
 |----------|----|
@@ -70,8 +82,7 @@ FoxCMS是一套可免费商用且开源的网站管理系统，采用PHP+MySQL�
 | 搜索配置 | 热词搜索配置功能允许管理员定义、管理和展示一系列热门搜索词，这些词通常从而引导用户发现热门内容或相关产品，提升内容的曝光度。|
 | TAG标签 | TAG标签管理功能允许管理员为内容（如文章、产品、帖子等）分配标签（Tags），通过标签，用户可以更轻松地找到相关的内容，而搜索引擎也能更好地理解网站的结构和内容，从而提升网站的SEO性能。|
 
----
-###  💽后台UI界面
+###  🗳️后台UI界面
 <div align="center" >
     <img src="https://oss.foxcms.cn/images/admin_ui.jpg">
 </div>
@@ -145,9 +156,28 @@ foxui01
     <img src="https://oss.foxcms.cn/images/web_ui.jpg">
 </div>
 
+
+### 📃版权须知
+GPL-3.0 是一种宽松的开源许可：
+1. **授许许可：** 允许任何人以任何目的使用，支持二次开发，允许商业用途，请自觉遵守使用协议。
+2. **版权声明：** 要求在软件和相关文档中包含原始版权声明和许可证声明，不允许对程序代码以任何形式任何目的的再发行或出售，否则将追究侵权者法律责任。望自觉遵守。
+3. **保证免责：** 表明该软件是按现状提供的，没有任何明示或暗示的担保或保证。作者不承担任何赔偿责任。
+
+---
+
 ### 👨🏻‍💻参与项目
 非常欢迎您对FoxCMS的开发作出贡献！你可以选择以下方式向FoxCMS贡献：
 - [Github - 发布issue进行问题反馈和建议](https://github.com/qianfox/foxcms/pulls)
 - [Gitee - 发布issue进行问题反馈和建议](https://gitee.com/qianfox/foxcms/pulls)
 - [Gitcode - 发布issue进行问题反馈和建议](https://gitcode.com/qianfox/foxcms/merge_requests)
 > 通过Pull Request提交修复、完善我们的文档和例子
+
+---
+### 📃版权信息
+
+- 本项目包含的第三方源码和二进制文件之版权信息另行标注。
+- 版权所有Copyright © 2021-至今 By QianFox (https://www.QianFox.com)All rights reserved。
+- FoxCMS/FoxUI商标和著作权所有者为贵州黔狐科技股份有限公司。
+
+
+ **[🔝返回顶部 ](https://github.com/qianfox/foxcms#%F0%9F%92%8E%E7%B3%BB%E7%BB%9F%E4%BB%8B%E7%BB%8D)** 
