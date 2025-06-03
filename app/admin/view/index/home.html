@@ -1,0 +1,706 @@
+{extend name="foxcms_home" /}
+{block name="css"}
+<style>
+    .column-5{
+        flex: 1 0 auto;
+        width: 0;
+        cursor: pointer;
+    }
+    .update-log .info a:link{
+        color: #909399;
+    }
+    .update-log .info a:visited{
+        color: #909399;
+    }
+    .update-log .info a:active{
+        color: #909399;
+    }
+    .update-log .info a:hover{
+        color: #2879fe;
+    }
+</style>
+{/block}
+{block name="body"}
+
+<div class="foxcms-content-inner">
+    <!-- page content -->
+    <div class="index-content">
+        <div class="foxui-row">
+            <div class="foxui-col-xs-17 foxui-col-sm-17 foxui-col-xxl-18">
+                <div class="section section-panel">
+                    <div class="foxui-row">
+                        <div class="foxui-col-xs-10 foxui-col-sm-10">
+                            <!-- banner尺寸：970px * 340px -->
+                            <div class="foxui-carousel carousel ad" data-autoplay="3000">
+                                <div class="foxui-carousel-wrapper slide">
+
+                                    {foreach $adList as $key=>$vo}
+                                    <div class="foxui-carousel-slide">
+                                        <div class="carousel-img-box">
+                                            <a href="{$vo->link}" target="_blank">
+                                                <img src="{$vo->img_url}" alt="{$vo->title}" />
+                                            </a>
+                                        </div>
+                                    </div>
+                                    {/foreach}
+
+                                </div>
+                                <div class="foxui-carousel-button-prev"></div>
+                                <div class="foxui-carousel-button-next"></div>
+                                <div class="foxui-carousel-pagination is-dots"></div>
+                            </div>
+                        </div>
+                        <div class="foxui-col-xs-14 foxui-col-sm-14">
+                            <div class="serve-info">
+                                <div class="title">
+                                    <h2>
+                                        <span>{$basic.name}</span>
+                                        <a href="{:url('Config/base')}?columnId=23">
+                                            <i class="foxui-icon-bianji-o"></i>
+                                        </a>
+                                    </h2>
+                                    <p>{$basic.url_prefix}{$basic.url}</p>
+                                </div>
+                                <ul class="content">
+                                    <li class="item">
+                                        <span>服务器系统：</span>
+                                        <strong>{$serverInfo.os}</strong>
+                                    </li>
+                                    <li class="item">
+                                        <span>文件上传限制：</span>
+                                        <strong>{$serverInfo.fileUpload}</strong>
+                                    </li>
+                                    <li class="item">
+                                        <span>服务器环境：</span>
+                                        <strong>{$serverInfo.webServer}</strong>
+                                    </li>
+                                    <li class="item">
+                                        <span>POST：</span>
+                                        <strong>{$serverInfo.postSize|default='unknown'}</strong>
+                                    </li>
+                                    <li class="item">
+                                        <span>服务器IP：</span>
+                                        <strong>{$serverInfo.ip}</strong>
+                                    </li>
+                                    <li class="item">
+                                        <span>最大执行时间：</span>
+                                        <strong>{$serverInfo.maxExTime}</strong>
+                                    </li>
+
+                                    <li class="item">
+                                        <span>PHP版本：</span>
+                                        <strong>{$serverInfo.phpVersion}</strong>
+                                    </li>
+                                    <li class="item">
+                                        <span>MYSQL版本：</span>
+                                        <strong>{$serverInfo.mysqlVersion}</strong>
+                                    </li>
+                                </ul>
+                            </div>
+                        </div>
+                    </div>
+                    <div class="foxui-row action-list">
+                        <div class="foxui-col-xs-3 foxui-col-sm-3">
+                            <a class="foxui-link action" href="{$links.siteSet}">
+                                <div class="icon">
+                                    <i class="foxui-icon-quanju-f"></i>
+                                </div>
+                                <span>网站设置</span>
+                            </a>
+                        </div>
+                        <div class="foxui-col-xs-3 foxui-col-sm-3">
+                            <a class="foxui-link action" href="{$links.column}">
+                                <div class="icon">
+                                    <i class="foxui-icon-neirong-f"></i>
+                                </div>
+                                <span>栏目管理</span>
+                            </a>
+                        </div>
+                        <div class="foxui-col-xs-3 foxui-col-sm-3">
+                            <a class="foxui-link action" href="{$links.sitemapUrl}">
+                                <div class="icon">
+                                    <i class="foxui-icon-ditu-f"></i>
+                                </div>
+                                <span>网站地图</span>
+                            </a>
+                        </div>
+                        <div class="foxui-col-xs-3 foxui-col-sm-3">
+                            <a class="foxui-link action" href="{$links.countPath}">
+                                <div class="icon">
+                                    <i class="foxui-icon-diqiu-f"></i>
+                                </div>
+                                <span>访客统计</span>
+                            </a>
+                        </div>
+                        <div class="foxui-col-xs-3 foxui-col-sm-3">
+                            <a class="foxui-link action" href="{$links.baiduRecord}" target="_blank">
+                                <div class="icon">
+                                    <i class="foxui-icon-baidu-f"></i>
+                                </div>
+                                <span>百度收录</span>
+                            </a>
+                        </div>
+                        <div class="foxui-col-xs-3 foxui-col-sm-3">
+                            <a class="foxui-link action" href="{$links.htmlStatic}">
+                                <div class="icon">
+                                    <i class="foxui-icon-kanban-f"></i>
+                                </div>
+                                <span>SEO设置</span>
+                            </a>
+                        </div>
+                        <div class="foxui-col-xs-3 foxui-col-sm-3">
+                            <a class="foxui-link action form-manage" href="{$links.formList}">
+                                <div class="icon">
+                                    <i class="foxui-icon-biaodan-f"></i>
+                                </div>
+                                <span>表单管理</span>
+                            </a>
+                        </div>
+                    </div>
+                </div>
+                <div class="section section-panel content-total margin-top-24">
+                    <div class="panel-title">
+                        <h3>
+                            <i class="foxui-icon-tongji-o"></i>
+                            <span>内容统计</span>
+                        </h3>
+                    </div>
+                    <div class="content">
+                        <div class="display-flex">
+                            <div class="column-5" id="articleUrl">
+                                <div class="column-inner">
+                                    <div>
+                                        <i class="foxui-icon-xinwen-o"></i>
+                                    </div>
+                                    <div>
+                                        <h1>{$helpCenters.articleCount}</h1>
+                                        <p>文章内容</p>
+                                    </div>
+                                </div>
+                            </div>
+                            <div class="column-5" id="imagesUrl">
+                                <div class="column-inner">
+                                    <div>
+                                        <i class="foxui-icon-tupian-o"></i>
+                                    </div>
+                                    <div>
+                                        <h1>{$helpCenters.imagesCount}</h1>
+                                        <p>图集内容</p>
+                                    </div>
+                                </div>
+                            </div>
+                            <div class="column-5" id="productUrl">
+                                <div class="column-inner">
+                                    <div>
+                                        <i class="foxui-icon-tupian-o"></i>
+                                    </div>
+                                    <div>
+                                        <h1>{$helpCenters.productCount}</h1>
+                                        <p>产品内容</p>
+                                    </div>
+                                </div>
+                            </div>
+                            <div class="column-5" id="videoUrl">
+                                <div class="column-inner">
+                                    <div>
+                                        <i class="foxui-icon-tupian-o"></i>
+                                    </div>
+                                    <div>
+                                        <h1>{$helpCenters.videoCount}</h1>
+                                        <p>视频内容</p>
+                                    </div>
+                                </div>
+                            </div>
+                            <div class="column-5" id="linkUrl">
+                                <div class="column-inner">
+                                    <div>
+                                        <i class="foxui-icon-youlian-o"></i>
+                                    </div>
+                                    <div>
+                                        <h1>{$helpCenters.linkCount}</h1>
+                                        <p>友情链接</p>
+                                    </div>
+                                </div>
+                            </div>
+                            <div class="column-5" id="adUrl">
+                                <div class="column-inner">
+                                    <div>
+                                        <i class="foxui-icon-guanggao-o"></i>
+                                    </div>
+                                    <div>
+                                        <h1>{$helpCenters.adCount}</h1>
+                                        <p>广告数量</p>
+                                    </div>
+                                </div>
+                            </div>
+                        </div>
+                    </div>
+                </div>
+                <div class="section section-panel visit-profile margin-top-24">
+                    <div class="panel-title">
+                        <h3>
+                            <i class="foxui-icon-fangke-o"></i>
+                            <span>访问概况</span>
+                        </h3>
+                    </div>
+                    <div class="content">
+                        <div class="foxui-tabs foxui-type-line foxui-position-right" id="viewTabs">
+                            <div class="foxui-tabs-header">
+                                <div class="foxui-tabs-item is-active">今日</div>
+                                <div class="foxui-tabs-item">昨日</div>
+                                <div class="foxui-tabs-item">近7日</div>
+                                <div class="foxui-tabs-item">近30日</div>
+                            </div>
+                            <div class="foxui-tabs-content">
+                                <div class="foxui-tabs-pane todayChart">
+                                    <div class="foxui-row foxui-align-items-center">
+                                        <div class="foxui-col-xs-6 foxui-col-sm-6">
+                                            <div class="pv">
+                                                <p>
+                                                    <span>总浏览量(PV)</span>
+                                                    <i class="foxui-icon-wenti-f pv-tip"></i>
+                                                </p>
+                                                <h1></h1>
+                                            </div>
+                                            <div class="uv">
+                                                <p>
+                                                    <span>总访客量(UV)</span>
+                                                    <i class="foxui-icon-wenti-f uv-tip"></i>
+                                                </p>
+                                                <h1></h1>
+                                            </div>
+                                        </div>
+                                        <div class="foxui-col-xs-18 foxui-col-sm-18">
+                                            <div class="echart-box" id="todayChart"></div>
+                                        </div>
+                                    </div>
+                                </div>
+
+                                <div class="foxui-tabs-pane yesterdayChart">
+                                    <div class="foxui-row foxui-align-items-center">
+                                        <div class="foxui-col-xs-6 foxui-col-sm-6">
+                                            <div class="pv">
+                                                <p>
+                                                    <span>总浏览量(PV)</span>
+                                                    <i class="foxui-icon-wenti-f pv-tip"></i>
+                                                </p>
+                                                <h1></h1>
+                                            </div>
+                                            <div class="uv">
+                                                <p>
+                                                    <span>总访客量(UV)</span>
+                                                    <i class="foxui-icon-wenti-f uv-tip"></i>
+                                                </p>
+                                                <h1></h1>
+                                            </div>
+                                        </div>
+                                        <div class="foxui-col-xs-18 foxui-col-sm-18">
+                                            <div class="echart-box" id="yesterdayChart"></div>
+                                        </div>
+                                    </div>
+                                </div>
+
+                                <div class="foxui-tabs-pane weekChart">
+                                    <div class="foxui-row foxui-align-items-center">
+                                        <div class="foxui-col-xs-6 foxui-col-sm-6">
+                                            <div class="pv">
+                                                <p>
+                                                    <span>总浏览量(PV)</span>
+                                                    <i class="foxui-icon-wenti-f pv-tip"></i>
+                                                </p>
+                                                <h1></h1>
+                                            </div>
+                                            <div class="uv">
+                                                <p>
+                                                    <span>总访客量(UV)</span>
+                                                    <i class="foxui-icon-wenti-f uv-tip"></i>
+                                                </p>
+                                                <h1></h1>
+                                            </div>
+                                        </div>
+                                        <div class="foxui-col-xs-18 foxui-col-sm-18">
+                                            <div class="echart-box" id="weekChart"></div>
+                                        </div>
+                                    </div>
+                                </div>
+
+                                <div class="foxui-tabs-pane monthChart">
+                                    <div class="foxui-row foxui-align-items-center">
+                                        <div class="foxui-col-xs-6 foxui-col-sm-6">
+                                            <div class="pv">
+                                                <p>
+                                                    <span>总浏览量(PV)</span>
+                                                    <i class="foxui-icon-wenti-f pv-tip"></i>
+                                                </p>
+                                                <h1></h1>
+                                            </div>
+                                            <div class="uv">
+                                                <p>
+                                                    <span>总访客量(UV)</span>
+                                                    <i class="foxui-icon-wenti-f uv-tip"></i>
+                                                </p>
+                                                <h1></h1>
+                                            </div>
+                                        </div>
+                                        <div class="foxui-col-xs-18 foxui-col-sm-18">
+                                            <div class="echart-box" id="monthChart"></div>
+                                        </div>
+                                    </div>
+                                </div>
+                            </div>
+                        </div>
+                    </div>
+                </div>
+            </div>
+            <div class="foxui-col-xs-7 foxui-col-sm-7 foxui-col-xxl-6">
+                <div class="section section-panel update">
+                    <div class="update-header auth">
+                        <h1>
+                            <i class="foxui-icon-zhengban-o"></i>
+                            <span class="software_version_name">{$authorize->software_version_name|default="基础授权版"}</span>
+                        </h1>
+                        <p>
+                            <i class="foxui-icon-guanli-o"></i>
+                            <span class="code">授权密钥：{$authorize->code|default="无"}</span>
+                        </p>
+                        <p>
+                            <i class="foxui-icon-shijian-o"></i>
+                            <span class="end_time_text">授权到期：{$authorize->end_time_text|default="无"}</span>
+                        </p>
+                        <p>
+                            <i class="foxui-icon-banben-o"></i>
+                            <span class="version">当前版本：{$authorize->version|default="无"}</span>
+                        </p>
+                        <a class="foxui-link">
+                            <span>授权证书</span>
+                            <i class="foxui-icon-xiangyou-o"></i>
+                        </a>
+                    </div>
+                    <div class="update-main update-log">
+                        <div class="panel-title">
+                            <h3>
+                                <i class="foxui-icon-gengxin-o"></i>
+                                <span>更新日志</span>
+                            </h3>
+                            <a class="foxui-link link-secondary" href="{$links.adminLog}" target="_blank">
+                                <span>查看更多</span>
+                                <i class="foxui-icon-xiangyou-o"></i>
+                            </a>
+                        </div>
+                        <ul class="content">
+                            {foreach $updateLogList as $key=>$vo}
+                            <li class="item">
+                                <div class="date-time">
+                                    <strong>
+                                        {$vo->brief_title} {if $key < 1}
+                                        <i class="foxui-icon-zuixin-f"></i>
+                                        {/if}
+                                    </strong>
+                                    <span>{$vo->release_time}</span>
+                                </div>
+                                <p class="info foxui-ellipsis"><a target="_blank" href="{$vo->link_url}">{$vo->title}</a></p>
+                            </li>
+                            {/foreach}
+                        </ul>
+                    </div>
+                    <div class="update-footer">
+                        <a class="foxui-link link-secondary" href="//www.qianfox.com/contact/#plans" target="_blank">
+                            <span>我想要定制功能</span>
+                            <i class="foxui-icon-xiangyou-o"></i>
+                        </a>
+                    </div>
+                </div>
+                <div class="section section-panel system margin-top-24">
+                    <div class="left">
+                        <div class="icon">
+                            <i class="foxui-icon-tongbu-f"></i>
+                        </div>
+                        <div class="text-box">
+                            <h3>系统更新</h3>
+                            <p class="version">最新系统版本: {$latestVersion->v|default="无"}</p>
+                        </div>
+                    </div>
+                    <div class="right">
+                        <a class="foxui-link foxui-link-primary" href="{$latestVersion->url}">
+                            <span>前往更新</span>
+                            <i class="foxui-icon-xiangyou-o"></i>
+                        </a>
+                    </div>
+                </div>
+                <div class="section section-panel help margin-top-24">
+                    <div class="panel-title">
+                        <h3>
+                            <i class="foxui-icon-yuedu-o"></i>
+                            <span>帮助中心</span>
+                        </h3>
+                        <a class="foxui-link link-secondary" href="{$links.helpCenter}" target="_blank">
+                            <span>查看更多</span>
+                            <i class="foxui-icon-xiangyou-o"></i>
+                        </a>
+                    </div>
+                    <div class="content" style="padding-top: 0">
+                        <!-- <div class="foxui-input-group">
+                            <div class="foxui-input-prefix">
+                                <i class="foxui-icon-sousuo-o foxui-prefix-icon"></i>
+                                <input name="search_key" class="foxui-size-medium" placeholder="输入你想了解的问题" value="" />
+                            </div>
+                        </div> -->
+                        <div class="hot-help">
+                            <h3>你可以快速了解</h3>
+                            <div class="foxui-row foxui-gutter-3">
+                                {foreach $helpCenterList as $key=>$vo}
+                                <div class="foxui-col-xxl-8 foxui-col-sm-10 foxui-col-xs-10">
+                                    <a href="{$vo->link}" class="foxui-tag foxui-plain-info foxui-ellipsis" target="_blank">{$vo->brief_title}</a>
+                                </div>
+                                {/foreach}
+                            </div>
+                        </div>
+                    </div>
+                </div>
+                <div class="section section-panel serve margin-top-24">
+                    <div class="panel-title">
+                        <h3>
+                            <i class="foxui-icon-zuanshi-o"></i>
+                            <span>服务支持</span>
+                        </h3>
+                    </div>
+                    <div class="content service_support">
+                        <div class="foxui-row">
+                            <div class="foxui-col-xs-10 foxui-col-sm-10">
+                                {foreach $serviceSupport->slideList as $key=>$vo}
+                                {if !empty($vo->img_url)}
+                                <div class="img-box img_url foxui-margin-bottom-8">
+                                    <img src="{$vo->img_url}" alt="" />
+                                </div>
+                                {/if}
+                                {/foreach}
+                            </div>
+
+                            <div class="foxui-col-xs-14 foxui-col-sm-14">
+                                <div class="text-box">
+                                    <h3 class="foxui-ellipsis title">{$serviceSupport->name}</h3>
+                                    {foreach $serviceSupport->slideList as $key=>$vo}
+                                    {if !empty($vo->title)}
+                                    <p class="foxui-ellipsis">
+                                        <i class="{$vo->title_icon}"></i>
+                                        <span class="rn">{$vo->title}</span>
+                                    </p>
+                                    {/if}
+                                    {/foreach}
+                                </div>
+                                <div class="foxui-row foxui-gutter-4">
+                                    {foreach $serviceSupport->slideList as $key=>$vo}
+                                    {if !empty($vo->jump_title)}
+                                    <div class="foxui-col-xs-12 foxui-col-sm-12">
+                                        <a class="foxui-link" href="{$vo->jump_link}" target="_blank">
+                                            <span>{$vo->jump_title}</span>
+                                            <i class="foxui-icon-xiangyou-o"></i>
+                                        </a>
+                                    </div>
+                                    {/if}
+                                    {/foreach}
+                                </div>
+                            </div>
+                        </div>
+                    </div>
+                </div>
+            </div>
+        </div>
+    </div>
+</div>
+
+{include file="footed-copy"/} {/block}
+{block name="js"}
+<script>
+    $("#linkUrl").click(function () {
+        window.location.href = "{$helpCenters.linkUrl}";
+    })
+    $("#adUrl").click(function () {
+        window.location.href = "{$helpCenters.adUrl}";
+    })
+    $("#articleUrl").click(function () {
+        window.location.href = "{$helpCenters.similarArticleUrl}?model=article&type=1";
+    })
+    $("#productUrl").click(function () {
+        window.location.href = "{$helpCenters.similarArticleUrl}?model=product&type=1";
+    })
+    $("#imagesUrl").click(function () {
+        window.location.href = "{$helpCenters.similarArticleUrl}?model=images&type=1";
+    })
+    $("#videoUrl").click(function () {
+        window.location.href = "{$helpCenters.similarArticleUrl}?model=video&type=1";
+    })
+</script>
+<script src="{$staticPath}js/index.js"></script>
+
+<script>
+    //检查版本
+    function checkVersion() {
+        let curOnly = "{$versionInfo.only}";
+        let title = "当前版本{$versionInfo.version}";
+        let today = "{$today}";
+        let todayV = sessionStorage.getItem(today+"_v");
+        if(todayV){
+            return;
+        }
+        $.ajax({
+            type: 'post',
+            url: "{:url('checkVersion')}",
+            dataType: 'json',
+            async: false,
+            data: {"only":curOnly},
+            success: function (res) {
+                let content = '';
+                let id = '';
+                let isUpdate = false;
+                if (res.code == 1) {
+                    let data = res.data;
+                    if(data != null && data != ''){
+                        if(data['flag'] == "last"){
+                        }else{
+                            isUpdate = true;
+                            content += `<h3>${res.data.describe}</h3>`;
+                            content += `<p>${res.data.content}</p>`;
+                            id = res.data.id;
+                        }
+                    }else{
+                        content += `<p>${res.msg}</p>`;
+                        title = `${res.msg}`;
+                    }
+                }else{
+                    content += `<p>${res.msg}</p>`;
+                    title = `${res.msg}`;
+                }
+                if(isUpdate){
+                    foxui.dialog({
+                        title: title,
+                        content: content,
+                        confirmText: '升级',
+                        cancelText: '不再提醒',
+                        width: '620px',
+                        confirm: function (callback) {
+                            if(id != ''){
+                                window.location.href = `updateVersion?id=${id}`;
+                                callback();
+                            }else{
+                                foxui.message({
+                                    text: content,
+                                    type: 'danger',
+                                });
+                            }
+                        },
+                        cancel: function () {
+                            sessionStorage.setItem(today + "_v", content);
+                        },
+                    });
+                }
+            }
+        });
+    }
+
+    //访问概况
+    function accessProfile(type) {
+        let data;
+        $.ajax({
+            type: 'post',
+            url: "{:url('accessProfile')}",
+            dataType: 'json',
+            async: false,
+            data: { type: type },
+            success: function (res) {
+                if (res.code == 1) {
+                    data = res.data;
+                }
+            },
+            error: function (res) {},
+        });
+        return data;
+    }
+    function todayChart() {
+        let data = accessProfile(1);
+        let pvList = data.pvList;
+        let uvList = data.uvList;
+        let labelList = data.labelList;
+        let pvTotal = data.pvTotal;
+        let uvTotal = data.uvTotal;
+        $('.todayChart .pv h1').html(pvTotal);
+        $('.todayChart .uv h1').html(uvTotal);
+        // 今日
+        let todayChart = echarts.init(document.getElementById('todayChart'));
+        todayChart.setOption(chartOption({ pvList, uvList, labelList }));
+        window.onresize = () => {
+            todayChart.resize();
+        };
+    }
+</script>
+<!--授权-->
+<script>
+    $('.auth .foxui-link').click(function () {
+        let url = "{:url('AuthorizeManage/index')}?columnId=61&&keyword=" + document.domain;
+        window.location.href = url;
+    });
+</script>
+<script>
+    let is_auth =  "{$authorize->is_auth}";
+    //检查版本
+    checkVersion();
+    //初始化当日（默认）
+    todayChart();
+    foxui.tabs.$on(function ({ index, id }) {
+        if (id === 'viewTabs') {
+            if (index === 0) {
+                //当日
+                todayChart();
+            } else if (index === 1) {
+                let data = accessProfile(2);
+                let pvList = data.pvList;
+                let uvList = data.uvList;
+                let labelList = data.labelList;
+                let pvTotal = data.pvTotal;
+                let uvTotal = data.uvTotal;
+                $('.yesterdayChart .pv h1').html(pvTotal);
+                $('.yesterdayChart .uv h1').html(uvTotal);
+                // 昨日
+                let yesterdayChart = echarts.init(document.getElementById('yesterdayChart'));
+                yesterdayChart.setOption(chartOption({ pvList, uvList, labelList }));
+                window.onresize = () => {
+                    yesterdayChart.resize();
+                };
+            } else if (index === 2) {
+                let data = accessProfile(3);
+                let pvList = data.pvList;
+                let uvList = data.uvList;
+                let labelList = data.labelList;
+                let pvTotal = data.pvTotal;
+                let uvTotal = data.uvTotal;
+                $('.weekChart .pv h1').html(pvTotal);
+                $('.weekChart .uv h1').html(uvTotal);
+
+                // 近7日
+                let weekChart = echarts.init(document.getElementById('weekChart'));
+                weekChart.setOption(chartOption({ pvList, uvList, labelList }));
+                window.onresize = () => {
+                    weekChart.resize();
+                };
+            } else if (index === 3) {
+                let data = accessProfile(4);
+                let pvList = data.pvList;
+                let uvList = data.uvList;
+                let labelList = data.labelList;
+                let pvTotal = data.pvTotal;
+                let uvTotal = data.uvTotal;
+                $('.monthChart .pv h1').html(pvTotal);
+                $('.monthChart .uv h1').html(uvTotal);
+
+                // 近30日
+                let monthChart = echarts.init(document.getElementById('monthChart'));
+                monthChart.setOption(chartOption({ pvList, uvList, labelList }));
+                window.onresize = () => {
+                    monthChart.resize();
+                };
+            }
+        }
+    });
+</script>
+
+{/block}

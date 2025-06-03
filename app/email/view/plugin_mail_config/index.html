@@ -1,0 +1,253 @@
+{extend name="foxcms_apply" /}
+
+{block name="css"}
+
+{/block}
+
+{block name="body"}
+
+<div class="foxcms-content-inner">
+	<input name="bcid" value="{$bcid}" type="hidden" />
+	<input name="id" value="{$pluginMailConfig.id}" type="hidden" />
+	<!-- page content -->
+	<div class="contact-way-content">
+		<div class="section section-panel">
+			<div class="section-title">邮件配置</div>
+			<div class="section-main">
+				<div class="section-main-item">
+					<div class="foxui-input-group">
+						<div class="input-label">
+							<label class="foxui-required">SMTP地址：</label>
+						</div>
+						<div class="input-box">
+							<div class="foxui-input-suffix">
+								<input class="foxui-size-small" maxlength="30" placeholder="请输入您的SMTP地址" value="{$pluginMailConfig.smtp_url|default='smtp.qq.com'}" name="smtp_url" />
+								<i class="foxui-suffix-icon foxui-suffix-count">0/30</i>
+							</div>
+						</div>
+					</div>
+                    <p class="input-box-info">发送邮箱的smtp地址。如腾讯QQ邮箱: smtp.qq.com</p>
+				</div>
+				<div class="section-main-item">
+					<div class="foxui-input-group">
+						<div class="input-label">
+							<label class="foxui-required">SMTP端口：</label>
+						</div>
+						<div class="input-box">
+							<div class="foxui-input-suffix">
+								<input class="foxui-size-small" maxlength="15" placeholder="请输入您的SMTP端口" value="{$pluginMailConfig.smtp_port|default='465'}" name="smtp_port" />
+								<i class="foxui-suffix-icon foxui-suffix-count">0/15</i>
+							</div>
+						</div>
+					</div>
+                    <p class="input-box-info">默认为465，具体请参看各邮件STMP服务商的说明，部分为25或其他端口号</p>
+				</div>
+				<div class="section-main-item">
+					<div class="foxui-input-group">
+						<div class="input-label">
+							<label class="foxui-required">发信邮箱账号：</label>
+						</div>
+						<div class="input-box">
+							<input class="foxui-size-small" placeholder="请输入发信邮箱账号" required value="{$pluginMailConfig.send_account}" name="send_account" type="email"/>
+						</div>
+					</div>
+				</div>
+                <div class="section-main-item">
+                    <div class="foxui-input-group">
+                        <div class="input-label">
+                            <label class="foxui-required">邮箱授权码：</label>
+                        </div>
+                        <div class="input-box">
+                            <div class="foxui-input-suffix">
+                                <input class="foxui-size-small" maxlength="30" placeholder="请输入您的邮箱授权码" value="{$pluginMailConfig.auth_code}" name="auth_code" />
+                                <i class="foxui-suffix-icon foxui-suffix-count">0/30</i>
+                            </div>
+                        </div>
+                    </div>
+                    <p class="input-box-info">发件邮箱授权码，请参照各邮箱服务商的授权码获取说明【<a  href="//service.mail.qq.com/detail/0/75" target="_blank" class="foxui-text-primary" style="font-size:12px;" onclick="useGuide()">QQ邮箱获取方法</a>】</p>
+                </div>
+                <div class="section-main-item">
+                    <div class="foxui-input-group">
+                        <div class="input-label">
+                            <label>消息接收邮箱：</label>
+                        </div>
+                        <div class="input-box">
+                            <div class="foxui-input-append">
+                                <input class="foxui-size-small" id="positionInput" placeholder="请输入您的消息邮箱" required value="{$pluginMailConfig.test_account}" name="test_account" type="email"/>
+                                <div class="foxui-append-inner foxui-input-button foxui-solid foxui-plain-primary" id="testBtn">测试发送</div>
+                            </div>
+                        </div>
+                    </div>
+					<p class="input-box-info">建议填写网站管理员邮箱地址，用于接收网站息提醒</p>
+                </div>
+
+			</div>
+		</div>
+	</div>
+</div>
+
+{include file="footed-copy"/}
+<div class="foxcms-content-footer">
+	<button class="is-long foxui-size-small foxui-solid-primary" id="save">保存</button>
+</div>
+{/block}
+
+
+{block name="js"}
+
+
+<script>
+
+	function verify(variable, tip){
+		if(variable == '' || variable == undefined || variable == "null" || variable == null) {
+			foxui.message({
+				text:tip+"不能为空",
+				type:"danger"
+			});
+			return false;
+		}else{
+			return true;
+		}
+	}
+
+	$("#testBtn").click(function () {
+		//SMTP地址
+		let smtp_url = $('input[name="smtp_url"]').val();
+		if(!verify(smtp_url, "SMTP地址"))return;
+		//SMTP端口
+		let smtp_port = $('input[name="smtp_port"]').val();
+		if(!verify(smtp_port, "SMTP端口"))return;
+		//发送邮箱账号
+		let send_account = $('input[name="send_account"]').val();
+		if(!verify(send_account, "发送邮箱账号"))return;
+		//邮箱授权码
+		let auth_code = $('input[name="auth_code"]').val();
+		if(!verify(auth_code, "邮箱授权码"))return;
+		//测试账号
+		let test_account = $('input[name="test_account"]').val();
+		if(!verify(test_account, "测试邮箱账号"))return;
+		let datas = {
+			smtp_url,
+			smtp_port,
+			send_account,
+			auth_code,
+			test_account
+		};
+		$.ajax({
+			type: "post",
+			url: '{:url("PluginMailConfig/sendMail")}',
+			dataType: "json",
+			data: datas,
+			success: function (res) {
+				if (res.code == 1) {
+					foxui.message({
+						type:'success',
+						text:res.msg
+					})
+				} else {
+					foxui.message({
+						type:'warning',
+						text:res.msg
+					})
+				}
+			}, error: function (res) {
+				foxui.message({
+					type:'warning',
+					text:res.msg
+				})
+			}
+		});
+	})
+
+	function useGuide(){
+		foxui.dialog({
+			title: '获取邮箱授权码',
+			content: dialogUseGuideContent(),
+			width: '1200px',
+			confirm: function (callback) {
+				callback();
+			},
+			cancel: function () {
+			},
+		});
+	}
+	//面包屑
+	let bcid = $("input[name='bcid']").val();
+	let datas = {
+		"bcid": bcid
+	};
+
+
+	//保存
+	$('#save').click(function() {
+
+
+		//SMTP地址
+		let smtp_url = $('input[name="smtp_url"]').val();
+		if(!verify(smtp_url, "SMTP地址"))return;
+		//SMTP端口
+		let smtp_port = $('input[name="smtp_port"]').val();
+		if(!verify(smtp_port, "SMTP端口"))return;
+		//发送邮箱账号
+		let send_account = $('input[name="send_account"]').val();
+		if(!verify(send_account, "发送邮箱账号"))return;
+		//邮箱授权码
+		let auth_code = $('input[name="auth_code"]').val();
+		if(!verify(auth_code, "邮箱授权码"))return;
+		//测试账号
+		let test_account = $('input[name="test_account"]').val();
+		let id = $('input[name="id"]').val();
+
+		let datas = {
+			id,
+			smtp_url,
+			smtp_port,
+			send_account,
+			auth_code,
+			test_account
+		};
+		//拉取会员属性
+		foxui.dialog({
+			title: '保存',
+			content: '您确定要保存吗',
+			cancelText: '取消',
+			confirmText: '保存',
+			confirm: function() {
+				$.ajax({
+					type: "post",
+					url: '{:url("PluginMailConfig/save")}',
+					dataType: "json",
+					data: datas,
+					success: function (res) {
+						if (res.code == 1) {
+							foxui.message({
+								type:'success',
+								text:res.msg
+							})
+							setTimeout('myrefresh()', 1000); //指定10秒刷新一次
+						} else {
+							foxui.message({
+								type:'warning',
+								text:res.msg
+							})
+						}
+					}, error: function (res) {
+						foxui.message({
+							type:'warning',
+							text:res.msg
+						})
+					}
+				});
+			},
+			cancel: function() {
+				foxui.message({
+					type: 'warning',
+					text: '取消操作'
+				})
+			},
+		});
+
+	})
+</script>
+
+{/block}

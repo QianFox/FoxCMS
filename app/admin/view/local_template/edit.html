@@ -1,0 +1,250 @@
+{extend name="foxcms" /}
+
+{block name="css"}
+<link rel="stylesheet" href="{$staticPath}css/slide_adverts_add.min.css" />
+{/block}
+
+{block name="body"}
+<div class="fox-article">
+    <div class="content-container">
+        <div class="add-role-box">
+            <div class="title">添加幻灯片</div>
+            <div class="main">
+                <input type="hidden" id="id" value="{slide.id}"/>
+                <input name="img_url" value="{$img.url}" type="hidden"/>
+                <input name="img_id" value="{$slide.img_id}" type="hidden"/>
+                <div class="item">
+                    <div class="fox-form-group">
+                                        <span class="column">
+                                            <label>排序：</label>
+                                        </span>
+                        <div class="input-box">
+                            <input class="fox-size-small"
+                                   placeholder=""
+                                   required
+                                   type="number"
+                                   value="{$slide.sort}"
+                                   name="sort"
+                            />
+                        </div>
+                    </div>
+                    <p>数字越大，排名越靠前</p>
+                </div>
+                <div class="item role">
+                    <div class="fox-form-group">
+                                        <span class="column">
+                                            <label class="fox-required">幻灯片标题：</label>
+                                        </span>
+                        <div class="fox-input-suffix input-box">
+                            <input
+                                    maxlength="30"
+                                    class="fox-size-small"
+                                    placeholder=""
+                                    required
+                                    value="{$slide.title}"
+                                    name="title"
+                            />
+                            <i class="fox-suffix-icon fox-suffix-count"></i>
+                        </div>
+                    </div>
+                </div>
+                <div class="item">
+                    <div class="fox-form-group align-top">
+                                        <span class="column">
+                                            <label class="fox-required">幻灯片图片：</label>
+                                        </span>
+                        <div class="fox-upload" data-count="1">
+                            <div class="fox-upload-card">
+                                <div class="fox-upload-item">
+                                    <i class="foxfont icon-jia"></i>
+                                    <span class="text">添加图片</span>
+                                    <input
+                                            type="file"
+                                            name="img"
+                                            onchange="handleUploadImage(event)"
+                                    />
+                                </div>
+                            </div>
+                        </div>
+                    </div>
+                    <p>
+                        图片尺寸建议根据前端网站模板的尺寸制作，请将所有幻灯片图片尺寸保持一致
+                        <span class="example">
+                                            <i></i>
+                                            示例
+                                        </span>
+                    </p>
+                </div>
+                <div class="item">
+                    <div class="fox-form-group">
+                                        <span class="column">
+                                            <label>幻灯片链接：</label>
+                                        </span>
+                        <div class="input-box">
+                            <input
+                                    class="fox-size-small"
+                                    placeholder=""
+                                    required
+                                    name="link"
+                                    value="{$slide.link}"
+                            />
+                        </div>
+                    </div>
+                </div>
+                <div class="item state">
+                    <div class="fox-form-group">
+                                        <span class="column">
+                                            <label>状态：</label>
+                                        </span>
+                        <div class="fox-radio-group">
+                            <div class="fox-radio {if ($slide->status) == 1} is-checked {/if}">
+                                                <span class="fox-radio-input">
+                                                    <i class="fox-radio-icon"></i>
+                                                    <input type="radio" value="1" />
+                                                </span>
+                                <span class="fox-radio-label">显示</span>
+                            </div>
+                            <div class="fox-radio {if ($data->status) == 0} is-checked {/if}">
+                                                <span class="fox-radio-input">
+                                                    <i class="fox-radio-icon"></i>
+                                                    <input type="radio" value="0" />
+                                                </span>
+                                <span class="fox-radio-label">隐藏</span>
+                            </div>
+                        </div>
+                    </div>
+                </div>
+            </div>
+        </div>
+        <div class="footer-box">
+            <button class="fox-size-small fox-solid-primary long-btn" id="save">保存</button>
+        </div>
+        {include file="footed-copy"/}
+    </div>
+</div>
+{/block}
+
+
+{block name="js"}
+<script src="{$staticPath}js/role_management_add.js"></script>
+
+<script>
+    //回显上传图片
+    function initImg(logoUrl, el,id){
+        if(logoUrl != undefined && logoUrl.length > 0){
+            foxui.appendImageToCard({
+                el: el,
+                src: logoUrl,
+                id:id
+            });
+        }
+    }
+
+    //初始化二维码1
+    let img_url = $("input[name='img_url']").val();
+    let img_id = $("input[name='img_id']").val();
+    initImg(img_url,  $('input[name="img"]'), img_id);
+
+    //添加幻灯片面包屑
+    let el =  $('#foxBreadcrumb .fox-breadcrumb', parent.document);//获取父文档中的文档
+    generateBreadcrumbAppend(el, "编辑幻灯片");
+
+    /**
+     *获取上传图片id值
+     * @param el
+     */
+    function getImageIdS(el){
+        let dataIdArr = [];
+        $(el).closest(".fox-upload").find('.fox-picture-item img').each(function (index,item){
+            dataIdArr.push($(item).attr('data-id'));
+        })
+        return dataIdArr.join(",");
+    }
+
+    // 调用上传图片
+    function handleUploadImage(event) {
+        const el = event.target;
+        const file = event.target.files[0];
+        foxui.upload({
+            el,
+            file,
+            url: UPLOAD_FILE_URL,
+            type: 'card',
+            success: function (res, el) {
+                $(el).attr('data-id', res.id);
+            },
+            fail: function (err, el) {
+                console.log(err);
+            },
+        });
+    }
+
+    //保存
+    $('#save').click(function (){
+
+        //排序
+        let sort = $('input[name="sort"]').val()
+
+        //标题
+        let title = $('input[name="title"]').val();
+        if(title == "" || !title){
+            foxui.message({
+                type:'info',
+                text:'请输入幻灯片标题'
+            })
+            return;
+        }
+        //图片
+        let img_id = getImageIdS($("input[name='img']"));
+
+        //链接
+        let link = $('input[name="link"]').val()
+        //状态
+        let status = $('.item.state .fox-radio.is-checked input').val();
+        let datas ={"sort": sort, "title":title, "img_id":img_id, "link":link, "status":status};
+
+        foxui.dialog({
+            title: '保存',
+            content: '您确定要保存吗',
+            cancelText: '取消',
+            confirmText: '保存',
+            confirm: function () {
+                $.ajax({
+                    type: "post",
+                    url: 'add',
+                    dataType: "json",
+                    data: datas,
+                    success: function (res) {
+                        if (res.code == 1) {
+                            foxui.message({
+                                type:'success',
+                                text:'保存成功'
+                            })
+                            window.location.href=document.referrer;//返回并且刷新
+                        } else {
+                            foxui.message({
+                                type:'danger',
+                                text:res.msg
+                            })
+                        }
+                    }, error: function (res) {
+                        foxui.message({
+                            type:'danger',
+                            text:'保存失败'
+                        })
+                    }
+                });
+            },
+            cancel: function () {
+                foxui.message({
+                    type:'warning',
+                    text:'取消操作'
+                })
+            },
+        });
+
+    })
+
+
+</script>
+{/block}

@@ -1,0 +1,104 @@
+{extend name="foxcms" /}
+
+{block name="css"}
+<link rel="stylesheet" href="{$staticPath}authorize/common.min.css" />
+{/block}
+
+{block name="body"}
+
+<div class="authorize-page">
+    <!-- 内容 -->
+    <div class="authorize-content-inner" style="border-radius:0px;">
+        {if $auth.is_auth == 1}
+        <div class="authorize-content-body">
+            <div class="authorize-certificate" id="authorizeCertificate">
+
+                <img src="{$staticPath}authorize/foxcms_authorize_bg.jpg">
+                <div class="authorize-certificate-content">
+                    <h1>
+                        <span>FOXCMS</span>
+                        <mark>{$auth.version}</mark>
+                    </h1>
+                    <p>授权给</p>
+                    <h4 class="foxui-ellipsis-2">{$auth.name}</h4>
+                    <ul>
+                        <li>
+                            <div class="label">软件权益</div>
+                            <div class="content foxui-border-bottom foxui-ellipsis">
+                                {$auth.system}({$auth.software_version_name})
+                            </div>
+                        </li>
+                        <li>
+                            <div class="label">授权域名</div>
+                            <div class="content foxui-border-bottom foxui-ellipsis">
+                                {$auth.domain_name}
+                            </div>
+                        </li>
+                        <li>
+                            <div class="label">授权IP</div>
+                            <div class="content foxui-border-bottom foxui-ellipsis">
+                                {$auth.ip}
+                            </div>
+                        </li>
+                        <li>
+                            <div class="label">站点ID</div>
+                            <div class="content foxui-border-bottom foxui-ellipsis">
+                                {$auth.id}
+                            </div>
+                        </li>
+                        <li>
+                            <div class="label">授权时间</div>
+                            <div class="content foxui-border-bottom foxui-ellipsis">
+                                {$auth.start_time|date='Y-m-d'}
+                            </div>
+                        </li>
+                        <li>
+                            <div class="label">授权期限</div>
+                            <div class="content foxui-border-bottom foxui-ellipsis">
+                                {$auth.end_time_text}
+                            </div>
+                        </li>
+                        <li>
+                            <div class="label">授权状态</div>
+                            <div class="content foxui-border-bottom foxui-ellipsis">
+                                <strong class="foxui-color-success">{$auth.statustext}</strong>
+                            </div>
+                        </li>
+                    </ul>
+                    <div class="seal">
+                        <img style="z-index:0" src="{$staticPath}authorize/seal.svg">
+                        <p style="position:relative; z-index:1">贵州黔狐科技股份有限公司</p>
+                        <p style="position:relative; z-index:1">{$auth.start_time|date='Y-m-d'}</p>
+                        <img style="z-index:2; opacity: 0.7;" src="{$staticPath}authorize/seal.svg">
+                    </div>
+                </div>
+            </div>
+            <div class="btn-box foxui-margin-top-20">
+                <button class="foxui-solid-primary foxui-size-medium foxui-shape-round">
+                    <a id="downCertificateBtn">
+                        <span>下载授权</span>
+                    </a>
+                </button>
+            </div>
+        </div>
+        {else/}
+        <div class="authorize-content-head unauthorized">商业授权查询结果</div>
+        <div class="authorize-content-body">
+            <div class="foxui-padding-top-12 foxui-padding-bottom-20">
+                <i class="foxui-icon-warn-solid unauthorized-icon"></i>
+                <p class="unauthorized-info">尚未获得商业授权许可，为保障您的权利请购买商业授权!</p>
+            </div>
+        </div>
+        {/if}
+    </div>
+</div>
+
+{include file="footed-copy"/}
+{/block}
+
+{block name="js"}
+<script src="{$staticPath}js/jquery-3.6.0.min.js"></script>
+<script src="{$staticPath}authorize/html2canvas.min.js"></script>
+<script src="{$staticPath}authorize/canvas-bg.js"></script>
+<script src="{$staticPath}authorize/authorize.js"></script>
+{/block}

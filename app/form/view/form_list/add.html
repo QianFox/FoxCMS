@@ -1,0 +1,499 @@
+{extend name="foxcms_apply" /}
+
+{block name="css"}
+<style>
+    .foxcms-article{
+        overflow-y: hidden;
+    }
+</style>
+
+{/block}
+
+{block name="body"}
+
+<div class="foxcms-content-inner">
+    <!-- page content -->
+    <div class="diy_form_edit_content foxui-row">
+        <div class="foxui-col-sm-8 foxui-col-xs-8">
+            <div class="section section-panel">
+                <div class="diy-title">自定义表单预览</div>
+                <div id="previewDiyForm"></div>
+            </div>
+        </div>
+        <div class="foxui-col-sm-16 foxui-col-xs-16">
+            <div class="section section-panel">
+                <div class="section-title">基本信息</div>
+                <div class="section-main">
+                    <div class="section-main-item">
+                        <div class="foxui-input-group">
+                            <div class="input-label">
+                                <label class="foxui-required">表单名称：</label>
+                            </div>
+                            <div class="input-box">
+                                <div class="foxui-input-suffix">
+                                    <input class="foxui-size-small" maxlength="30" placeholder="" value="" name="name"/>
+                                    <i class="foxui-suffix-icon foxui-suffix-count">0/30</i>
+                                </div>
+                            </div>
+                        </div>
+                    </div>
+                    <div class="section-main-item">
+                        <div class="foxui-input-group">
+                            <div class="input-label">
+                                <label class="foxui-required">数据库表名：</label>
+                            </div>
+                            <div class="input-box">
+                                <input class="foxui-size-small" placeholder="只能输入小写字母和下划线" required value="{$default_table_name}" name="table_name" onkeyup="this.value=this.value.replace(/[^a-z_]/g,'');"/>
+                            </div>
+                        </div>
+                    </div>
+                </div>
+                <div class="section-title margin-top-46">添加字段</div>
+                <div class="section-main">
+                    <div class="section-main-item select-field-box">
+                        <div class="foxui-input-group foxui-align-items-start">
+                            <div class="input-label">
+                                <label>选择表单字段：</label>
+                            </div>
+                            <div class="block-box">
+                                <ul class="field-list">
+                                    <li class="field-item" data-type="inputtext">
+                                        <div class="field-item-mark">添加字段</div>
+                                        <div class="field-item-inner">
+                                            <i class="foxui-icon-ziti-o"></i>
+                                            <span>单行文本</span>
+                                        </div>
+                                    </li>
+                                    <li class="field-item" data-type="textarea">
+                                        <div class="field-item-mark">添加字段</div>
+                                        <div class="field-item-inner">
+                                            <i class="foxui-icon-duanla-o"></i>
+                                            <span>多行文本</span>
+                                        </div>
+                                    </li>
+                                    <li class="field-item" data-type="radio">
+                                        <div class="field-item-mark">添加字段</div>
+                                        <div class="field-item-inner">
+                                            <i class="foxui-icon-danxuan-f"></i>
+                                            <span>单选项</span>
+                                        </div>
+                                    </li>
+                                    <li class="field-item" data-type="checkbox">
+                                        <div class="field-item-mark">添加字段</div>
+                                        <div class="field-item-inner">
+                                            <i class="foxui-icon-fuxuan-f"></i>
+                                            <span>多选项</span>
+                                        </div>
+                                    </li>
+                                    <li class="field-item" data-type="select">
+                                        <div class="field-item-mark">添加字段</div>
+                                        <div class="field-item-inner">
+                                            <i class="foxui-icon-xiala-o"></i>
+                                            <span>下拉框</span>
+                                        </div>
+                                    </li>
+                                    <li class="field-item" data-type="switch">
+                                        <div class="field-item-mark">添加字段</div>
+                                        <div class="field-item-inner">
+                                            <i class="foxui-icon-kaiguan-f"></i>
+                                            <span>Switch开关</span>
+                                        </div>
+                                    </li>
+                                    <li class="field-item" data-type="datepicker">
+                                        <div class="field-item-mark">添加字段</div>
+                                        <div class="field-item-inner">
+                                            <i class="foxui-icon-rili-o"></i>
+                                            <span>日期</span>
+                                        </div>
+                                    </li>
+                                    <li class="field-item" data-type="timepicker">
+                                        <div class="field-item-mark">添加字段</div>
+                                        <div class="field-item-inner">
+                                            <i class="foxui-icon-gongzuo-o"></i>
+                                            <span>时间</span>
+                                        </div>
+                                    </li>
+                                    <li class="field-item" data-type="datetimepicker">
+                                        <div class="field-item-mark">添加字段</div>
+                                        <div class="field-item-inner">
+                                            <i class="foxui-icon-riqi-o"></i>
+                                            <span>日期时间</span>
+                                        </div>
+                                    </li>
+                                    <li class="field-item" data-type="image">
+                                        <div class="field-item-mark">添加字段</div>
+                                        <div class="field-item-inner">
+                                            <i class="foxui-icon-tupian-o"></i>
+                                            <span>图片文件</span>
+                                        </div>
+                                    </li>
+                                    <li class="field-item" data-type="color">
+                                        <div class="field-item-mark">添加字段</div>
+                                        <div class="field-item-inner">
+                                            <i class="foxui-icon-sepan-f"></i>
+                                            <span>颜色选择</span>
+                                        </div>
+                                    </li>
+                                </ul>
+                            </div>
+                        </div>
+                    </div>
+                </div>
+                <div class="section-title margin-top-46">表单设置</div>
+                <div class="section-main">
+                    <ul id="diyFormSet" class="foxui-drag foxui-drag-container"></ul>
+                </div>
+                <div class="section-title margin-top-46">设置</div>
+                <div class="section-main">
+                    <div class="section-main-item">
+                        <div class="foxui-input-group">
+                            <div class="input-label">
+                                <label>提交限制：</label>
+                            </div>
+                            <div class="input-box">
+                                <div class="foxui-radio-group commit-type">
+                                    <div class="foxui-radio is-checked">
+                                        <span class="foxui-radio-input">
+                                            <i class="foxui-radio-icon"></i>
+                                            <input type="radio" value="0" checked="checked" />
+                                        </span>
+                                        <span class="foxui-radio-label">不限制</span>
+                                    </div>
+                                    <div class="foxui-radio">
+                                        <span class="foxui-radio-input">
+                                            <i class="foxui-radio-icon"></i>
+                                            <input type="radio" value="1" />
+                                        </span>
+                                        <span class="foxui-radio-label">5分钟内限提交1次</span>
+                                    </div>
+                                </div>
+                            </div>
+                        </div>
+                        <p class="input-box-info">同IP在5分钟内允许提交1次，可免避恶意频繁提交</p>
+                    </div>
+
+                    <div class="section-main-item">
+                        <div class="foxui-input-group">
+                            <div class="input-label">
+                                <label>邮件通知：</label>
+                            </div>
+                            <div class="input-box">
+                                <div class="foxui-radio-group email-setting">
+                                    <div class="foxui-radio" onclick="emailNotice(1)">
+                                        <span class="foxui-radio-input">
+                                            <i class="foxui-radio-icon"></i>
+                                            <input type="radio" value="1" checked="checked" />
+                                        </span>
+                                        <span class="foxui-radio-label">开启</span>
+                                    </div>
+                                    <div class="foxui-radio is-checked" onclick="emailNotice(0)">
+                                        <span class="foxui-radio-input">
+                                            <i class="foxui-radio-icon"></i>
+                                            <input type="radio" value="0" />
+                                        </span>
+                                        <span class="foxui-radio-label">关闭</span>
+                                    </div>
+                                </div>
+                            </div>
+                        </div>
+
+                        <div class="foxui-input-group margin-top-24 email-template" style="display: none;">
+                            <div class="input-label">
+                                <label>邮件模板：</label>
+                            </div>
+                            <div class="input-box" style="width: 300px;">
+                                <div class="foxui-select">
+                                    <div class="foxui-select-handle foxui-select-icon">
+                                        <input class="foxui-select-input" readonly="readonly" name="template_id" placeholder="请选择" value="{$pmt['name']}" data-id="{$pmt['id']}" />
+                                    </div>
+                                    <div class="foxui-select-menu">
+                                        <ul class="foxui-select-slide">
+                                            {foreach $pmtList as $vo }
+                                            <li class="foxui-select-item" data-id="{$vo.id}">{$vo.name}</li>
+                                            {/foreach}
+                                        </ul>
+                                    </div>
+                                </div>
+                            </div>
+                            {if $mail_config == 1}
+                            <a href="{$mail_config_url}" target="_blank">邮件配置</a>
+                            {/if}
+                        </div>
+
+                    </div>
+
+                    <div class="section-main-item">
+                        <div class="foxui-input-group">
+                            <div class="input-label">
+                                <label>验证码配置：</label>
+                            </div>
+                            <div class="input-box">
+                                <div class="foxui-radio-group verify">
+                                    <div class="foxui-radio is-checked">
+                                        <span class="foxui-radio-input">
+                                            <i class="foxui-radio-icon"></i>
+                                            <input type="radio" value="1" checked="checked" />
+                                        </span>
+                                        <span class="foxui-radio-label">开启</span>
+                                    </div>
+                                    <div class="foxui-radio">
+                                        <span class="foxui-radio-input">
+                                            <i class="foxui-radio-icon"></i>
+                                            <input type="radio" value="0" />
+                                        </span>
+                                        <span class="foxui-radio-label">关闭</span>
+                                    </div>
+                                </div>
+                            </div>
+                        </div>
+                    </div>
+                </div>
+            </div>
+            <div class="foxcms-content-footer">
+                <button class="is-long foxui-size-small foxui-solid-primary" id="save">保存</button>
+                <button class="is-long foxui-size-small" onclick="window.history.go(-1)">返回</button>
+            </div>
+        </div>
+    </div>
+</div>
+
+{/block}
+
+
+{block name="js"}
+<script src="{$staticPath}js/diy_form_edit.js"></script>
+
+<script>
+    // 删除字段
+    $(document).on('click', '#diyFormSet .delete-item-btn', function () {
+        let li = $(this).closest('li.foxui-drag-item');
+        $(li).slideUp(function () {
+            $(this).remove();
+        });
+        let datadiyid= $(li).attr('data-diyid');
+        $('div[id="'+datadiyid+'"]').slideUp(function () {
+            $(this).remove();
+        });
+    });
+
+    //邮件通知
+    function emailNotice(state) {
+        if(state == 0){
+            $(".email-template").css({"display":'none'})
+        }else {
+            $(".email-template").css({"display":''})
+        }
+    }
+
+    //保存
+    $('#save').click(function (){
+        let itemList = $("#previewDiyForm .item");
+        let columns = [];
+        itemList.each(function (index, item){
+            let id = $(item).attr("id");
+            let type = $(item).attr("data-type");
+            let itemR = $('li[data-diyid="'+id+'"]');
+            let column = {};
+            switch (type) {
+                case 'inputtext':
+                    column.name = "text" + index;//字段
+                    column.dtype = "text";//字段类型
+                    column.dfvalue = $(item).find("input").val();
+                    column.val = column.dfvalue;
+                    column.remark = $(itemR).find(".explain").val();//说明
+                    column.markeWord = $(itemR).find(".tip").val();//提示语言
+                    break;
+                case 'textarea':
+
+                    column.name = "multitext" + index;//字段
+                    column.dtype = "multitext";//字段类型
+                    column.dfvalue = $(item).find("textarea").val();
+                    column.val = column.dfvalue;
+                    column.remark = $(itemR).find(".explain").val();//说明
+                    column.markeWord = $(itemR).find(".tip").val();//提示语言
+                    break;
+                case 'radio':
+                    column.name = "radio" + index;//字段
+                    column.dtype = "radio";//字段类型
+                    column.val = $(item).find("div.is-checked").find(".foxui-radio-label.option-label").html();
+                    let inputs = $(itemR).find(".option-box .foxui-input-group").find("input");
+                    let dfvalue = "";
+                    inputs.each(function (ix, input){
+                        dfvalue += $(input).val() + ",";
+                    });
+                    if(dfvalue.length > 0){
+                        dfvalue = dfvalue.substr(0, dfvalue.length - 1);
+                    }
+                    column.dfvalue = dfvalue;
+                    column.remark = $(itemR).find(".explain").val();//说明
+                    column.markeWord = $(itemR).find(".tip").val();//提示语言
+                    break;
+                case 'checkbox':
+
+                    column.name = "checkbox" + index;//字段
+                    column.dtype = "checkbox";//字段类型
+                    let checks = $(item).find("div.is-checked").find(".foxui-checkbox-label.option-label");
+                    let checkVal = "";
+                    checks.each(function (ci, check){
+                        checkVal += $(check).html() + ",";
+                    });
+                    if(checkVal.length > 0){
+                        checkVal = checkVal.substr(0, checkVal.length - 1);
+                    }
+                    column.val = checkVal;
+                    let inputsCD = $(itemR).find(".option-box .foxui-input-group").find("input");
+                    let dfvalueCD = "";
+                    inputsCD.each(function (ix, input){
+                        dfvalueCD += $(input).val() + ",";
+                    });
+                    if(dfvalueCD.length > 0){
+                        dfvalueCD = dfvalueCD.substr(0, dfvalueCD.length - 1);
+                    }
+                    column.dfvalue = dfvalueCD;
+                    column.remark = $(itemR).find(".explain").val();//说明
+                    column.markeWord = $(itemR).find(".tip").val();//提示语言
+
+                    break;
+                case 'select':
+                    column.name = "select" + index;//字段
+                    column.dtype = "select";//字段类型
+                    column.val = $(item).find(".foxui-select").find("input").val();
+                    let inputsS = $(itemR).find(".option-box .foxui-input-group").find("input");
+                    let dfvalueS = "";
+                    inputsS.each(function (ix, input){
+                        dfvalueS += $(input).val() + ",";
+                    });
+                    if(dfvalueS.length > 0){
+                        dfvalueS = dfvalueS.substr(0, dfvalueS.length - 1);
+                    }
+                    column.dfvalue = dfvalueS;
+                    column.remark = $(itemR).find(".explain").val();//说明
+                    column.markeWord = $(itemR).find(".tip").val();//提示语言
+
+                    break;
+                case 'switch':
+
+                    column.name = "switch" + index;//字段
+                    column.dtype = "switch";//字段类型
+                    column.val = $(item).find(".foxui-switch.is-checked").length;
+                    column.dfvalue = column.val;
+                    column.remark = $(itemR).find(".explain").val();//说明
+                    break;
+                case 'datepicker':
+
+                    column.name = "datepicker" + index;//字段
+                    column.dtype = "datepicker";//字段类型
+                    column.val = $(item).find(".foxui-date-picker input").val();
+                    column.dfvalue = column.val;
+                    column.remark = $(itemR).find(".explain").val();//说明
+                    column.markeWord = $(itemR).find(".tip").val();//提示语言
+                    break;
+                case 'timepicker':
+
+                    column.name = "timepicker" + index;//字段
+                    column.dtype = "timepicker";//字段类型
+                    column.val = $(item).find(".foxui-time-picker input").val();
+                    column.dfvalue = column.val;
+                    column.remark = $(itemR).find(".explain").val();//说明
+                    column.markeWord = $(itemR).find(".tip").val();//提示语言
+                    break;
+                case 'datetimepicker':
+
+                    column.name = "datetime" + index;//字段
+                    column.dtype = "datetime";//字段类型
+                    column.val = $(item).find(".foxui-datetime-picker input").val();
+                    column.dfvalue = column.val;
+                    column.remark = $(itemR).find(".explain").val();//说明
+                    column.markeWord = $(itemR).find(".tip").val();//提示语言
+                    break;
+                case 'image':
+
+                    column.name = "pic" + index;//字段
+                    column.dtype = "pic";//字段类型
+                    column.val = $(item).find("img").attr("data-id");
+                    column.dfvalue = column.val;
+                    column.remark = $(itemR).find(".explain").val();//说明
+                    column.markeWord = $(itemR).find(".image-count").val();//提示语言
+
+                    break;
+                case 'color':
+                    column.name = "color" + index;//字段
+                    column.dtype = "color";//字段类型
+                    column.val = $(item).find(".foxui-color-input").val();
+                    column.dfvalue = column.val;
+                    column.remark = $(itemR).find(".explain").val();//说明
+                    break;
+                default:
+                    column = null;
+            }
+
+            column.title = $(itemR).find(".title").val();//字段名
+            column.isRequire =  $(itemR).find(".foxui-switch.form-label-require.is-checked").length;//是否必填
+            if(column != null){
+                columns.push(column);
+            }
+        });
+        let name = $('input[name="name"]').val();
+        if(name == "" || !name){
+            foxui.message({
+                type:'warning',
+                text:'请输入表单名称'
+            })
+            return;
+        }
+        let table_name = $('input[name="table_name"]').val();
+        if(table_name == "" || !table_name){
+            foxui.message({
+                type:'warning',
+                text:'请输入数据库表名'
+            })
+            return;
+        }
+        let commit_type = $('.commit-type .is-checked').find('input').val();
+        let notice_setting = $('.notice-setting .is-checked').find('input').val();
+        let verify = $('.verify .is-checked').find('input').val();
+
+        let datas ={'columns': columns, "name": name, "table_name": table_name, "commit_type": commit_type, "notice_setting": notice_setting, verify};
+        foxui.dialog({
+            title: '保存',
+            content: '您确定要保存吗',
+            cancelText: '取消',
+            confirmText: '保存',
+            confirm: function () {
+                $.ajax({
+                    type: "post",
+                    url: 'add',
+                    dataType: "json",
+                    data: datas,
+                    success: function (res) {
+                        if (res.code == 1) {
+                            foxui.message({
+                                type:'success',
+                                text:'保存成功'
+                            })
+                            window.location.href=document.referrer;//返回并且刷新
+                        } else {
+                            foxui.message({
+                                type:'danger',
+                                text:res.msg
+                            })
+                        }
+                    }, error: function (res) {
+                        foxui.message({
+                            type:'danger',
+                            text:'保存失败'
+                        })
+                    }
+                });
+            },
+            cancel: function () {
+                foxui.message({
+                    type:'warning',
+                    text:'取消操作'
+                })
+            },
+        });
+
+    })
+</script>
+{/block}

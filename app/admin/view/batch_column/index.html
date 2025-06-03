@@ -1,0 +1,461 @@
+{extend name="foxcms" /}
+
+{block name="css"}
+<style>
+    .foxui-dialog__wrapper .foxui-dialog__body{
+        max-height: 520px;
+        overflow-y: auto;
+        padding-top: 10px !important;
+        padding-bottom: 10px !important;
+    }
+</style>
+{/block}
+
+{block name="body"}
+<input name="bcid" value="{$bcid}" type="hidden" />
+<input name="tempType" type="hidden"/>
+<input type="hidden" name="path"  value="" />
+<input type="hidden" name="file"  value="" />
+<input type="hidden" name="activepath"  value="{$activepath}" />
+
+<div class="foxcms-content-inner">
+	<!-- page content -->
+	<div class="batch-add-content">
+		<div class="section section-panel">
+			<div class="section-title">批量新增栏目</div>
+			<div class="section-main">
+				<div class="section-main-item">
+					<div class="foxui-input-group">
+						<div class="input-label">
+							<label class="foxui-required">内容模型：</label>
+						</div>
+						<div class="input-box">
+							<div class="foxui-select">
+								<div class="foxui-select-handle foxui-select-icon">
+									<input class="foxui-select-input foxui-size-small" readonly="readonly" placeholder="请选择内容模型" data-id="{$modelRecords[0]['id']}" value="{$modelRecords[0]['title']}" name="column_model">
+									<i class="foxui-icon-close-circle" style="display: none;"></i>
+								</div>
+								<div class="foxui-select-menu">
+									<ul class="foxui-select-slide">
+										{foreach $modelRecords as $modelRecord }
+										<li class="foxui-select-item" data-id="{$modelRecord.id}" onclick="modelChange(event)">{$modelRecord.title}</li>
+										{/foreach}
+									</ul>
+								</div>
+							</div>
+						</div>
+					</div>
+				</div>
+				<div class="section-main-item">
+					<div class="foxui-input-group">
+						<div class="input-label">
+							<label>所属栏目：</label>
+						</div>
+						<div class="input-box">
+							<div class="foxui-select">
+								<div class="foxui-select-handle foxui-select-icon">
+									<input class="foxui-select-input foxui-size-small" readonly="readonly" placeholder="请选择栏目" value="" name="pid">
+									<i class="foxui-icon-close-circle" style="display: none;"></i>
+								</div>
+								<div class="foxui-select-menu">
+									<ul class="foxui-select-slide">
+										{foreach $columns as $key=>$vo }
+										<li class="foxui-select-item" data-id="{$vo.id}">{$vo.name}</li>
+										{/foreach}
+									</ul>
+								</div>
+							</div>
+						</div>
+					</div>
+				</div>
+				<div class="section-main-item">
+					<div class="foxui-input-group">
+						<div class="input-label">
+							<label class="foxui-required">列表模板：</label>
+						</div>
+						<div class="input-box">
+							<div class="foxui-select">
+								<div class="foxui-select-handle foxui-select-icon">
+									<input class="foxui-select-input foxui-size-small" readonly="readonly" placeholder="请选择列表模板" value="list_{$modelRecords[0]['id']}.html" name="column_template" onclick="clikTemplate(1)">
+									<i class="foxui-icon-close-circle" style="display: none;"></i>
+								</div>
+							</div>
+						</div>
+						<a class="foxui-link foxui-link-primary" href="/{$adminPath}/template_file/addFile?type=1&columnId={$cid}">新建模板</a>
+					</div>
+				</div>
+				<div class="section-main-item model-template">
+					<div class="foxui-input-group">
+						<div class="input-label">
+							<label class="foxui-required">文档模板：</label>
+						</div>
+						<div class="input-box">
+							<div class="foxui-select">
+								<div class="foxui-select-handle foxui-select-icon">
+									<input class="foxui-select-input foxui-size-small" readonly="readonly" placeholder="请选择文档模板" value="view_{$modelRecords[0]['id']}.html" name="model_template" onclick="clikTemplate(2)">
+									<i class="foxui-icon-close-circle"></i>
+								</div>
+							</div>
+						</div>
+						<a class="foxui-link foxui-link-primary" href="/{$adminPath}/template_file/addFile?type=1&columnId={$cid}">新建模板</a>
+					</div>
+				</div>
+				<div class="section-main-item">
+					<div class="foxui-input-group foxui-align-items-start">
+						<div class="input-label">
+							<label class="foxui-required">栏目名称：</label>
+						</div>
+						<div class="block-box">
+							<ul class="column-title">
+								<li>排序</li>
+								<li>顶层栏目名称</li>
+								<li class="child-column">
+									<span>子栏目名称</span>
+									<b>(如"目录名称1,目录名称2..." 多个栏目填写时用英文","分开)</b>
+								</li>
+								<li>
+									<button class="foxui-text-primary delete" id="addColumnBtn">
+										<i class="foxui-icon-jiahao-o"></i>
+										<span>添加栏目</span>
+									</button>
+								</li>
+							</ul>
+							<ul class="foxui-drag foxui-drag-container" id="columnContainer">
+
+								<li class="foxui-drag-item">
+									<div class="foxui-drag-content">
+										<div class="column">
+											<i class="foxui-drag-handle foxui-icon-liebiao-o"></i>
+										</div>
+										<div class="column">
+											<div class="foxui-input-group">
+												<div class="foxui-input-suffix">
+													<input class="foxui-size-small" maxlength="10" placeholder="栏目名称" value="">
+													<i class="foxui-suffix-icon foxui-suffix-count">2/10</i>
+												</div>
+											</div>
+										</div>
+										<div class="column">
+											<input class="foxui-size-small" placeholder="子栏目名称，多个用英文&quot;,&quot;分开" value="">
+										</div>
+										<div class="column">
+											<button class="foxui-size-small color-primary delete">
+												<i class="foxui-icon-shanchu-o"></i>
+												<span>删除</span>
+											</button>
+										</div>
+									</div>
+								</li>
+
+							</ul>
+						</div>
+					</div>
+				</div>
+			</div>
+		</div>
+	</div>
+</div>
+
+<div class="foxcms-content-footer">
+	<button class="is-long foxui-size-small foxui-solid-primary" id="save">保存</button>
+</div>
+{include file="footed-copy"/}
+{/block}
+
+{block name="js"}
+
+<script>
+	// 添加栏目
+	$('#addColumnBtn').on('click', function () {
+		$('#columnContainer').append(
+				[
+					'<li class="foxui-drag-item" style="display: none">',
+					'<div class="foxui-drag-content">',
+					'<div class="column">',
+					'<i class="foxui-drag-handle foxui-icon-liebiao-o"></i>',
+					'</div>',
+					'<div class="column">',
+					'<div class="foxui-input-group">',
+					'<div class="foxui-input-suffix">',
+					'<input class="foxui-size-small" maxlength="10" placeholder="栏目名称" value="" />',
+					'<i class="foxui-suffix-icon foxui-suffix-count">0/10</i>',
+					'</div>',
+					'</div>',
+					'</div>',
+					'<div class="column">',
+					`<input class='foxui-size-small' placeholder='子栏目名称，多个用英文","分开' value='' />`,
+					'</div>',
+					'<div class="column">',
+					'<button class="foxui-size-small color-primary delete">',
+					'<i class="foxui-icon-shanchu-o"></i>',
+					'<span>删除</span>',
+					'</button>',
+					'</div>',
+					'</div>',
+					'</li>',
+				].join('')
+		);
+		$('#columnContainer .foxui-drag-item:last-child').slideDown('fast');
+	});
+
+	// 删除栏目
+	$(document).on('click', '#columnContainer .delete', function (event) {
+		const currentTarget = event.currentTarget;
+		foxui.dialog({
+			title: '删除',
+			content: '您确定要删除吗',
+			cancelText: '取消',
+			confirmText: '删除',
+			buttonType: 'danger',
+			confirm: function (callback) {
+				callback();
+				// 添加加载层
+				foxui.loading();
+				// 摸拟后台删除成功后执行
+				setTimeout(() => {
+					foxui.closeLoading();
+					// 删除数据
+					$(currentTarget)
+							.closest('.foxui-drag-item')
+							.slideUp('fast', function () {
+								$(this).remove();
+							});
+				}, 200);
+			},
+		});
+	});
+
+	//获取对应模型
+	function getModelHtml(model){
+		$.ajax({
+			type: "get",
+			url: ADMIN_PATH + '/BatchColumn/getModelHtml?model=' + model,
+			dataType:"json",
+			async:false,
+			success:function(res){
+				if(res.code ==1 && res.data){
+					let data = res.data;
+					if(data.is_view == 1){
+						$('input[name="column_template"]').val(data.column_template);
+						$('input[name="model_template"]').val(data.model_template);
+						$('.model-template').show();
+					}else{
+						$('input[name="column_template"]').val(data.column_template);
+						$('.model-template').hide();
+					}
+				}else{
+					console.log("查询模型失败。。。。");
+				}
+			},error:function(res){
+				console.log("查询模型失败。。。。");
+			}
+		});
+	}
+</script>
+
+<script>
+
+	//模型切换
+	function modelChange(event){
+		let model = $(event.target).attr("data-id");
+		if(model == "single"){
+			$('.model-template').hide();
+		}else{
+			$('.model-template').show();
+		}
+		getModelHtml(model);
+	}
+	//点击文件
+	function clikFile(obj){
+        let path = $(obj).find('span').attr('data-path');
+        let file = $(obj).find('span').attr('data-file');
+        $('input[name="path"]').val(path);
+        let file_path = "";
+        if(path == undefined || path == ""){
+            file_path = file;
+        }else{
+            let activepath = $('input[name="activepath"]').val();
+            path = path.substr((activepath.length));
+            if(path != undefined && path != ""){
+                file_path = path + "/" + file;
+            }else{
+                file_path = file;
+            }
+        }
+        $('input[name="file"]').val(file_path);
+
+        $(obj).closest(".foxui-table-tr").siblings().css("background-color","");//移除兄弟节点样式
+        $(obj).closest(".foxui-table-tr").css("background-color","#dadae9");
+	}
+
+	//点击目录
+	function clikDir(obj){
+        $(obj).closest('.foxui-dialog__wrapper').find('.foxui-icon-guanbi-o').click();
+        let path = $(obj).find('span').attr('data-path');
+        selectTemplate(path);
+	}
+
+	//type 1:栏目模板 2：模型模板
+	function clikTemplate(tempType){
+		$('input[name="tempType"]').val(tempType);
+		selectTemplate();
+	}
+
+	function selectTemplate(path){
+		let contentHtml = `<div class="foxui-table foxui-table-border-bottom foxui-table-stripe foxui-table-hover">`;
+
+		contentHtml += ` <ul class="foxui-table-thead">
+                                <li class="foxui-table-tr">
+                                    <div class="foxui-table-th">文件名</div>
+                                    <div class="foxui-table-th">文件大小</div>
+                                    <div class="foxui-table-th">更新时间</div>
+                                </li>
+                            </ul>`;
+
+		contentHtml += `<ul class="foxui-table-tbody">`
+
+		let data = {activepath:path};
+		$.ajax({
+			type: "get",
+            url: "{:url('Column/temp')}",
+			dataType:"json",
+			data:data,
+			async:false,
+			success:function(res){
+				if(res.code ==1 && res.data){
+					let data = res.data;
+                    if(path == undefined){
+                        path = "";
+                    }
+					data.forEach((item, index)=>{
+						if(item.filetype == 'dir' || item.filetype == 'dir2'){
+							if(item.filepath != ""){
+								contentHtml += `<li class="foxui-table-tr foxui-padding-bottom-8 foxui-padding-top-8" onclick="clikDir(this)" style="cursor: pointer;" >`;
+								if(item.filetype == 'dir'){
+									contentHtml += '<i class="foxui-icon-mulu-f foxui-margin-right-4 foxui-color-warning" style="font-size:18px"></i><span data-path="'+ item.filepath +'">'+item.filename+'</span>';
+								}else {
+									contentHtml += '<i class="foxui-icon-wenjianjia-f foxui-margin-right-4 foxui-color-warning" style="font-size:18px"></i><span data-path="'+ item.filepath +'">'
+											+ "返回上级" + item.intro
+											+'</span>';
+								}
+							}
+						}else{
+							contentHtml += `<li class="foxui-table-tr" onclick="clikFile(this)" style="cursor: pointer;">`;
+							if(item.filetype == 'htm' || item.filetype == 'html'){
+								contentHtml += '<div class="foxui-table-td"><i class="foxui-icon-wenzhang-f foxui-margin-right-4 foxui-color-primary" style="font-size: 18px"></i><span data-path="'+ path +'" data-file="'+ item.filename +'" >'+item.filename +'</span></div>';
+							}else{
+								contentHtml += `<div class="foxui-table-td"><i class="foxui-icon-wenzhang-f foxui-margin-right-4 foxui-color-primary" style="font-size: 18px"></i><span data-path="${path}">${item.filename}</span></div>`;
+							}
+						}
+						contentHtml += `<div class="foxui-table-td">`+ item.filesize+`</div>`;
+						contentHtml += `<div class="foxui-table-td">`+ item.filetime+`</div>`;
+						contentHtml += `</li>`;
+					})
+
+				}
+			},error:function(res){
+				console.log("查询图片失败。。。。");
+			}
+		});
+		contentHtml += `</ul>`;
+		contentHtml += `</div>`;
+
+		foxui.dialog({
+			title: '选择模板',
+			content: contentHtml,
+			cancelText: '取消',
+			confirmText: '确定',
+			buttonSize: 'small',
+			buttonAlign: 'center',
+			width: '900px',
+			buttonWidth: '300px',
+			border: true,
+			confirm: function (callback) {
+				let tempType = $('input[name="tempType"]').val();
+				if(tempType == 1){
+					let file = $('input[name="file"]').val();
+					$('input[name="column_template"]').val(file);
+				}else if(tempType == 2){
+					let file = $('input[name="file"]').val();
+					$('input[name="model_template"]').val(file);
+				}
+				callback();
+			},
+			cancel: function () {
+
+			},
+		});
+
+	}
+
+
+	/**
+	 * 获取栏目数据
+	 * @param li 栏目项对象
+	 * @returns {{column: (*|Window.jQuery|string), objArr: *[]}}
+	 */
+	function getColumns(li){
+		let inputs =$(li).find('input');
+		let colunm = {
+			'column_model':$('input[name="column_model"]').attr('data-id'),
+			'pid':$('input[name="pid"]').attr('data-id'),
+			'column_template':$('input[name="column_template"]').val(),
+			'model_template':$('input[name="model_template"]').val()};
+		$(inputs).each( (index, item)=>{
+			let itval = $(item).val();//栏目值
+			if(index == 0){
+				colunm.name = itval;
+			}else{
+				colunm.colunmstr = itval;
+			}
+		});
+		return colunm;
+	}
+
+	//保存
+	$('#save').click(function() {
+
+		let dataArr = [];
+		$("#columnContainer>li").each(function (index, item){
+			dataArr.push(getColumns(item));
+		});
+		let pid = $('input[name="pid"]').attr('data-id')??0;
+		let data = {'columns': JSON.stringify(dataArr), 'pid':pid};
+		foxui.dialog({
+			title: '保存',
+			content: '您确定要保存吗',
+			cancelText: '取消',
+			confirmText: '保存',
+			confirm: function() {
+				ajaxR('save','post',data,{},function (res) {
+					if (res.code == 1) {
+						foxui.message({
+							type:'success',
+							text:res.msg
+						})
+						setTimeout('myrefresh()', 100); //指定10秒刷新一次
+					} else {
+						foxui.message({
+							type:'warning',
+							text:res.msg
+						})
+					}
+				}, function (res) {
+					foxui.message({
+						type:'danger',
+						text: res.responseJSON.msg
+					})
+				})
+			},
+			cancel: function() {
+				foxui.message({
+					type: 'warning',
+					text: '取消操作'
+				})
+			},
+		});
+
+	})
+</script>
+
+{/block}

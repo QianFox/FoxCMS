@@ -1,0 +1,210 @@
+{extend name="foxcms" /}
+
+{block name="css"}
+
+{/block}
+
+{block name="body"}
+<input name="columnId" type="hidden" value="{$columnId}"/>
+<div class="foxcms-content-inner">
+    <!-- page content -->
+    <div class="column-field-add-content">
+        <div class="section section-panel">
+            <div class="section-title">添加栏目字段</div>
+            <div class="section-main">
+
+                <div class="section-main-item">
+                    <div class="foxui-input-group foxui-align-items-start">
+
+                        <div class="input-label foxui-margin-top-24">
+                            <label>所属栏目：</label>
+                        </div>
+
+                        <div class="input-box">
+
+                            <ul class="foxui-collapse">
+                                <li class="foxui-collapse-item foxui-checkbox-group foxui-border-bottom-0">
+                                    <div class="foxui-collapse-head foxui-checkbox-head">
+                                        <i class="foxui-collapse-handle foxui-icon-kaishi-f foxui-collapse-icon"></i>
+                                        <div class="foxui-checkbox foxui-checkbox-all is-checked">
+                                            <span class="foxui-checkbox-input">
+                                                <i class="foxui-checkbox-icon"></i>
+                                                <input type="checkbox" value="" />
+                                            </span>
+                                            <span class="foxui-checkbox-label">所有栏目</span>
+                                        </div>
+                                    </div>
+                                    <div class="foxui-collapse-content foxui-checkbox-list column_ids" style="margin-left: 40px;">
+
+                                        {foreach $columnList as $key=>$vo }
+                                        <div class="foxui-margin-bottom-12 foxui-margin-left-0 foxui-checkbox  is-checked" style="float: left; width: 50%;">
+                                            <span class="foxui-checkbox-input">
+                                                <i class="foxui-checkbox-icon"></i>
+                                                <input type="checkbox" value="{$vo.id}" />
+                                            </span>
+                                            <span class="foxui-checkbox-label">{$vo.name}</span>
+                                        </div>
+                                        {/foreach}
+
+                                    </div>
+                                </li>
+                            </ul>
+
+                        </div>
+                    </div>
+                </div>
+
+                <div class="section-main-item">
+                    <div class="foxui-input-group">
+                        <div class="input-label">
+                            <label>字段标题：</label>
+                        </div>
+                        <div class="input-box">
+                            <div class="foxui-input-suffix">
+                                <input class="foxui-size-small" maxlength="10" placeholder="" value="" name="title">
+                                <i class="foxui-suffix-icon foxui-suffix-count">0/10</i>
+                            </div>
+                        </div>
+                    </div>
+                </div>
+
+                <div class="section-main-item">
+                    <div class="foxui-input-group">
+                        <div class="input-label">
+                            <label>字段名称：</label>
+                        </div>
+                        <div class="input-box">
+                            <div class="foxui-input-suffix">
+                                <input class="foxui-size-small" maxlength="30" placeholder="" name="name" onkeyup="this.value=this.value.replace(/[^a-z_0-9]/g,'');"/>
+                                <i class="foxui-suffix-icon foxui-suffix-count">0/30</i>
+                            </div>
+                        </div>
+                    </div>
+                    <p class="input-box-info">只能用英文字母、数字或下划线，数据表的真实字段名,必须英文字母开头</p>
+                </div>
+                <div class="section-main-item">
+                    <div class="foxui-input-group foxui-align-items-start">
+                        <div class="input-label">
+                            <label>字段类型：</label>
+                        </div>
+                        <div class="input-box">
+                            <div class="foxui-radio-group foxui-row radio-box-gapless foxui-gutter-2 dtype">
+                                {volist name='$fieldTypeList' id='vo'}
+                                <div class="foxui-radio {if $i == 1}is-checked{/if} foxui-col-xs-6 foxui-col-sm-6">
+                                    <span class="foxui-radio-input">
+                                        <i class="foxui-radio-icon"></i>
+                                        <input type="radio" checked="checked" value="{$vo.name}">
+                                    </span>
+                                    <span class="foxui-radio-label">{$vo.title}</span>
+                                </div>
+                                {/volist}
+                            </div>
+                        </div>
+                    </div>
+                </div>
+                <div class="section-main-item">
+                    <div class="foxui-input-group foxui-align-items-start">
+                        <div class="input-label">
+                            <label>默认值：</label>
+                        </div>
+                        <div class="input-box">
+                            <div class="foxui-textarea">
+                                <textarea autocomplete="off" rows="4" placeholder="" name="dfvalue"></textarea>
+                            </div>
+                        </div>
+                    </div>
+                    <p class="input-box-info">如果字段类型为单择项、多选项、下拉框时，此处填写被选择的项目用英文“,”分隔。如“男孩,女孩”</p>
+                </div>
+                <div class="section-main-item">
+                    <div class="foxui-input-group foxui-align-items-start">
+                        <div class="input-label">
+                            <label>提示文字：</label>
+                        </div>
+                        <div class="input-box">
+                            <div class="foxui-textarea">
+                                <textarea autocomplete="off" rows="4" placeholder="" name="remark"></textarea>
+                            </div>
+                        </div>
+                        <div>
+                            <span class="example" id="tipExample">示例</span>
+                        </div>
+                    </div>
+                </div>
+            </div>
+        </div>
+    </div>
+</div>
+<div class="foxcms-content-footer">
+    <button class="is-long foxui-size-small foxui-solid-primary" id="save">保存</button>
+</div>
+{include file="footed-copy"/}
+{/block}
+
+{block name="js"}
+
+<script>
+
+
+    //保存
+    $('#save').click(function (){
+
+        let title = $('input[name="title"]').val();
+        let name = $('input[name="name"]').val();
+        if(!letterBegin(name)){
+            foxui.message({
+                type:'warning',
+                text: "字段名称必须以英文字母开头"
+            })
+            return;
+        }
+
+        let dtype = $('.dtype .foxui-radio.is-checked input').val();
+        let dfvalue = $('textarea[name="dfvalue"]').val();
+        let remark = $('textarea[name="remark"]').val();
+        let column_ids = "";
+        $(".column_ids .foxui-checkbox.is-checked").each(function () {
+            column_ids += $(this).find("input").val() + ",";
+        })
+        if(column_ids.length > 0){
+            column_ids = column_ids.substr(0, column_ids.length-1);
+        }
+        let datas ={name, title, dtype, dfvalue, remark, column_ids};
+        foxui.dialog({
+            title: '保存',
+            content: '您确定要保存吗',
+            cancelText: '取消',
+            confirmText: '保存',
+            confirm: function (callback) {
+                ajaxR('add','post',datas,{},function (res) {
+                    if (res.code == 1) {
+                        foxui.message({
+                            type:'success',
+                            text:res.msg
+                        })
+                        window.location.href = document.referrer;//返回并且刷新
+                    } else {
+                        foxui.message({
+                            type:'danger',
+                            text:res.msg
+                        })
+                    }
+                }, function (res) {
+                    foxui.message({
+                        type:'danger',
+                        text:res.msg
+                    })
+                })
+
+                callback();
+            },
+            cancel: function () {
+                foxui.message({
+                    type:'warning',
+                    text:'取消操作'
+                })
+            },
+        });
+
+    })
+</script>
+{/block}

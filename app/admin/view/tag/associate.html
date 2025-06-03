@@ -1,0 +1,327 @@
+{extend name="foxcms" /}
+
+{block name="css"}
+{/block}
+
+{block name="body"}
+<input name="bcid" value="{$bcid}" type="hidden" />
+<input name="columnId" value="{$cid}" type="hidden" />
+<input name="id" value="{$id}" type="hidden" />
+<input name="pageSize" type="hidden" />
+<input name="currentPage" type="hidden" />
+<div class="foxcms-content-inner">
+	<!-- page content -->
+	<div class="diy-form-content">
+		<div class="content-top-operation">
+			<div class="left">
+			</div>
+			<div class="right display-flex">
+
+                <div class="foxui-select foxui-margin-right-8 ">
+                    <div class="foxui-select-handle foxui-select-icon">
+                        <input class="foxui-select-input foxui-size-small" readonly="readonly" name="column_id" placeholder="请选择" value="{$columnList[0]['columnName']}" data-id="{$columnList[0]['columnId']}" />
+                    </div>
+                    <div class="foxui-select-menu">
+                        <ul class="foxui-select-slide">
+                            {foreach $columnList as $vo }
+                            <li class="foxui-select-item" data-id="{$vo.columnId}">{$vo.columnName}</li>
+                            {foreach $vo.children as $voo }
+                            <li class="foxui-select-item  foxui-margin-left-20" data-id="{$voo.columnId}">{$voo.columnName}</li>
+                            {foreach $voo.children as $vooo }
+                            <li class="foxui-select-item  foxui-margin-left-20" data-id="{$vooo.columnId}">{$vooo.columnName}</li>
+                            {/foreach}
+                            {/foreach}
+                            {/foreach}
+                        </ul>
+                    </div>
+                </div>
+
+				<div class="foxui-input-group item-input foxui-margin-right-20" style="width: 260px;">
+					<div class="foxui-input-prepend">
+						<input class="foxui-size-small" placeholder="请输入关键字" required value="" name="keyword"/>
+					</div>
+				</div>
+				<button class="foxui-solid-primary foxui-size-small search-btn">搜索</button>
+			</div>
+		</div>
+		<div class="section section-panel margin-top-10">
+			<div class="foxui-table foxui-table-border-bottom foxui-table-hover foxui-checkbox-group">
+
+				<ul class="foxui-table-thead foxui-checkbox-head">
+					<li class="foxui-table-tr">
+						<div class="foxui-table-th" style="flex: initial; width: 40px">
+							<div class="foxui-checkbox foxui-checkbox-all">
+                                <span class="foxui-checkbox-input">
+                                    <i class="foxui-checkbox-icon"></i>
+                                    <input type="checkbox" value="" />
+                                </span>
+							</div>
+						</div>
+						<div class="foxui-table-th">ID</div>
+						<div class="foxui-table-th" style="flex: initial; width: 50%">标题</div>
+						<div class="foxui-table-th">所属栏目</div>
+						<div class="foxui-table-th">所属模型</div>
+						<div class="foxui-table-th">发布时间</div>
+						<div class="foxui-table-th">操作</div>
+					</li>
+				</ul>
+
+				<ul class="foxui-table-tbody foxui-checkbox-list">
+
+					<!--表格内容-->
+
+				</ul>
+
+				<div class="table-footer foxui-checkbox-head">
+					<div class="left display-flex foxui-align-items-center">
+						<div class="foxui-checkbox foxui-checkbox-all margin-right-24">
+                            <span class="foxui-checkbox-input">
+                                <i class="foxui-checkbox-icon"></i>
+                                <input type="checkbox" value="" />
+                            </span>
+						</div>
+
+						<div class="display-flex">
+							<button class="foxui-plain-info foxui-size-mini associate-btn">
+								<i class="foxui-icon-zhengque-o"></i>
+								<span>确认关联</span>
+							</button>
+						</div>
+					</div>
+				</div>
+			</div>
+            <div id="pagination"></div>
+		</div>
+	</div>
+</div>
+
+{include file="footed-copy"/}
+{/block}
+
+
+{block name="js"}
+<script>
+
+	/**
+	 * 初始化数据
+	 */
+	function init(param){
+        if(param == undefined){
+            param = new Object();
+        }
+		let keyword = $('input[name="keyword"]').val();
+		let bcid = $("input[name='bcid']").val()
+		let column_id = $("input[name='column_id']").attr("data-id");
+		let id = $("input[name='id']").val()
+		param.keyword = keyword;
+        param.bcid = bcid;
+        param.column_id = column_id;
+        param.id = id;
+		$.ajax({
+			type: "post",
+			url: "associate",
+			dataType: "json",
+			data: param,
+			async:false,
+			success: function (res) {
+				if (res.code == 1 && res.data) {
+					let data = res.data;
+					let paginationData = {
+						pageSize: data.per_page,
+						total: data.total,
+						currentPage: data.current_page
+					};
+					$('input[name="pageSize"]').val(paginationData.pageSize);
+					$('input[name="currentPage"]').val(paginationData.currentPage);
+					initTable(paginationData, data.data);
+				}
+			}, error: function (res) {
+			}
+		});
+	}
+
+	/**
+	 * @description: 初始化表格
+	 * @param {*} pageSize
+	 * @param {*} total
+	 * @param {*} currentPage
+	 * @param {*} dataList
+	 * @return {*}
+	 * @Date: 2022-01-12 10:55:11
+	 */
+	function initTable({ pageSize, total, currentPage }, dataList) {
+		if (dataList == undefined){
+			dataList = [];
+		}
+		if(total == undefined){
+			total = 0;
+		}
+		// 追加表格 html
+		_appendToTable(dataList);
+
+        //分页
+        foxui.pagination(
+            {
+                el: '#pagination',
+                currentPage: currentPage,
+                total: total,
+                onchange: function ({ currentPage, pageSize, total }, callback) {
+                    callback({ total, pageSize, currentPage });
+                    let param = {pageSize, currentPage};
+                    init(param)
+                },
+            },
+            {
+                type: 'plain',
+                size: 'mini',
+                isShowTotal: true,
+                isShowSize: true,
+				pageSize: pageSize
+            }
+
+        );
+	}
+
+	/**
+	 * @description: 追加表格 html
+	 * @param {*} dataList
+	 * @return {*}
+	 * @Date: 2022-01-12 00:18:40
+	 */
+	function _appendToTable(dataList) {
+		const html = _trsHtml(dataList);
+		$('.foxui-table-tbody').empty().append(html);
+	}
+
+	/**
+	 * @description: 表格 html
+	 * @param {*} dataList
+	 * @return {*}
+	 * @Date: 2022-01-12 00:18:52
+	 */
+	function _trsHtml(dataList) {
+		let htmlArr = [];
+		dataList.forEach(item => {
+			htmlArr.push(`
+            <li class="foxui-table-tr">
+                <div class="foxui-table-td" style="flex: initial; width: 40px">
+                    <div class="foxui-checkbox ${item.isCheck}">
+                        <span class="foxui-checkbox-input">
+                            <i class="foxui-checkbox-icon"></i>
+                            <input type="checkbox" value=""/>
+                        </span>
+                    </div>
+                </div>
+                <div class="foxui-table-td" data-id="${item.model}">${item.id}</div>
+                <div class="foxui-table-td blue-color" style="flex: initial; width: 50%">${item.title}</div>
+                <div class="foxui-table-td">${item.column||""}</div>
+                <div class="foxui-table-td">${item.model_name}</div>
+                <div class="foxui-table-td">${item.release_time||""}</div>
+                <div class="foxui-table-td">
+                    <button class="foxui-text-primary foxui-size-medium edit-btn"  id="${item.id}" data-id="${item.model}" onclick="associate(this)">关联</button>
+                </div>
+            </li>
+        `);
+		});
+		return htmlArr.join('');
+	}
+
+	init();
+
+	//搜索
+	$(".search-btn").on('click', function() {
+		init();
+	});
+
+	//重置
+	$("button[name='reset']").on('click', function() {
+		$('input[name="status"]').val("");
+		$('input[name="keyword"]').val("");
+	});
+
+	//关联
+	function associate(obj) {
+		let id = $(obj).attr("id");
+		let model = $(obj).attr("data-id");
+		let list = [{id, model}];
+		confirmAssociate({
+			"list": JSON.stringify(list),
+			"id": $("input[name='id']").val()
+		});
+	}
+
+	//确认关联
+	$('.table-footer .associate-btn').click(function () {
+		let $isChecked = $('.foxui-table-td .foxui-checkbox.is-checked'),
+				$checkedTr = $isChecked.closest('.foxui-table-tr'),
+				len = $isChecked.length,
+				list = [];
+
+		if (len < 1) {
+			foxui.message({
+				text: '请先选译要启用的数据！',
+				type: 'danger',
+			});
+		} else {
+			foxui.dialog({
+				title: '关联',
+				content: '您确定要关联选中的所有数据吗？',
+				confirmText: '关联',
+				cancelText: '取消',
+				buttonType: 'danger',
+				buttonSize: 'small',
+				confirm: function (callback) {
+					// 异步删除数据
+					$checkedTr.each(function () {
+						let id = $(this).find('.foxui-table-td:nth-child(2)').text();
+						let model = $(this).find('.foxui-table-td:nth-child(2)').attr("data-id");
+						list.push({id, model});
+					});
+					confirmAssociate({
+						"list": JSON.stringify(list),
+						"id": $("input[name='id']").val()
+					});
+					callback();
+				},
+			});
+		}
+	});
+
+	//确认关联
+	function confirmAssociate($param) {
+		$.ajax({
+			type: "post",
+			url: 'confirmAssociate',
+			dataType: "json",
+			data: $param,
+			success: function(res) {
+				if (res.code == 1) {
+					foxui.message({
+						text: res.msg,
+						type: 'success',
+					});
+
+					//初始化
+					let pageSize = $('input[name="pageSize"]').val();
+					let currentPage = $('input[name="currentPage"]').val();
+					let param = {pageSize, currentPage};
+					init(param);
+				}else{
+					foxui.message({
+						text: res.msg,
+						type: 'warning',
+					});
+				}
+			},
+			error: function(res) {
+				foxui.message({
+					text: '操作失败',
+					type: 'warning',
+				});
+			}
+		});
+	}
+
+</script>
+
+{/block}

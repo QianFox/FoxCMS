@@ -1,0 +1,169 @@
+{extend name="foxcms" /}
+
+{block name="css"}
+{/block}
+
+{block name="body"}
+<input name="columnId" type="hidden" value="{$columnId}"/>
+
+<div class="foxcms-content-inner">
+    <!-- page content -->
+    <div class="contact-way-content">
+        <div class="section section-panel">
+            <div class="section-title">添加模型</div>
+            <div class="section-main">
+                <div class="section-main-item">
+                    <div class="foxui-input-group">
+                        <div class="input-label">
+                            <label class="foxui-required">模型名称：</label>
+                        </div>
+                        <div class="input-box">
+                            <div class="foxui-input-suffix">
+                                <input class="foxui-size-small" maxlength="15" placeholder="请输入标题" name="name">
+                                <i class="foxui-suffix-icon foxui-suffix-count">0/15</i>
+                            </div>
+                        </div>
+                    </div>
+                </div>
+
+                <div class="section-main-item">
+                    <div class="foxui-input-group">
+                        <div class="input-label">
+                            <label class="foxui-required">数据表名：</label>
+                        </div>
+                        <div class="input-box">
+                            <div class="foxui-input-prepend">
+                                <div class="foxui-prepend-inner is-grey">{$tableHead}</div>
+                                <input placeholder="请输入数据表名" required  name="nid" onkeyup="this.value=this.value.replace(/[^a-z0-9]/g,'');"/>
+                            </div>
+                        </div>
+                    </div>
+                    <p class="input-box-info">
+                        与文档的模板相关连，建议由小写字母、数字组成，因为部份Unix系统无法识别中文件
+                    </p>
+                </div>
+
+                <div class="section-main-item">
+                    <div class="foxui-input-group">
+                        <div class="input-label">
+                            <label class="foxui-required">会员类型：</label>
+                        </div>
+                        <div class="input-box">
+
+                            <div class="foxui-select">
+                                <div class="foxui-select-handle foxui-select-icon">
+                                    <input class="foxui-select-input" readonly="readonly" name="member_type" placeholder="请选择" value="{$memberTypes[0]['dict_label']}" data-id="{$memberTypes[0]['dict_value']}" />
+                                </div>
+                                <div class="foxui-select-menu">
+                                    <ul class="foxui-select-slide">
+                                        {foreach $memberTypes as $key=>$vo }
+                                        <li class="foxui-select-item" data-id="{$vo.dict_value}">{$vo.dict_label}</li>
+                                        {/foreach}
+                                    </ul>
+                                </div>
+                            </div>
+                        </div>
+                    </div>
+                </div>
+
+                <div class="section-main-item">
+                    <div class="foxui-input-group">
+                        <div class="input-label">
+                            <label class="foxui-required">状态：</label>
+                        </div>
+                        <div class="input-box status">
+                            <div class="foxui-radio-group">
+                                <div class="foxui-radio is-checked">
+                                    <span class="foxui-radio-input">
+                                        <i class="foxui-radio-icon"></i>
+                                        <input type="radio" value="1" name="status">
+                                    </span>
+                                    <span class="foxui-radio-label">启用</span>
+                                </div>
+                                <div class="foxui-radio">
+                                    <span class="foxui-radio-input">
+                                        <i class="foxui-radio-icon"></i>
+                                        <input type="radio" value="0" name="status">
+                                    </span>
+                                    <span class="foxui-radio-label">禁用</span>
+                                </div>
+                            </div>
+                        </div>
+                    </div>
+                </div>
+            </div>
+        </div>
+    </div>
+</div>
+
+
+
+<div class="foxcms-content-footer">
+    <button class="is-long foxui-size-small foxui-solid-primary" id="save">保存</button>
+</div>
+{include file="footed-copy"/}
+{/block}
+
+
+{block name="js"}
+
+<script src="{$staticPath}js/jquery.validate.min.js"></script>
+
+<script>
+
+    //保存
+    $('#save').click(function (){
+        //状态
+        let status = $('.status .foxui-radio.is-checked input').val();
+        let name = $('input[name="name"]').val();
+        let nid = $('input[name="nid"]').val();
+        let member_type = $('input[name="member_type"]').attr("data-id");
+        let member_type_desc = $('input[name="member_type"]').val();
+        let datas ={"name": name, "nid":nid, "status":status, member_type, "member_type_desc": member_type_desc };
+
+        foxui.dialog({
+            title: '保存',
+            content: '您确定要保存吗',
+            cancelText: '取消',
+            confirmText: '保存',
+            confirm: function (callback) {
+                $.ajax({
+                    type: "post",
+                    url: 'add',
+                    dataType: "json",
+                    data: datas,
+                    success: function (res) {
+                        if (res.code == 1) {
+                            foxui.message({
+                                type:'success',
+                                text:res.msg
+                            })
+                            window.location.href=document.referrer;//返回并且刷新
+                        } else {
+                            foxui.message({
+                                type:'warning',
+                                text:res.msg
+                            })
+                        }
+                    }, error: function (res) {
+                        foxui.message({
+                            type:'danger',
+                            text:res.msg
+                        })
+                    }
+                });
+                callback();
+            },
+            cancel: function () {
+                foxui.message({
+                    type:'warning',
+                    text:'取消操作'
+                })
+            },
+        });
+
+    })
+
+
+</script>
+{/block}

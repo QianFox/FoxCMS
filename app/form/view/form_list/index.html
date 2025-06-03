@@ -1,0 +1,891 @@
+{extend name="foxcms_apply" /}
+
+{block name="css"}
+{/block}
+
+{block name="body"}
+<div class="foxcms-content-inner">
+    <!-- page content -->
+    <div class="diy-form-content">
+        <div class="content-top-operation">
+            <input name="bcid" value="{$bcid}" type="hidden" />
+            <div class="left">
+                <a href="{:url('add')}?type=1&columnId={$columnId}">
+                    <button class="foxui-size-small foxui-solid-primary">
+                        <i class="foxui-icon-jiahao-o"></i>
+                        <span>添加自定义表单</span>
+                    </button>
+                </a>
+            </div>
+            <div class="right display-flex">
+                <div class="foxui-input-group item-input margin-right-20">
+                    <div class="foxui-input-prepend">
+                        <input class="foxui-size-small" placeholder="请输入关键字" required value="" name="keyword"/>
+                    </div>
+                </div>
+                <button class="foxui-solid-primary foxui-size-small search-btn">搜索</button>
+            </div>
+        </div>
+        <div class="section section-panel margin-top-10">
+            <div class="foxui-table foxui-table-border-bottom foxui-table-hover foxui-checkbox-group">
+
+                <ul class="foxui-table-thead foxui-checkbox-head">
+                    <li class="foxui-table-tr">
+                        <div class="foxui-table-th" style="flex: initial; width: 40px">
+                            <div class="foxui-checkbox foxui-checkbox-all">
+                                <span class="foxui-checkbox-input">
+                                    <i class="foxui-checkbox-icon"></i>
+                                    <input type="checkbox" value="" />
+                                </span>
+                            </div>
+                        </div>
+                        <div class="foxui-table-th">表单ID</div>
+                        <div class="foxui-table-th">表单名称</div>
+                        <div class="foxui-table-th">数据表名</div>
+                        <div class="foxui-table-th">创建时间</div>
+                        <div class="foxui-table-th">已收集数据(条)</div>
+                        <div class="foxui-table-th">操作</div>
+                    </li>
+                </ul>
+
+                <ul class="foxui-table-tbody foxui-checkbox-list loading-container" id="loadingContainer">
+
+                    <!--表格内容-->
+
+                </ul>
+
+                <div class="table-footer foxui-checkbox-head">
+                    <div class="left display-flex foxui-align-items-center">
+                        <div class="foxui-checkbox foxui-checkbox-all margin-right-24">
+                            <span class="foxui-checkbox-input">
+                                <i class="foxui-checkbox-icon"></i>
+                                <input type="checkbox" value="" />
+                            </span>
+                        </div>
+                        <div class="display-flex">
+                            <button class="foxui-plain-info foxui-size-mini delete-btn">
+                                <i class="foxui-icon-shanchu-o"></i>
+                                <span>删除</span>
+                            </button>
+                        </div>
+                    </div>
+                    <div class="right total">共N条记录</div>
+                </div>
+            </div>
+
+        </div>
+    </div>
+
+</div>
+
+{include file="footed-copy"/}
+{/block}
+
+
+{block name="js"}
+<script>
+
+    /**
+     * 初始化数据
+     * @param searchData
+     */
+    function init(searchData){
+        $.ajax({
+            type: "post",
+            url: "index",
+            dataType: "json",
+            data: searchData,
+            success: function (res) {
+                if (res.code == 1 && res.data) {
+                    let data = res.data;
+                    let paginationData = {
+                        pageSize: data.per_page,
+                        total: data.total,
+                        currentPage: data.current_page
+                    };
+                    initTable(paginationData, data.data);
+                    initMethod();
+                }
+                $('#loadingContainer').removeClass('loading-container');
+            }, error: function (res) {
+                $('#loadingContainer').removeClass('loading-container');
+            }
+        });
+    }
+
+    /**
+     * @description: 初始化表格
+     * @param {*} pageSize
+     * @param {*} total
+     * @param {*} currentPage
+     * @param {*} dataList
+     * @return {*}
+     * @Date: 2022-01-12 10:55:11
+     */
+    function initTable({ pageSize, total, currentPage }, dataList) {
+        if (dataList == undefined){
+            dataList = [];
+        }
+        if(total == undefined){
+            total = 0;
+        }
+        // 追加表格 html
+        _appendToTable(dataList);
+        //总数
+        $(".right.total").empty().html("共" + total + "条记录");
+    }
+
+
+    /**
+     * @description: 追加表格 html
+     * @param {*} dataList
+     * @return {*}
+     * @Date: 2022-01-12 00:18:40
+     */
+    function _appendToTable(dataList) {
+        const html = _trsHtml(dataList);
+        $('.foxui-table-tbody').empty().append(html);
+    }
+
+    /**
+     * @description: 表格 html
+     * @param {*} dataList
+     * @return {*}
+     * @Date: 2022-01-12 00:18:52
+     */
+    function _trsHtml(dataList) {
+        let htmlArr = [];
+        dataList.forEach(item => {
+            htmlArr.push(`
+            <li class="foxui-table-tr">
+                <div class="foxui-table-td" style="flex: initial; width: 40px">
+                    <div class="foxui-checkbox">
+                        <span class="foxui-checkbox-input">
+                            <i class="foxui-checkbox-icon"></i>
+                            <input type="checkbox" value="" />
+                        </span>
+                    </div>
+                </div>
+                <div class="foxui-table-td">${item.id}</div>
+                <div class="foxui-table-td blue-color">${item.name}</div>
+                <div class="foxui-table-td">${item.table_name}</div>
+                <div class="foxui-table-td">${item.create_time}</div>
+                <div class="foxui-table-td">
+                    <span>${item.formTotal}</span>
+                    <span class="line">/</span>
+                    <span class="green-color">${item.viewCount}</span>
+                </div>
+                <div class="foxui-table-td">
+                    <button class="foxui-text-primary foxui-size-medium edit-btn">编辑</button>
+                    <button class="foxui-text-primary foxui-size-medium delete-btn">删除</button>
+                    <button class="foxui-text-primary foxui-size-medium call">调用</button>
+                    <button class="foxui-text-primary foxui-size-medium look">查看</button>
+                </div>
+            </li>
+        `);
+        });
+        return htmlArr.join('');
+    }
+
+    //运行表格初始化
+    let bcid = $("input[name='bcid']").val();
+    let datas = {
+        "bcid": bcid
+    };
+    init(datas);
+
+    //搜索
+    $(".search-btn").on('click', function() {
+        $('#loadingContainer').addClass('loading-container');
+        let keyword = $("input[name='keyword']").val()
+        let datas = {
+            "keyword": keyword
+        };
+        init(datas);
+    });
+
+    //初始化方法
+    function initMethod() {
+        //调用
+        $('.foxui-table-tr .call').click(function () {
+            let $tr = $(this).closest('.foxui-table-tr'),
+                id = $tr.find('.foxui-table-td:nth-child(2)').text();
+            let dataObj = {id};
+            foxui.dialog({
+                title: '表单调用',
+                content: _callHtml(dataObj),
+                confirmText: '确认',
+                buttonSize: 'small',
+                buttonAlign: 'center',
+                width: '1220px',
+                longButton: true,
+                border: true,
+                marginTop: '8vh',
+                confirm: function (callback) {
+                    callback();
+                },
+            });
+        })
+
+        //查看
+        $('.foxui-table-tr .look').click(function () {
+            let $tr = $(this).closest('.foxui-table-tr'),
+                id = $tr.find('.foxui-table-td:nth-child(2)').text();
+            // window.location.href = ADMIN_PATH + `/FormList/look?formListId=${id}&type=1`;
+            window.location.href = "{:url('FormList/look')}?" + `formListId=${id}&type=1`;
+        })
+
+        // 表单调用 html
+        function _callHtml(dataObj) {
+
+            let id = dataObj.id;
+            let datas = {'id': id};
+            let dataList = [];
+            $.ajax({
+                type: "get",
+                url: 'findFormFields',
+                dataType: "json",
+                data: datas,
+                async: false,
+                success: function (res) {
+                    if (res.code == 1) {
+                        dataList = res.data;
+                    }
+                }, error: function (res) {
+
+                }
+            });
+
+            let url_receive = "{:url('plus/Diyform/receive')}";
+            let url_verify = "{:url('plus/Diyform/verify')}";
+            //拼装数据
+            let fieldHtml = '<form action="'+url_receive+'" method="post">';//纯html
+            fieldHtml += '\r\n';
+            fieldHtml += '<input type="hidden"  name="id" style="flex:1" value="'+id+'" />';
+            fieldHtml += '\r\n';
+            let myFieldHtml = fieldHtml;//自己框架的标签
+            dataList.forEach(item => {
+                let type = item.dtype;
+                switch (type) {
+                    case 'inputtext':
+                    case 'text':
+                        fieldHtml +=  [
+                            '<div>',
+                            '\r\n',
+                            `    <label>` + item.title + '</label>',
+                            '\r\n',
+                            `    <input  placeholder="`+item.marke_word+'" name="'+item.name+'" style="flex:1" value="'+item.val+'" />',
+                            '\r\n',
+                            '</div>',
+                            '\r\n',
+                        ].join('');
+
+                        myFieldHtml +=  [
+                            '<div class="foxui-input-group" data-id="'+item.id+'">',
+                            '\r\n',
+                            `    <label class="foxui-required">` + item.title + '</label>',
+                            '\r\n',
+                            `    <input class="foxui-size-small"  name=" `+item.name+'"  placeholder="'+item.marke_word+'" style="flex:1" value="'+ item.name+'" />',
+                            '\r\n',
+                            '</div>',
+                            '\r\n',
+                        ].join('');
+
+                        break;
+                    case 'textarea':
+                    case 'multitext':
+                        fieldHtml += [
+                            '\r\n',
+                            '<div>',
+                            '\r\n',
+                            `    <label>` + item.title + '</label>',
+                            '\r\n',
+                            `    <textarea name="`+item.name+'" autocomplete="off" rows="3" placeholder="'+item.marke_word+'">'+item.val+'</textarea>',
+                            '\r\n',
+                            '</div>',
+                            '\r\n',
+                        ].join('');
+
+                        myFieldHtml += [
+                            '<div class="foxui-input-group foxui-align-items-start" data-id="'+item.id+'">',
+                            '\r\n',
+                            `    <label class="foxui-required">` + item.title + '</label>',
+                            '\r\n',
+                            `    <div class="foxui-textarea" style="flex:1">`,
+                            '\r\n',
+                            `        <textarea name="`+item.name+'" class="form-input-placeholder" autocomplete="off" rows="3" placeholder="'+item.marke_word+'">'+item.val+'</textarea>',
+                            '\r\n',
+                            `    </div>`,
+                            '\r\n',
+                            '</div>',
+                        ].join('');
+                        break;
+                    case 'radio':
+                        let radioDefaultVal = item.dfvalue;
+                        let radioDefaultArr = radioDefaultVal.split(",");
+                        let fieldHtmlRadio = [
+                            '\r\n',
+                            '<div>',
+                            '\r\n',
+                            `    <label>` + item.title + '</label>',
+                            '\r\n',
+                            `    <div>`,
+                            '\r\n'
+                        ];
+                        let myFieldHtmlRadio = [
+                            '\r\n',
+                            '<div class="foxui-input-group">',
+                            '\r\n',
+                            `    <label class="foxui-required">` + item.title + '</label>',
+                            '\r\n',
+                            `    <div class="foxui-radio-group" style="flex:1">`,
+                            '\r\n',
+                        ];
+                        radioDefaultArr.forEach(it => {
+                            let isCheck = (it == item.val)?'checked':'';
+                            fieldHtmlRadio.push(`        <input type="radio" value="`+it+'" name="'+item.name+'" '+isCheck+'/>');
+                            fieldHtmlRadio.push('\r\n');
+
+                            myFieldHtmlRadio.push(`    <div class="foxui-radio`+ isCheck+'">');
+                            myFieldHtmlRadio.push('\r\n');
+                            myFieldHtmlRadio.push(`    <span class="foxui-radio-input">`);
+                            myFieldHtmlRadio.push('\r\n');
+                            myFieldHtmlRadio.push(`        <i class="foxui-radio-icon"></i>`);
+                            myFieldHtmlRadio.push('\r\n');
+                            myFieldHtmlRadio.push(`        <input type="radio" value="${it}" name="${item.name}" />`);
+                            myFieldHtmlRadio.push('\r\n');
+                            myFieldHtmlRadio.push(`    </span>`);
+                            myFieldHtmlRadio.push('\r\n');
+                            myFieldHtmlRadio.push(`    <span class="foxui-radio-label">`+ it +'</span>');
+                            myFieldHtmlRadio.push('\r\n');
+                            myFieldHtmlRadio.push(`    </div>`);
+                            myFieldHtmlRadio.push('\r\n');
+                        })
+                        fieldHtmlRadio.push(`    </div>`);
+                        fieldHtmlRadio.push('\r\n');
+                        fieldHtmlRadio.push('</div>');
+                        fieldHtmlRadio.push('\r\n');
+                        fieldHtml += fieldHtmlRadio.join('');
+
+                        myFieldHtmlRadio.push('</div>');
+                        myFieldHtmlRadio.push('\r\n');
+                        myFieldHtmlRadio.push('</div>');
+                        myFieldHtml += myFieldHtmlRadio.join('');
+
+                        break;
+                    case 'checkbox':
+                        //默认值
+                        let checkboxDefaultVal = item.dfvalue;
+                        let checkboxDefaultArr = checkboxDefaultVal.split(",");
+                        //选择值
+                        let checkboxVal = item.val;
+                        let checkboxArr = checkboxVal.split(",");
+                        let fieldHtmlCheckbox = [
+                            '\r\n',
+                            '<div>',
+                            '\r\n',
+                            `    <label>` + item.title + '</label>',
+                            '\r\n',
+                            `    <div>`,
+                            '\r\n',
+                        ];
+                        let myFieldHtmlCheckbox = [
+                            '\r\n',
+                            '<div class="foxui-input-group">',
+                            '\r\n',
+                            `    <label class="foxui-required">` + item.title + '</label>',
+                            '\r\n',
+                            `    <div class="foxui-checkbox-group" style="flex:1">`
+                        ];
+
+                        checkboxDefaultArr.forEach(it => {
+                            let isCheck = ($.inArray(it,checkboxArr)>-1) ? 'checked' : '';
+                            fieldHtmlCheckbox.push('\r\n');
+                            fieldHtmlCheckbox.push(`    <input type="checkbox" value="${it}"`+isCheck+' name="'+item.name+'" />');
+                            fieldHtmlCheckbox.push('\r\n');
+                            fieldHtmlCheckbox.push('<span>'+it+'</span>');
+                            fieldHtmlCheckbox.push('\r\n');
+
+                            myFieldHtmlCheckbox.push('<div class="foxui-checkbox'+ isCheck +'">');
+                            myFieldHtmlCheckbox.push('\r\n');
+                            myFieldHtmlCheckbox.push('<span class="foxui-checkbox-input">');
+                            myFieldHtmlCheckbox.push('\r\n');
+                            myFieldHtmlCheckbox.push('<i class="foxui-checkbox-icon"></i>');
+                            myFieldHtmlCheckbox.push('\r\n');
+                            myFieldHtmlCheckbox.push('<input type="checkbox" value="'+it+'" name="'+item.name+'"/>');
+                            myFieldHtmlCheckbox.push('\r\n');
+                            myFieldHtmlCheckbox.push('</span>');
+                            myFieldHtmlCheckbox.push('\r\n');
+                            myFieldHtmlCheckbox.push('<span class="foxui-checkbox-label">'+it+'</span>');
+                            myFieldHtmlCheckbox.push('\r\n');
+                            myFieldHtmlCheckbox.push('</div>');
+                            myFieldHtmlCheckbox.push('\r\n');
+                        })
+                        fieldHtmlCheckbox.push(`    </div>`);
+                        fieldHtmlCheckbox.push('\r\n');
+                        fieldHtmlCheckbox.push('</div>');
+                        fieldHtmlCheckbox.push('\r\n');
+                        fieldHtml += fieldHtmlCheckbox.join('');
+
+                        myFieldHtmlCheckbox.push('</div>');
+                        myFieldHtmlCheckbox.push('\r\n');
+                        myFieldHtmlCheckbox.push('</div>');
+                        myFieldHtml += myFieldHtmlCheckbox.join('');
+                        break;
+                    case 'select':
+                        //默认值
+                        let selectDefaultVal = item.dfvalue;
+                        let selectDefaultArr = selectDefaultVal.split(",");
+                        let fieldHtmlSelect = [
+                            '\r\n',
+                            '<div>',
+                            '\r\n',
+                            `    <label>`+ item.title +'</label>',
+                            '\r\n',
+                            `    <select name="${item.name}">`,
+                            '\r\n',
+                        ];
+
+                        let myFieldHtmlSelect = [
+                            '\r\n',
+                            '<div class="foxui-input-group">',
+                            '\r\n',
+                            `    <label class="foxui-required form-label">`+ item.title +'</label>',
+                            '\r\n',
+                            `    <div class="foxui-select" style="flex: 1">`,
+                            '\r\n',
+                            `        <div class="foxui-select-handle foxui-select-icon">`,
+                            '\r\n',
+                            `            <input class="foxui-select-input foxui-size-small" readonly="readonly" placeholder="请选择" name="${item.name}"  value="`+ item.val +'" />',
+                            '\r\n',
+                            `        </div>`,
+                            '\r\n',
+                            `        <div class="foxui-select-menu">`,
+                            '\r\n',
+                            `            <ul class="foxui-select-slide">`,
+                            '\r\n',
+                        ];
+
+                        selectDefaultArr.forEach(it => {
+                            fieldHtmlSelect.push(`        <option value ="`+it+'">'+it+'</option>');
+                            fieldHtmlSelect.push('\r\n');
+
+                            myFieldHtmlSelect.push(`                <li class="foxui-select-item">`);
+                            myFieldHtmlSelect.push('\r\n');
+                            myFieldHtmlSelect.push(`                    <span>`+it+'</span>');
+                            myFieldHtmlSelect.push('\r\n');
+                            myFieldHtmlSelect.push(`                </li>`);
+                            myFieldHtmlSelect.push('\r\n');
+                        })
+
+                        fieldHtmlSelect.push(`    </select>`);
+                        fieldHtmlSelect.push('\r\n');
+                        fieldHtmlSelect.push(`</div>`);
+                        fieldHtmlSelect.push('\r\n');
+                        fieldHtml += fieldHtmlSelect.join('');
+
+                        myFieldHtmlSelect.push(`            </ul>`);
+                        myFieldHtmlSelect.push('\r\n');
+                        myFieldHtmlSelect.push(`        </div>`);
+                        myFieldHtmlSelect.push('\r\n');
+                        myFieldHtmlSelect.push(`    </div>`);
+                        myFieldHtmlSelect.push('\r\n');
+                        myFieldHtmlSelect.push('</div>');
+                        myFieldHtmlSelect.push('\r\n');
+                        myFieldHtml += myFieldHtmlSelect.join('');
+                        break;
+                    case 'switch':
+                        let isCheckSwitch = (item.val == 1) ? 'checked' : '';
+                        fieldHtml += [
+                            '\r\n',
+                            '<div>',
+                            '\r\n',
+                            `    <label>`+ item.title +'</label>',
+                            '\r\n',
+                            `    <div class="switch" style="flex:1">`,
+                            '\r\n',
+                            `    <input name="${item.name}" type="checkbox" value="'`+ item.val +'" '+isCheckSwitch+' />',
+                            '\r\n',
+                            `    </div>`,
+                            '\r\n',
+                            '</div>',
+                        ].join('');
+
+
+                        myFieldHtml += [
+                            '\r\n',
+                            '<div class="foxui-input-group">',
+                            '\r\n',
+                            `    <label class="foxui-required">`+ item.title +'</label>',
+                            '\r\n',
+                            `    <div class="switch" style="flex:1">`,
+                            '\r\n',
+                            `        <div class="foxui-switch `+ isCheckSwitch +'">',
+                            '\r\n',
+                            `            <input name="${item.name}" type="checkbox" value="`+ item.val +'" class="foxui-switch-input" />',
+                            '\r\n',
+                            `    <span class="foxui-switch-core"></span>`,
+                            '\r\n',
+                            `        </div>`,
+                            '\r\n',
+                            `    </div>`,
+                            '\r\n',
+                            '</div>',
+                        ].join('');
+                        break;
+                    case 'datepicker':
+                    case 'timepicker':
+                    case 'datetimepicker':
+                    case 'datetime':
+
+                        fieldHtml += [
+                            '\r\n',
+                            '<div>',
+                            '\r\n',
+                            `    <label> ${item.title}</label>`,
+                            '\r\n',
+                            `    <input name="`+item.name+'" value="'+item.val+'" />',
+                            '\r\n',
+                            '</div>',
+                            '\r\n',
+                        ].join('');
+
+                        let typeText = "";
+                        let typeIconText = "";
+                        if(type === "datepicker"){
+                            typeText = "foxui-date-picker";
+                            typeIconText = "foxui-icon-calendar";
+                        }else if(type === "timepicker"){
+                            typeText = "foxui-time-picker has-seconds";
+                            typeIconText = "foxui-icon-time";
+                        }else if(type === "datetimepicker" || type === "datetime"){
+                            typeText = "foxui-datetime-picker has-seconds";
+                            typeIconText = "foxui-icon-time";
+                        }
+                        myFieldHtml += [
+                            '\r\n',
+                            '<div class="foxui-input-group">',
+                            '\r\n',
+                            `    <label class="foxui-required"> ${item.title}</label>`,
+                            '\r\n',
+                            `    <div class="foxui-picker ${typeText} " style="flex:1">`,
+                            '\r\n',
+                            `    <div class="foxui-picker-handle foxui-input-prefix">`,
+                            '\r\n',
+                            `        <i class="${typeIconText} foxui-prefix-icon"></i>`,
+                            '\r\n',
+                            `    <input class="foxui-size-small form-input-placeholder" readonly="readonly" placeholder="请选择"  name="${item.name}" value="${item.val}"/>`,
+                            '\r\n',
+                            `    <i class="foxui-icon-close-circle foxui-suffix-icon foxui-suffix-clear"></i>`,
+                            '\r\n',
+                            `    </div>`,
+                            '\r\n',
+                            `</div>`,
+                            '\r\n',
+                            `</div>`,
+                        ].join('');
+
+                        break;
+                    case 'image':
+                    case 'pic':
+                        fieldHtml += [
+                            '\r\n',
+                            '<div>',
+                            '\r\n',
+                            `    <label>图片文件：</label>`,
+                            '\r\n',
+                            `    <img name="'`+item.name+'" src="' +item.img.url+'"/>',
+                            '\r\n',
+                            '</div>',
+                        ].join('');
+
+                        let picText = `<ul class="foxui-images-list ">\r\n
+                        <li class="foxui-images-item foxui-animate-fadeInDown">\r\n
+                            <div class="content">\r\n
+                                <img data-id="${item.img.id}"  name="${item.name}" src="${item.img.url}">\r\n
+                                <span class="replace">替换</span><i class="foxui-icon-cuowu-f delete"></i>\r\n
+                            </div>\r\n
+                        </li>\r\n
+                    </ul>\r\n`;
+                        let displayText = "";
+                        if(item.img != undefined && item.img.id != undefined){
+                            displayText = "none";
+                        }
+                        myFieldHtml += [
+                            '\r\n',
+                            '<div class="foxui-input-group foxui-align-items-start">',
+                            '\r\n',
+                            '<label class="foxui-required">图片文件：</label>',
+                            '\r\n',
+                            '<div class="foxui-images" data-count="1">',
+                            '\r\n',
+                            '<div class="foxui-images-card">',
+                            '\r\n',
+                            '<ul class="foxui-images-list">',
+                            '\r\n',
+                            `${picText}`,
+                            '\r\n',
+                            `<div class="foxui-images-handle" style="display: ${displayText};">`,
+                            '\r\n',
+                            '<div class="foxui-images-handle-inner">',
+                            '\r\n',
+                            '<i class="foxui-icon-jiahao-o"></i>',
+                            '\r\n',
+                            '<span class="text">添加图片</span>',
+                            '\r\n',
+                            '</div>',
+                            '\r\n',
+                            '</div>',
+                            '\r\n',
+                            '</ul>',
+                            '\r\n',
+                            '</div>',
+                            '\r\n',
+                            '</div>',
+                            '\r\n',
+                            '</div>',
+                        ].join('');
+
+                        break;
+                    case 'color':
+                        fieldHtml += [
+                            '\r\n',
+                            '<div>',
+                            '\r\n',
+                            `    <label>`+ item.title +'</label>',
+                            '\r\n',
+                            `    <input name="'`+item.name+'" value="'+item.val +'"/>',
+                            '\r\n',
+                            '</div>',
+                        ].join('');
+
+                        myFieldHtml += [
+                            '\r\n',
+                            '<div class="foxui-input-group">',
+                            '\r\n',
+                            '<label class="foxui-required">'+ item.title +'</label>',
+                            '\r\n',
+                            '<div class="foxui-color">',
+                            '\r\n',
+                            '<div class="foxui-color-handle is-alpha">',
+                            '\r\n',
+                            '<span class="foxui-color-show" style="background-color: '+item.val +'"></span>',
+                            '\r\n',
+                            '<i class="foxui-icon-close" style="display: none"></i>',
+                            '\r\n',
+                            '<span class="foxui-color-background"></span>',
+                            '\r\n',
+                            '<input class="foxui-color-input" name="'+item.name+'" "'+item.val +'"  />',
+                            '\r\n',
+                            '</div>',
+                            '\r\n',
+                            '</div>',
+                            '\r\n',
+                            '</div>',
+                        ].join('');
+
+                        break;
+                }
+            });
+            fieldHtml += '\r\n';
+            fieldHtml += '<div>';
+
+            // < img src="/plus/Diyform/verify" id="vercode" onclick="this.src=this.src+'?'" style="cursor: pointer; width: 50px"/>
+            fieldHtml += '<input placeholder="验证码" required name="vercode" />'; 
+            fieldHtml += '\r\n';
+            fieldHtml += '\r\n';
+            fieldHtml += '<img onclick="this.src=this.src + \'?\'" id="vercode" style="cursor: pointer; width: 120px"/>';
+            fieldHtml += '\r\n';
+            fieldHtml += '<script>window.onload = function() {document.getElementById("vercode").src="'+url_verify+'"}<\/script>';
+            fieldHtml += '\r\n';
+            fieldHtml += '\r\n';
+            fieldHtml += '</div>';
+            fieldHtml += '\r\n';
+            fieldHtml += "<input type=\"submit\" value=\"提交\">";
+            fieldHtml += '\r\n';
+            fieldHtml += "</form>";
+
+            myFieldHtml += "<input type=\"submit\" value=\"提交\">";
+            myFieldHtml += '\r\n';
+            myFieldHtml += '<div class="item">';
+            myFieldHtml += '<input placeholder="验证码" required name="vercode" />';
+            myFieldHtml += '\r\n';
+            myFieldHtml += '\r\n';
+            myFieldHtml += '<img onclick="this.src=this.src + \'?\'" id="vercode" style="cursor: pointer; width: 120px"/>';
+            myFieldHtml += '\r\n';
+            myFieldHtml += '<script>window.onload = function() {document.getElementById("vercode").src="'+url_verify+'"}<\/script>';
+            myFieldHtml += '\r\n';
+            myFieldHtml += '\r\n';
+            myFieldHtml += '</div>';
+            myFieldHtml += '\r\n';
+            myFieldHtml += "<input type=\"submit\" value=\"提交\">";
+            myFieldHtml += '\r\n';
+            myFieldHtml += "</form>";
+
+            return [
+                '<div class="edit-model-call-dialog" style="max-height: 600px; overflow: auto" style="width:100%;">',
+
+                '<div class="foxui-input-group foxui-vertical">',
+
+                `<div class="foxui-border-bottom foxui-padding-bottom-20">`,
+                '<label>原生表单实例(需自行设置表单样式)：</label>',
+                '<div class="foxui-padding-20 foxui-bg-lighter" style="width:100%;">',
+                `<div class="foxui-textarea" >`,
+                ` <xmp>`,
+                `${fieldHtml}`,
+                `</xmp>`,
+                `</div>`,
+                `</div>`,
+                `</div>`,
+
+                `<div class="foxui-border-bottom foxui-padding-top-20 foxui-padding-bottom-20" style="width:100%;">`,
+                '<label>FOXUI表单调用代码：</label>',
+                '<p>请先引入foxui.min.css与common.js文件：</p>',
+
+                '<div class="foxui-bg-lighter foxui-padding-20">',
+                `<xmp><link rel="stylesheet" href="/static/css/foxui-1.32.min.css" /></xmp>`,
+                `<xmp><script src="/static/js/jquery-3.6.0.min.js"><\/script></xmp>`,
+                `<xmp><script src="/static/js/foxui-1.32.min.js"><\/script></xmp>`,
+                `<div class="foxui-textarea" >`,
+                `<xmp>`,
+                `${myFieldHtml}`,
+                `</xmp>`,
+                `</div>`,
+                '</div>',
+                `</div>`,
+                '<div class="section-top-info margin-top-32" style="width: 100%">',
+                '<p>请将相应标签复制并粘贴到对应模板文件中！</p>',
+                '</div>',
+                '</div>',
+            ].join('');
+        }
+
+        //编辑
+        $('.foxui-table-tr .edit-btn').click(function () {
+            let $tr = $(this).closest('.foxui-table-tr'),
+                id = $tr.find('.foxui-table-td:nth-child(2)').text();
+            window.location.href = "edit?type=1&id=" + id;
+        })
+
+        // 删除
+        $('.foxui-table-tr .delete-btn').click(function () {
+            let $this = $(this);
+            foxui.dialog({
+                title: '确认',
+                content: '您确定要此表单删除吗',
+                confirmText: '删除',
+                cancelText: '取消',
+                buttonType: 'danger',
+                buttonSize: 'small',
+                confirm: function (callback) {
+                    let $tr = $this.closest('.foxui-table-tr'),
+                        id = $tr.find('.foxui-table-td:nth-child(2)').text();
+                    // 异步删除数据
+                    let idList = [];
+                    idList[0] = id;
+                    $.ajax({
+                        type: "post",
+                        url: 'deletes',
+                        dataType: "json",
+                        data: {
+                            "idList": JSON.stringify(idList)
+                        },
+                        success: function(res) {
+                            if (res.code == 1) {
+                                foxui.message({
+                                    text: '删除成功',
+                                    type: 'success',
+                                });
+
+                                //运行表格初始化
+                                let datas = {
+                                    "bcid": $("input[name='bcid']").val()
+                                };
+                                init(datas);
+                            }else{
+                                foxui.message({
+                                    text: '删除失败',
+                                    type: 'warning',
+                                });
+                            }
+                        },
+                        error: function(res) {
+                            foxui.message({
+                                text: '删除失败',
+                                type: 'warning',
+                            });
+                        }
+                    });
+                    callback();
+                },
+            });
+        });
+
+        // 多选删除
+        $('.table-footer .delete-btn').click(function () {
+            let $isChecked = $('.foxui-table-td .foxui-checkbox.is-checked'),
+                $checkedTr = $isChecked.closest('.foxui-table-tr'),
+                len = $isChecked.length,
+                idList = [];
+
+            if (len < 1) {
+                foxui.message({
+                    text: '请先选译要删除的表单！',
+                    type: 'danger',
+                });
+            } else {
+                foxui.dialog({
+                    title: '确认',
+                    content: '您确定要删除选中的所有表单吗？',
+                    confirmText: '删除',
+                    cancelText: '取消',
+                    buttonType: 'danger',
+                    buttonSize: 'small',
+                    confirm: function (callback) {
+                        callback();
+                        // 异步删除数据
+                        $checkedTr.each(function () {
+                            let id = $(this).find('.foxui-table-td:nth-child(2)').text();
+                            idList.push(id);
+                        });
+                        $.ajax({
+                            type: "post",
+                            url: 'deletes',
+                            dataType: "json",
+                            data: {
+                                "idList": JSON.stringify(idList)
+                            },
+                            success: function(res) {
+                                if (res.code == 1) {
+                                    foxui.message({
+                                        text: res.msg,
+                                        type: 'success',
+                                    });
+                                    //运行表格初始化
+                                    let datas = {
+                                        "bcid": $("input[name='bcid']").val()
+                                    };
+                                    init(datas);
+                                }else{
+                                    foxui.message({
+                                        text: res.msg,
+                                        type: 'warning',
+                                    });
+                                }
+                            },
+                            error: function(res) {
+                                foxui.message({
+                                    text: res.msg,
+                                    type: 'warning',
+                                });
+                            }
+                        });
+                    },
+                });
+            }
+        });
+    }
+
+</script>
+
+{/block}

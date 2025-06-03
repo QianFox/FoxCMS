@@ -1,0 +1,172 @@
+{extend name="foxcms" /}
+
+{block name="css"}
+
+
+{/block}
+
+{block name="body"}
+<input name="bcid" value="{$bcid}" type="hidden" />
+
+<div class="foxcms-content-inner">
+	<!-- page content -->
+	<div class="template-file-content">
+		<div class="content-top-operation">
+			<div class="left">
+				<!--				<a href="/{$adminPath}/TemplateStyle/addFile?activepath={$activepath}&type=1&columnId={$cid}">-->
+				<a href="{:url('TemplateStyle/addFile')}?activepath={$activepath}&type=1&columnId={$cid}">
+					<button class="foxui-size-small foxui-solid-primary">
+						<i class="foxui-icon-jiahao-o"></i>
+						<span>新建模板样式</span>
+					</button>
+				</a>
+			</div>
+			<div class="right display-flex">
+				<div class="foxui-input-group tabs-search-input">
+					<!--条件-->
+				</div>
+			</div>
+		</div>
+		<div class="section section-panel margin-top-10">
+			<div class="foxui-table foxui-table-border-bottom foxui-table-hover">
+				<ul class="foxui-table-thead">
+					<li class="foxui-table-tr">
+						<div class="foxui-table-th"></div>
+						<div class="foxui-table-th">文件名称</div>
+						<div class="foxui-table-th">文件描述</div>
+						<div class="foxui-table-th">文件大小</div>
+						<div class="foxui-table-th">修改时间</div>
+						<div class="foxui-table-th">操作</div>
+					</li>
+				</ul>
+				<ul class="foxui-table-tbody">
+					{foreach $arrFile as $key=>$vo }
+					{if ($vo.filemine == "dir") }
+					{if ($vo.filepath != "") }
+						{if ($vo.filetype == "dir2") }
+						<li class="foxui-table-tr">
+							<div class="foxui-table-td">
+								<i class="foxui-icon-mulu-f" style="color: #ffcc00; font-size:18px;"></i>
+							</div>
+							<div class="foxui-table-td">
+								<a href="{:url('TemplateStyle/index')}?activepath={$vo.filepath??''}&bcid={$bcid}&columnId={$cid}">返回上级</a><span>{$vo.intro}</span>
+							</div>
+							<div class="foxui-table-td"></div>
+							<div class="foxui-table-td"></div>
+							<div class="foxui-table-td"></div>
+							<div class="foxui-table-td"></div>
+						</li>
+						{else /}
+						<li class="foxui-table-tr">
+							<div class="foxui-table-td">
+								<i class="foxui-icon-wenjianjia-f"></i>
+							</div>
+							<div class="foxui-table-td">
+								<a href="{:url('TemplateStyle/index')}?activepath={$vo.filepath??''}&bcid={$bcid}&columnId={$cid}">{$vo.filename}</a>
+							</div>
+							<div class="foxui-table-td"></div>
+							<div class="foxui-table-td"></div>
+							<div class="foxui-table-td"></div>
+							<div class="foxui-table-td"></div>
+						</li>
+						{/if}
+					{/if}
+					{else /}
+					<li class="foxui-table-tr">
+						<div class="foxui-table-td">
+							<input type="hidden" value="{$vo.filepath}" name="filePath"/>
+							<i class="foxui-icon-daima-o"></i>
+						</div>
+						<div class="foxui-table-td">{$vo.filename}</div>
+						<div class="foxui-table-td">{$vo.intro|default='无'}</div>
+						<div class="foxui-table-td">{$vo.filesize}</div>
+						<div class="foxui-table-td">{$vo.filetime}</div>
+						<div class="foxui-table-td">
+							{if str_ends_with($vo.filename, ".css")}
+							<button class="foxui-text-info foxui-size-medium padding-0 edit">
+								<i class="foxui-icon-bianji-o color-primary"></i>
+								<span>
+									<a href="{:url('TemplateStyle/editFile')}?activepath={$vo.filepath??''}&type=1&columnId={$cid}">编辑</a>
+								</span>
+							</button>
+							{/if}
+							<button class="foxui-text-info foxui-size-medium padding-0 margin-left-24 delete">
+								<i class="foxui-icon-shanchu-o"></i>
+								<span>删除</span>
+							</button>
+						</div>
+					</li>
+					{/if}
+					{/foreach}
+				</ul>
+				<div class="table-footer foxui-checkbox-head">
+					<div class="left"></div>
+					<div class="right">共{$arrFile|count}条记录</div>
+				</div>
+			</div>
+		</div>
+	</div>
+</div>
+
+{include file="footed-copy"/}
+{/block}
+
+
+{block name="js"}
+
+<script>
+
+	/**
+	 * @description: 删除模板文件
+	 * @param {*} function
+	 * @return {*}
+	 * @Date: 2022-01-20 13:35:48
+	 */
+	$('.foxui-table button.delete').click(function () {
+
+		foxui.dialog({
+			title: '删除',
+			content: '您确定要删除吗',
+			cancelText: '取消',
+			confirmText: '删除',
+			buttonType: 'danger',
+			confirm: (callback) => {
+				let ftr =  $(this).closest('.foxui-table-tr');
+				let filePath = $(ftr).find('input[name="filePath"]').val();
+				$.ajax({
+					type: "post",
+					// url: ADMIN_PATH + '/TemplateStyle/deleteFile',
+					url:"{:url('TemplateStyle/deleteFile')}",
+					dataType: "json",
+					data: {
+						"filePath": filePath
+					},
+					success: function(res) {
+						if (res.code == 1) {
+							foxui.message({
+								text: res.msg,
+								type: 'success', // warning, danger, success, info
+							});
+							$(ftr).slideUp();
+						} else {
+							foxui.message({
+								text: res.msg,
+								type: 'warning', // warning, danger, success, info
+							});
+						}
+					},
+					error: function(res) {
+						foxui.message({
+							text: res.responseJSON.msg,
+							type: 'warning', // warning, danger, success, info
+						});
+					}
+				});
+				callback();
+			},
+			cancel: function () {},
+		});
+	});
+</script>
+
+{/block}

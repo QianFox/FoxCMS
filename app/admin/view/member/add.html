@@ -1,0 +1,139 @@
+{extend name="foxcms" /}
+
+{block name="css"}
+{/block}
+
+{block name="body"}
+<input name="columnId" type="hidden" value="{$columnId}"/>
+
+<div class="foxcms-content-inner">
+    <!-- page content -->
+    <div class="contact-way-content">
+        <div class="section section-panel">
+            <div class="section-title">新增会员</div>
+            <div class="section-main">
+
+                <div class="section-main-item">
+                    <div class="foxui-input-group">
+                        <div class="input-label">
+                            <label class="foxui-required">会员模型：</label>
+                        </div>
+                        <div class="input-box">
+
+                            <div class="foxui-select">
+                                <div class="foxui-select-handle foxui-select-icon">
+                                    <input class="foxui-select-input" readonly="readonly" name="nid" placeholder="请选择" value="{$mmList[0]['name']}" data-id="{$mmList[0]['nid']}" />
+                                </div>
+                                <div class="foxui-select-menu">
+                                    <ul class="foxui-select-slide">
+                                        {foreach $mmList as $key=>$vo }
+                                        <li class="foxui-select-item" data-id="{$vo.nid}">{$vo.name}</li>
+                                        {/foreach}
+                                    </ul>
+                                </div>
+                            </div>
+
+                        </div>
+                    </div>
+                </div>
+
+                <!--动态标签start-->
+                <div class="field">
+                    <?php echo memberFieldTag(); ?>
+                </div>
+                <!--动态标签end-->
+
+            </div>
+        </div>
+    </div>
+</div>
+
+{include file="footed-copy"/}
+<div class="foxcms-content-footer">
+    <button class="is-long foxui-size-small foxui-solid-primary" id="save">保存</button>
+</div>
+{/block}
+
+{block name="js"}
+<script>
+
+    //保存
+    $('#save').click(function (){
+
+        let nid = $('input[name="nid"]').attr("data-id");
+        if(nid == "" || !nid){
+            foxui.message({
+                type:'warning',
+                text:'请选择会员模型,如果没有用请先添加'
+            })
+            return;
+        }
+
+        let password = $('.input-box .password').val();
+        let apassword = $('.input-box .apassword').val();
+        if(password == undefined || password == ""){
+            foxui.message({
+                type:'warning',
+                text:'密码不能为空'
+            })
+            return;
+        }
+        if(password != apassword){
+            foxui.message({
+                type:'warning',
+                text:'两次输入密码不相同'
+            })
+            return;
+        }
+        let datas = {"nid": nid};
+        //拉取会员属性
+        // let feildUrl = ADMIN_PATH + '/Member/getField';
+        let feildUrl = "{:url('Member/getField')}";
+        let saveData = getField($(".field"), feildUrl);
+        let curData = Object.assign(datas, saveData);
+        foxui.dialog({
+            title: '保存',
+            content: '您确定要保存吗',
+            cancelText: '取消',
+            confirmText: '保存',
+            confirm: function (callback) {
+                $.ajax({
+                    type: "post",
+                    url: 'add',
+                    dataType: "json",
+                    data: curData,
+                    success: function (res) {
+                        if (res.code == 1) {
+                            foxui.message({
+                                type:'success',
+                                text:res.msg
+                            })
+                            window.location.href=document.referrer;//返回并且刷新
+                        } else {
+                            foxui.message({
+                                type:'warning',
+                                text:res.msg
+                            })
+                        }
+                    }, error: function (res) {
+                        foxui.message({
+                            type:'danger',
+                            text:res.msg
+                        })
+                    }
+                });
+                callback();
+            },
+            cancel: function () {
+                foxui.message({
+                    type:'warning',
+                    text:res.msg
+                })
+            },
+        });
+
+    })
+
+
+</script>
+{/block}

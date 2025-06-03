@@ -1,0 +1,175 @@
+{extend name="foxcms" /}
+
+{block name="css"}
+<link rel="stylesheet" href="{$staticPath}css/import_template.min.css" />
+{/block}
+
+{block name="body"}
+<div class="fox-article">
+    <div class="content-container">
+        <input name="runStatus" value="{$runStatus}" type="hidden" />
+        <input name="columnId" value="{$columnId}" type="hidden" />
+        <div class="import-template">
+            <div class="title">本地模板导入</div>
+            <div class="info-box">
+                <p>
+                    <b>提示：尽量在服务器空闲时间来操作，会占用服务器内存与宽带，在导入的过程中，请不要进行任何操作</b>
+                </p>
+                <h5>功能介绍：</h5>
+                <p>可将自己制作以及其他途径获取的网站模板通过后台导入，操作便捷无需技术基础!</p>
+                <h5>使用方法：</h5>
+                <p>1. XML模板，需确保您获取到的XML文件是通过FOXCMS导出，否则将无法识别；</p>
+                <p>2. ZIP模板，htm模板文件需按示例文件命名，并将图片、样式等文件压缩为ZIP格式压缩包并且导入；</p>
+                <p>3. 在导入的过程中请不要进行任何操作，直至提示导入成功。</p>
+            </div>
+            <div class="main">
+                <div class="item">
+                    <div class="fox-form-group">
+                                        <span class="column">
+                                            <label class="fox-required">选择模板文件：</label>
+                                        </span>
+                        <div class="input-box template-upload" data-name="" data-value="">
+                            <div class="upload-item">
+                                <h3>XML模板上传</h3>
+                                <p>加密打包</p>
+                            </div>
+                            <div class="upload-item is-active">
+                                <h3>XML模板上传</h3>
+                                <p>加密打包</p>
+                            </div>
+                        </div>
+                    </div>
+                </div>
+                <div class="item">
+                    <div class="fox-form-group">
+                                        <span class="column">
+                                            <label>选择模板文件：</label>
+                                        </span>
+                        <div class="input-box template-download" data-name="" data-value="">
+                            <button class="fox-size-small">
+                                <i class="foxfont icon-xiazai"></i>
+                                <strong>XML文件从哪下载</strong>
+                            </button>
+                            <button class="fox-size-small">
+                                <a href="https://file.liuzhifang.com/word/02.docx">
+                                    <i class="foxfont icon-xiazai"></i>
+                                    <strong>ZIP示例文件下载</strong>
+                                </a>
+                            </button>
+                        </div>
+                    </div>
+                </div>
+                <div class="item">
+                    <div class="fox-form-group">
+                                        <span class="column">
+                                            <label>XML文件导入：</label>
+                                        </span>
+                        <div class="fox-upload-file input-box" data-name="" data-value="">
+                            <button class="fox-special-primary fox-size-small fox-upload-handle">
+                                <i class="foxfont icon-daochu"></i>
+                                <strong>文件上传</strong>
+                            </button>
+                            <input type="file" name="xml" />
+                        </div>
+                    </div>
+                    <p>请确保是通过FOXCMS导出的模板文件</p>
+                </div>
+                <div class="item">
+                    <div class="fox-form-group">
+                                        <span class="column">
+                                            <label>ZIP文件导入：</label>
+                                        </span>
+                        <div class="fox-upload-file input-box" data-name="" data-value="">
+                            <button class="fox-special-primary fox-size-small fox-upload-handle">
+                                <i class="foxfont icon-daochu"></i>
+                                <strong>文件上传</strong>
+                            </button>
+                            <input type="file" name="zip" id="zipFile"/>
+                            <span class="fox-file-item">
+                               <i class="foxfont icon-HTM"></i>
+                               <span class="titel">template.zip</span>
+                               <i class="foxfont icon-guanbi close"></i>
+                            </span>
+                        </div>
+                    </div>
+                    <p>如遇模板文件未按标准制作，可能会造成导入失败</p>
+                </div>
+                <div class="item">
+                    <div class="fox-form-group">
+                                        <span class="column">
+                                            <label></label>
+                                        </span>
+                        <div class="input-box">
+                            <button class="fox-solid-primary fox-size-small" id="save">确认导入</button>
+                        </div>
+                    </div>
+                </div>
+            </div>
+        </div>
+        {include file="footed-copy"/}
+    </div>
+</div>
+{/block}
+
+
+{block name="js"}
+<script src="{$staticPath}js/import_template.js"></script>
+
+<script>
+
+    //保存
+    $('#save').click(function (){
+
+        let file = $('#zipFile')[0].files[0];
+        let formData = new FormData();
+        formData.append("file", file);
+        formData.append("type", "template");
+        foxui.dialog({
+            title: '保存',
+            content: '您确定要保存吗',
+            cancelText: '取消',
+            confirmText: '保存',
+            confirm: function () {
+                $.ajax({
+                    type: "post",
+                    url: ADMIN_PATH + '/LocalTemplate/import',
+                    dataType: "json",
+                    processData:false,//jquery不要去出来发送的数据
+                    contentType: false,//jquery不要去设置content-type请求头
+                    data: formData,
+                    success: function (res) {
+                        if (res.code == 1) {
+                            foxui.message({
+                                type:'success',
+                                text:'操作成功'
+                            })
+                            let columnId = $('input[name="columnId"]').val();
+                            let runStatus = $('input[name="runStatus"]').val();
+                            window.location.href= ADMIN_PATH + "/LocalTemplate/index?columnId="+columnId + "&runStatus=" + runStatus;
+                        } else {
+                            foxui.message({
+                                type:'danger',
+                                text:res.msg
+                            })
+                        }
+                    }, error: function (res) {
+                        foxui.message({
+                            type:'danger',
+                            text:'操作失败'
+                        })
+                    }
+                });
+            },
+            cancel: function () {
+                foxui.message({
+                    type:'warning',
+                    text:'取消操作'
+                })
+            },
+        });
+
+    })
+
+
+</script>
+{/block}

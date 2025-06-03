@@ -1,0 +1,253 @@
+{extend name="foxcms" /}
+
+{block name="css"}
+<style>
+
+	.foxui-loading .foxui-loading-inner.block {
+		width: 418px !important;
+		height: 220px !important;
+	}
+	.foxui-loading .foxui-loading-inner.block svg {
+		width: 10%;
+	}
+</style>
+{/block}
+
+{block name="body"}
+<input name="bcid" value="{$bcid}" type="hidden" />
+<input name="columnId" value="{$cid}" type="hidden" />
+<input name="only" value="{$only}" type="hidden" />
+<input name="id" value="{$id}" type="hidden" />
+<input name="is_sql" value="{$is_sql}" type="hidden" />
+<div class="foxcms-content-inner">
+	<!-- page content -->
+	<div class="diy-form-content">
+
+		<div class="section section-panel margin-top-10">
+
+			<p>注意事项： 安装时请确保文件列表中涉及的目录前可写入权限</p>
+			<div class="foxui-table foxui-table-border-bottom foxui-table-hover foxui-checkbox-group">
+				<ul class="foxui-table-thead foxui-checkbox-head">
+					<li class="foxui-table-tr">
+						<div class="foxui-table-th">目录</div>
+						<div class="foxui-table-th">可写</div>
+					</li>
+				</ul>
+
+				<ul class="foxui-table-tbody foxui-checkbox-list">
+					<!--表格内容-->
+					{foreach $dirs as $key=>$vo}
+					<li class="foxui-table-tr">
+						<div class="foxui-table-td">{$vo.dir}</div>
+						<div class="foxui-table-td">
+							{if $vo.writeable == 1}
+							<i class="foxui-icon-zhengque-f" style="color: #5cd685;font-size: 18px;"></i>
+							{else/}
+							<i class="foxui-icon-cuowu-f" style="color: #f56c6c;font-size: 18px;"></i>
+							{/if}
+						</div>
+					</li>
+					{/foreach}
+				</ul>
+			</div>
+		</div>
+
+		<div class="section section-panel margin-top-10">
+			<p>所有更新文件：</p>
+			<div class="foxui-table foxui-table-border-bottom foxui-table-hover foxui-checkbox-group">
+				<ul class="foxui-table-thead foxui-checkbox-head">
+					<li class="foxui-table-tr">
+						<div class="foxui-table-th">更新文件</div>
+						<div class="foxui-table-th">即将替换文件</div>
+						<div class="foxui-table-th"></div>
+					</li>
+				</ul>
+
+				<ul class="foxui-table-tbody foxui-checkbox-list">
+					<!--表格内容-->
+					{foreach $uFiles as $key=>$vo}
+					<li class="foxui-table-tr">
+						<div class="foxui-table-td">{$vo.file_relative_path}</div>
+						<div class="foxui-table-td">{$vo.update_file_relative_path}</div>
+						<div class="foxui-table-td">
+							{if $vo.is_update == 1}
+							<span class="foxui-margin-left-4 foxui-padding-4 foxui-padding-left-12 foxui-padding-right-12 foxui-bg-success foxui-color-white">覆盖</span>
+							{else/}
+							<span class="foxui-margin-left-4 foxui-padding-4 foxui-padding-left-12 foxui-padding-right-12 foxui-bg-primary foxui-color-white">新增</span>
+							{/if}
+						</div>
+					</li>
+					{/foreach}
+				</ul>
+			</div>
+		</div>
+	</div>
+</div>
+
+{include file="footed-copy"/}
+<div class="foxcms-content-footer">
+	<button class="is-long foxui-size-small foxui-solid-primary" id="confirmUpdate">更新</button>
+</div>
+{/block}
+
+
+{block name="js"}
+<script>
+	//添加关闭更新
+	function addClose() {
+		let childHtml = `<button class="foxui-plain-danger" style="margin-top: 20px;" onclick="closeT(event)">取消更新</button>`;
+		$('.foxui-loading.is-fullscreen .foxui-loading-inner.block').append(childHtml);
+	}
+
+	//关闭更新
+	function closeT(event) {
+		let curObj = event.target;
+		$(curObj).closest(".foxui-loading.is-fullscreen").remove();
+	}
+
+	$('#confirmUpdate').click(function () {
+		confirmUpdate();
+	});
+
+	//确认更新
+	function confirmUpdate(obj) {
+		if(obj != undefined || obj != null){
+			$(obj).closest(".foxui-loading.is-fullscreen").remove();
+		}
+		let is_sql = $('input[name="is_sql"]').val();//检查sql文件是否存在 0:没有更新sql文件，1：有更新sql
+		let info = "";
+		if(is_sql == 1){
+			info = "此版本涉及数据库更新，数据库备份中...";
+		}else{
+			info = "在线更新已经启动，开始下载更新...";
+		}
+		foxui.loading({
+			el: 'body',
+			type: 'block',
+			background: 'black',
+			text: '系统更新',
+			info: info,
+			iconType: 'spinner',
+			iconColor: '#000000',
+			iconSize: 42,
+		});
+		addClose();//添加关闭更新
+		if (is_sql == 1){
+			//备份数据
+			backupAll();
+		}else{
+			downloadUpdate();
+		}
+	}
+
+	//备份数据
+	function backupAll(){
+		let info = "此版本涉及数据库更新，数据库备份中...";
+		$('.foxui-loading.is-fullscreen .foxui-loading-inner.block p').text(info);
+		$.ajax({
+			type: "get",
+			url: "backupAll",
+			dataType: "json",
+			success: function (res) {
+				if (res.code == 1) {
+					downloadUpdate();
+				}else{
+					let errInfo = '<a style="cursor: pointer;" onclick="confirmUpdate(this)">您的备份数据失败，请点击这里重试</a>';
+					$('.foxui-loading.is-fullscreen .foxui-loading-inner.block p').html(errInfo);
+				}
+			}, error: function (res) {
+				let errInfo = '<a style="cursor: pointer;" onclick="confirmUpdate(this)">您的备份数据失败，请点击这里重试</a>';
+				$('.foxui-loading.is-fullscreen .foxui-loading-inner.block p').html(errInfo);
+			}
+		});
+	}
+
+	//下载更新
+	function downloadUpdate() {
+		let info = "在线更新已经启动，开始下载更新...";
+		$('.foxui-loading.is-fullscreen .foxui-loading-inner.block p').text(info);
+		let id = $('input[name="id"]').val();
+		let only = $('input[name="only"]').val();
+		let param = {
+			'only':only,
+			'id':id
+		};
+		$.ajax({
+			type: "get",
+			url: "downloadUpdate",
+			dataType: "json",
+			data:param,
+			success: function (res) {
+				if (res.code == 1) {
+					let filepath = res.data;
+					unFileUpdate(filepath);
+				}else{
+					let errInfo = '<a style="cursor: pointer;" onclick="downloadUpdate()">在线下载更新包失败，请点击这里重试</a>';
+					$('.foxui-loading.is-fullscreen .foxui-loading-inner.block p').html(errInfo);
+				}
+			}, error: function (res) {
+				let errInfo = '<a style="cursor: pointer;" onclick="downloadUpdate()">在线下载更新包失败，请点击这里重试</a>';
+				$('.foxui-loading.is-fullscreen .foxui-loading-inner.block p').html(errInfo);
+			}
+		});
+	}
+
+	//减压更新文件
+	function unFileUpdate(filepath) {
+		let info = "更新下载成功，开始解压缩...";
+		$('.foxui-loading.is-fullscreen .foxui-loading-inner.block p').text(info);
+		$.ajax({
+			type: "post",
+			url: "unFileUpdate",
+			dataType: "json",
+			data:{filepath},
+			success: function (res) {
+				if (res.code == 1) {
+					let down_path = res.data;
+					fileUpdate(down_path);
+				}else{
+					let errInfo = `<a style="cursor: pointer;" onclick="unFileUpdate('${filepath}')">更新下载解压缩失败，请点击这里重试</a>`;
+					$('.foxui-loading.is-fullscreen .foxui-loading-inner.block p').html(errInfo);
+				}
+			}, error: function (res) {
+				let errInfo = `<a style="cursor: pointer;" onclick="unFileUpdate('${filepath}')">更新下载解压缩失败，请点击这里重试</a>`;
+				$('.foxui-loading.is-fullscreen .foxui-loading-inner.block p').html(errInfo);
+			}
+		});
+	}
+
+	//确认更新
+	function fileUpdate(down_path){
+		let info = "文件减压成功，开始运行更新...";
+		$('.foxui-loading.is-fullscreen .foxui-loading-inner.block p').text(info);
+		let id = $('input[name="id"]').val();
+		let only = $('input[name="only"]').val();
+		let param = {
+			only,id,down_path
+		};
+		$.ajax({
+			type: "post",
+			url: "fileUpdate",
+			dataType: "json",
+			data:param,
+			success: function (res) {
+				if (res.code == 1) {
+					let errInfo = `系统更新成功 当前版本${res.data}`;
+					$('.foxui-loading.is-fullscreen .foxui-loading-inner.block p').text(errInfo);
+					setTimeout(function () {
+						window.location.href=document.referrer;//返回并且刷新
+					}, 5000);
+				}else{
+					let errInfo = `<a style="cursor: pointer;" onclick="fileUpdate('${down_path}')">运行更新失败，请点击这里重试</a>`;
+					$('.foxui-loading.is-fullscreen .foxui-loading-inner.block p').html(errInfo);
+				}
+			}, error: function (res) {
+				let errInfo = `<a style="cursor: pointer;" onclick="fileUpdate('${down_path}')">运行更新失败，请点击这里重试</a>`;
+				$('.foxui-loading.is-fullscreen .foxui-loading-inner.block p').html(errInfo);
+			}
+		});
+	}
+
+</script>
+
+{/block}

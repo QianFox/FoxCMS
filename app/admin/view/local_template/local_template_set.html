@@ -1,0 +1,234 @@
+{extend name="foxcms" /}
+
+{block name="css"}
+<link rel="stylesheet" href="{$staticPath}css/local_template.set.min.css" />
+{/block}
+
+{block name="body"}
+<div class="fox-article">
+    <div class="content-container">
+
+        <div class="local-template-set">
+            <div class="title">编辑模板信息</div>
+            <div class="main">
+                <div class="item">
+                    <div class="fox-form-group">
+                                        <span class="column">
+                                            <label>模板编号：</label>
+                                        </span>
+                        <div>{$template.code}</div>
+                    </div>
+                </div>
+                <div class="item">
+                    <div class="fox-form-group">
+                                        <span class="column">
+                                            <label class="fox-required">模板标题：</label>
+                                        </span>
+                        <div class="fox-input-suffix input-box">
+                            <input maxlength="30" class="fox-size-small" placeholder="" required value="{$template.title}" />
+                            <i class="fox-suffix-icon fox-suffix-count"></i>
+                        </div>
+                    </div>
+                </div>
+                <div class="item">
+                    <div class="fox-form-group">
+                                        <span class="column">
+                                            <label>模板作者：</label>
+                                        </span>
+                        <div>{$template.author}</div>
+                    </div>
+                </div>
+                <div class="item">
+                    <div class="fox-form-group">
+                                        <span class="column">
+                                            <label>发布时间：</label>
+                                        </span>
+                        <div>{$template.release_time|date='Y-m-d'} </div>
+                    </div>
+                </div>
+                <div class="item">
+                    <div class="fox-form-group">
+                                        <span class="column">
+                                            <label>文件目录：</label>
+                                        </span>
+                        <div>{$template.directory}</div>
+                    </div>
+                </div>
+
+                <div class="item">
+                    <div class="fox-form-group align-top">
+                                                    <span class="column">
+                                                        <label>模板缩略图：</label>
+                                                    </span>
+
+                        <div class="fox-images" data-count="1">
+                            <div class="fox-images-card thumb_id">
+                                {if $template.thumb_id != "" && $template.thumb_url != ""}
+                                <ul class="fox-images-list fox-drag fox-drag-container">
+                                    <li class="fox-images-item fox-drag-item fox-animate-fadeInDown">
+                                        <div class="content">
+                                            <img data-id="{$template.thumb_id}" src="{$template.thumb_url}">
+                                            <div class="fox-drag-handle"></div>
+                                            <span class="replace">替换</span>
+                                            <i class="foxfont icon-cuowu delete"></i>
+                                        </div>
+                                    </li>
+                                </ul>
+                                {/if}
+                                <div class="fox-images-handle" onclick="addImageByChooser(event)">
+                                    <i class="foxfont icon-jia"></i>
+                                    <span class="text">添加图片</span>
+                                </div>
+                            </div>
+                        </div>
+
+                    </div>
+                    <p>图片宽高比例建议为 1:2 的长方形图片，避免造成错位或变形</p>
+                </div>
+
+                <div class="item">
+                    <div class="fox-form-group">
+                                        <span class="column">
+                                            <label>模板类型：</label>
+                                        </span>
+                        <div class="fox-radio-group">
+                            <div class="fox-radio is-checked">
+                                                <span class="fox-radio-input">
+                                                    <i class="fox-radio-icon"></i>
+                                                    <input type="radio" value="1" />
+                                                </span>
+                                <span class="fox-radio-label">电脑站模板</span>
+                            </div>
+                            <div class="fox-radio">
+                                                <span class="fox-radio-input">
+                                                    <i class="fox-radio-icon"></i>
+                                                    <input type="radio" value="2" />
+                                                </span>
+                                <span class="fox-radio-label">手机站模板</span>
+                            </div>
+                            <div class="fox-radio">
+                                                <span class="fox-radio-input">
+                                                    <i class="fox-radio-icon"></i>
+                                                    <input type="radio" value="3" />
+                                                </span>
+                                <span class="fox-radio-label">电脑、手机站模板</span>
+                            </div>
+                            <div class="fox-radio">
+                                                <span class="fox-radio-input">
+                                                    <i class="fox-radio-icon"></i>
+                                                    <input type="radio" value="4" />
+                                                </span>
+                                <span class="fox-radio-label">自适应模板</span>
+                            </div>
+                        </div>
+                    </div>
+                </div>
+                <div class="item">
+                    <div class="fox-form-group align-top">
+                                        <span class="column">
+                                            <label>模板简述：</label>
+                                        </span>
+                        <div class="input-box">
+                            <div class="textarea">
+                                <div class="fox-textarea">
+                                    <textarea autocomplete="off" rows="4" placeholder="">{$template.describe}</textarea>
+                                </div>
+                            </div>
+                        </div>
+                    </div>
+                </div>
+            </div>
+            <div class="web-image-view">
+                <div class="content-box">
+                    <div class="top-part">
+                        <span class="doc"></span>
+                        <span class="doc"></span>
+                        <span class="doc"></span>
+                    </div>
+                    <div class="main-part">
+                        <img src="{$template.detail_url}" />
+                    </div>
+                </div>
+            </div>
+        </div>
+        {include file="footed-copy"/}
+        <div class="footer-box">
+            <button class="fox-size-small fox-solid-primary long-btn">保存</button>
+        </div>
+    </div>
+</div>
+{/block}
+
+
+{block name="js"}
+<script src="{$staticPath}js/web_image_view.js"></script>
+
+<script>
+
+
+    //保存
+    $('#save').click(function (){
+
+        //排序
+        let sort = $('input[name="sort"]').val()
+
+        //标题
+        let title = $('input[name="title"]').val();
+        if(title == "" || !title){
+            foxui.message({
+                type:'info',
+                text:'请输入幻灯片标题'
+            })
+            return;
+        }
+        //图片
+        let img_id = getImageIdS($("input[name='img']"));
+
+        //链接
+        let link = $('input[name="link"]').val()
+        //状态
+        let status = $('.item.state .fox-radio.is-checked input').val();
+        let datas ={"sort": sort, "title":title, "img_id":img_id, "link":link, "status":status};
+
+        // foxui.dialog({
+        //     title: '保存',
+        //     content: '您确定要保存吗',
+        //     cancelText: '取消',
+        //     confirmText: '保存',
+        //     confirm: function () {
+        //         $.ajax({
+        //             type: "post",
+        //             url: 'add',
+        //             dataType: "json",
+        //             data: datas,
+        //             success: function (res) {
+        //                 if (res.code == 1) {
+        //                     foxui.message({
+        //                         type:'success',
+        //                         text:'保存成功'
+        //                     })
+        //                     window.location.href=document.referrer;//返回并且刷新
+        //                 } else {
+        //                     alert(res.msg);
+        //                 }
+        //             }, error: function (res) {
+        //                 foxui.message({
+        //                     type:'danger',
+        //                     text:'保存失败'
+        //                 })
+        //             }
+        //         });
+        //     },
+        //     cancel: function () {
+        //         foxui.message({
+        //             type:'warning',
+        //             text:'取消操作'
+        //         })
+        //     },
+        // });
+
+    })
+
+
+</script>
+{/block}

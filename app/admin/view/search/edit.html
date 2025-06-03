@@ -1,0 +1,170 @@
+{extend name="foxcms" /}
+
+{block name="css"}
+{/block}
+
+{block name="body"}
+<input type="hidden" name="id" value="{$search.id}"/>
+<div class="foxcms-content-inner">
+    <!-- page content -->
+    <div class="contact-way-content">
+        <div class="section section-panel">
+            <div class="section-title">编辑链接</div>
+            <div class="section-main">
+
+                <div class="section-main-item">
+                    <div class="foxui-input-group">
+                        <div class="input-label">
+                            <label class="foxui-required">热词分组：</label>
+                        </div>
+                        <div class="input-box">
+                            <div class="foxui-select">
+                                <div class="foxui-select-handle foxui-select-icon">
+                                    <input class="foxui-select-input" readonly="readonly" name="search_group" placeholder="请选择" value="{$search.searchgroupname}" data-id="{$search.search_group_id}" />
+                                </div>
+                                <div class="foxui-select-menu">
+                                    <ul class="foxui-select-slide">
+                                        {foreach $searchGroupList as $key=>$vo }
+                                        <li class="foxui-select-item" data-id="{$vo.id}">{$vo.name}</li>
+                                        {/foreach}
+                                    </ul>
+                                </div>
+                            </div>
+
+                        </div>
+                    </div>
+                </div>
+
+                <div class="section-main-item">
+                    <div class="foxui-input-group">
+                        <div class="input-label">
+                            <label>名称：</label>
+                        </div>
+                        <div class="input-box">
+                            <div class="foxui-input-suffix">
+                                <input class="foxui-size-small" maxlength="30" placeholder="请输入标题" name="name" value="{$search.name}"/>
+                                <i class="foxui-suffix-icon foxui-suffix-count">0/30</i>
+                            </div>
+                        </div>
+                    </div>
+                </div>
+
+                <div class="section-main-item">
+                    <div class="foxui-input-group">
+                        <div class="input-label">
+                            <label class="foxui-required">是否常用：</label>
+                        </div>
+                        <div class="input-box is_used">
+                            <div class="foxui-radio-group">
+                                <div class="foxui-radio {if ($search->is_used) == 1} is-checked {/if}">
+                                    <span class="foxui-radio-input">
+                                        <i class="foxui-radio-icon"></i>
+                                        <input type="radio" value="1"/>
+                                    </span>
+                                    <span class="foxui-radio-label">是</span>
+                                </div>
+                                <div class="foxui-radio {if ($search->is_used) == 0} is-checked {/if}">
+                                    <span class="foxui-radio-input">
+                                        <i class="foxui-radio-icon"></i>
+                                        <input type="radio" value="0"/>
+                                    </span>
+                                    <span class="foxui-radio-label">否</span>
+                                </div>
+                            </div>
+                        </div>
+                    </div>
+                </div>
+
+                <div class="section-main-item">
+                    <div class="foxui-input-group">
+                        <div class="input-label">
+                            <label class="foxui-required">排序：</label>
+                        </div>
+                        <div class="input-box">
+                            <input class="foxui-size-small" placeholder="请输入" name="sort" type="number" value="{$search.sort}"/>
+                        </div>
+                    </div>
+                    <p class="input-box-info">
+                        <span>数字越大，排名越靠前</span>
+                    </p>
+                </div>
+
+            </div>
+        </div>
+    </div>
+</div>
+
+{include file="footed-copy"/}
+<div class="foxcms-content-footer">
+    <button class="is-long foxui-size-small foxui-solid-primary" id="save">保存</button>
+</div>
+{/block}
+
+{block name="js"}
+
+<script>
+
+    //保存
+    $('#save').click(function (){
+        let search_group_id = $('input[name="search_group"]').attr('data-id');
+        //名称
+        let name = $('input[name="name"]').val();
+        if(name == "" || !name){
+            foxui.message({
+                type:'info',
+                text:'请输入名称'
+            })
+            return;
+        }
+        //排序
+        let sort = $('input[name="sort"]').val()
+        let id = $('input[name="id"]').val()
+        //是否常用
+        let is_used = $('.is_used .is-checked input').val();
+        let datas ={id, name, is_used, search_group_id, sort};
+        foxui.dialog({
+            title: '保存',
+            content: '您确定要保存吗',
+            cancelText: '取消',
+            confirmText: '保存',
+            confirm: function (callback) {
+                $.ajax({
+                    type: "post",
+                    url: 'edit',
+                    dataType: "json",
+                    data: datas,
+                    success: function (res) {
+                        if (res.code == 1) {
+                            foxui.message({
+                                type:'success',
+                                text:res.msg
+                            })
+                            window.location.href=document.referrer;//返回并且刷新
+                        } else {
+                            foxui.message({
+                                type:'danger',
+                                text:res.msg
+                            })
+                        }
+                    }, error: function (res) {
+                        foxui.message({
+                            type:'danger',
+                            text:res.msg
+                        })
+                    }
+                });
+                callback();
+            },
+            cancel: function () {
+                foxui.message({
+                    type:'warning',
+                    text:'取消操作'
+                })
+            },
+        });
+
+    })
+
+
+</script>
+{/block}

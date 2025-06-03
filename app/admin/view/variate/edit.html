@@ -1,0 +1,188 @@
+{extend name="foxcms" /}
+
+{block name="css"}
+{/block}
+
+{block name="body"}
+<input name="columnId" type="hidden" value="{$columnId}"/>
+<input name="id" type="hidden" value="{$variateField.id}"/>
+<div class="foxcms-content-inner">
+    <!-- page content -->
+    <div class="column-field-add-content">
+        <div class="section section-panel">
+            <div class="section-title">编辑变量字段</div>
+            <div class="section-main">
+
+                <div class="section-main-item">
+                    <div class="foxui-input-group">
+                        <div class="input-label">
+                            <label class="foxui-required">所属组：</label>
+                        </div>
+                        <div class="input-box">
+
+                            <div class="foxui-select is-disabled">
+                                <div class="foxui-select-handle foxui-select-icon is-disabled">
+                                    <input class="foxui-select-input" readonly="readonly" name="group" placeholder="请选择" value="{$variateField['groupText']}" data-id="{$variateField['group']}" />
+                                </div>
+                                <div class="foxui-select-menu">
+                                    <ul class="foxui-select-slide">
+                                        {foreach $variates as $key=>$vo }
+                                        <li class="foxui-select-item" data-id="{$vo.dict_value}">{$vo.dict_label}</li>
+                                        {/foreach}
+                                    </ul>
+                                </div>
+                            </div>
+
+                        </div>
+                    </div>
+                </div>
+
+                <div class="section-main-item">
+                    <div class="foxui-input-group">
+                        <div class="input-label">
+                            <label class="foxui-required">字段标题：</label>
+                        </div>
+                        <div class="input-box">
+                            <div class="foxui-input-suffix">
+                                <input class="foxui-size-small" maxlength="10" placeholder="" value="{$variateField.title}" name="title">
+                                <i class="foxui-suffix-icon foxui-suffix-count">0/10</i>
+                            </div>
+                        </div>
+                    </div>
+                </div>
+
+                <div class="section-main-item">
+                    <div class="foxui-input-group">
+                        <div class="input-label">
+                            <label class="foxui-required">字段名称：</label>
+                        </div>
+                        <div class="input-box">
+                            <div class="foxui-input-suffix">
+                                <input class="foxui-size-small" maxlength="30" placeholder="" value="{$variateField.name}" name="name" onkeyup="this.value=this.value.replace(/[^a-z_0-9]/g,'');">
+                                <input name="old_name" value="{$variateField.name}" type="hidden">
+                                <i class="foxui-suffix-icon foxui-suffix-count">0/30</i>
+                            </div>
+                        </div>
+                    </div>
+                    <p class="input-box-info">只能用英文字母或数字，数据表的真实字段名</p>
+                </div>
+                <div class="section-main-item">
+                    <div class="foxui-input-group foxui-align-items-start">
+                        <div class="input-label">
+                            <label class="foxui-required">字段类型：</label>
+                        </div>
+                        <div class="input-box">
+                            <div class="foxui-radio-group foxui-row radio-box-gapless foxui-gutter-2 dtype">
+
+                                {volist name='$fieldTypeList' id='vo'}
+                                <div class="foxui-radio {if $variateField.dtype == $vo.name}is-checked{/if} foxui-col-xs-6 foxui-col-sm-6 {if $vo.isDisable} is-disabled {/if}">
+                                    <span class="foxui-radio-input">
+                                        <i class="foxui-radio-icon"></i>
+                                        <input type="radio" value="{$vo.name}" checked="checked">
+                                    </span>
+                                    <span class="foxui-radio-label">{$vo.title}</span>
+                                </div>
+                                {/volist}
+                            </div>
+                        </div>
+                    </div>
+                </div>
+                <div class="section-main-item">
+                    <div class="foxui-input-group foxui-align-items-start">
+                        <div class="input-label">
+                            <label>默认值：</label>
+                        </div>
+                        <div class="input-box">
+                            <div class="foxui-textarea">
+                                <textarea autocomplete="off" rows="4" placeholder="" name="dfvalue">{$variateField.dfvalue}</textarea>
+                            </div>
+                        </div>
+                    </div>
+                    <p class="input-box-info">如果字段类型为单择项、多选项、下拉框时，此处填写被选择的项目用英文“,”分隔。如“男孩,女孩”</p>
+                </div>
+                <div class="section-main-item">
+                    <div class="foxui-input-group foxui-align-items-start">
+                        <div class="input-label">
+                            <label>提示文字：</label>
+                        </div>
+                        <div class="input-box">
+                            <div class="foxui-textarea">
+                                <textarea autocomplete="off" rows="4" placeholder="" name="remark">{$variateField.remark}</textarea>
+                            </div>
+                        </div>
+                        <div>
+                            <span class="example" id="tipExample">示例</span>
+                        </div>
+                    </div>
+                </div>
+            </div>
+        </div>
+    </div>
+</div>
+
+<div class="foxcms-content-footer">
+    <button class="is-long foxui-size-small foxui-solid-primary" id="save">保存</button>
+</div>
+
+{include file="footed-copy"/}
+
+{/block}
+
+
+{block name="js"}
+
+<script>
+
+    //保存
+    $('#save').click(function (){
+
+        let title = $('input[name="title"]').val();
+        let name = $('input[name="name"]').val();
+        let old_name = $('input[name="old_name"]').val();
+        let id = $('input[name="id"]').val();
+        let dtype = $('.dtype .foxui-radio.is-checked input').val();
+        let dfvalue = $('textarea[name="dfvalue"]').val();
+        let remark = $('textarea[name="remark"]').val();
+        let group = $('input[name="group"]').attr("data-id");
+        let datas ={"id": id, "name": name, "old_name": old_name, "title":title, "dtype":dtype, "dfvalue":dfvalue, "remark":remark, "group": group};
+
+        foxui.dialog({
+            title: '保存',
+            content: '您确定要保存吗',
+            cancelText: '取消',
+            confirmText: '保存',
+            confirm: function (callback) {
+                ajaxR('edit','post',datas,{},function (res) {
+                    if (res.code == 1) {
+                        foxui.message({
+                            type:'success',
+                            text:res.msg
+                        })
+                        window.location.href = document.referrer;//返回并且刷新
+                    } else {
+                        foxui.message({
+                            type:'danger',
+                            text:res.msg
+                        })
+                    }
+                }, function (res) {
+                    foxui.message({
+                        type:'danger',
+                        text:res.msg
+                    })
+                })
+                callback()
+            },
+            cancel: function () {
+                foxui.message({
+                    type:'warning',
+                    text:'取消操作'
+                })
+            },
+        });
+
+    })
+
+
+</script>
+{/block}

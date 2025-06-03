@@ -1,0 +1,135 @@
+{extend name="foxcms" /}
+
+{block name="css"}
+<link rel="stylesheet" href="{$staticPath}js/codemirror/codemirror.css" />
+{/block}
+
+{block name="body"}
+<input name="bcid" value="{$bcid}" type="hidden" />
+<div class="foxcms-content-inner">
+	<!-- page content -->
+	<div class="edit-template-content">
+		<div class="section section-panel">
+			<div class="section-title">编辑/新建模板</div>
+			<div class="section-main">
+				<div class="section-main-item">
+					<div class="foxui-input-group">
+						<div class="input-label">
+							<label class="foxui-required">文件名称：</label>
+						</div>
+						<div class="input-box">
+							<div class="foxui-input-suffix">
+								<input class="foxui-size-small" maxlength="30" placeholder="" value="{$fileName}"
+									name="fileName" disabled />
+								<i class="foxui-suffix-icon foxui-suffix-count">0/30</i>
+							</div>
+						</div>
+					</div>
+				</div>
+				<div class="section-main-item">
+					<div class="foxui-input-group foxui-align-items-start">
+						<div class="input-label">
+							<label>文件代码：</label>
+						</div>
+						<div class="block-box foxui-border">
+							<input type="hidden" value="{$filePosition}" name="filePosition">
+							<div class="file-position">文件位置：{$filePosition}</div>
+							<textarea id="code" name="code">{$content|default=''}</textarea>
+						</div>
+					</div>
+				</div>
+			</div>
+		</div>
+	</div>
+</div>
+
+<div class="foxcms-content-footer">
+	<button class="is-long foxui-size-small foxui-solid-primary save">确认提交</button>
+	<button class="is-long foxui-size-small foxui-plain-info" onclick="window.history.back(-1);">返回</button>
+</div>
+
+{include file="footed-copy"/}
+{/block}
+
+
+{block name="js"}
+<script src="{$staticPath}js/codemirror/codemirror.js"></script>
+<script src="{$staticPath}js/codemirror/mode/xml.js"></script>
+<script>
+	let editor = CodeMirror.fromTextArea(document.getElementById('code'), {
+		lineNumbers: true,
+		lineWrapping: true,
+		autofocus: true,
+		mode: 'text/html',
+	});
+	editor.setSize('auto', '660px');
+</script>
+
+<script>
+	//运行表格初始化
+	let bcid = $("input[name='bcid']").val();
+
+	//保存
+	$(".save").on('click', function () {
+		foxui.dialog({
+			title: '保存',
+			content: '您确定要保存吗',
+			cancelText: '取消',
+			confirmText: '提交',
+			type: 'danger',
+			confirm: function (callback) {
+				foxui.loading();
+				let data = {
+					'content': editor.getValue(),
+					'activepath': $('input[name="filePosition"]').val(),
+					'fileName': $('input[name="fileName"]').val(),
+				};
+
+				$.ajax({
+					type: "post",
+					url: "{:url('template_file/editFile')}",
+					dataType: "json",
+					data: data,
+					success: function (res) {
+						foxui.closeLoading();
+						if (res.code == 1) {
+							foxui.message({
+								text: res.msg,
+								type: 'success',
+							});
+
+							// 延迟 1.5 秒后刷新页面
+							setTimeout(function () {
+								window.location.href = document.referrer;
+							}, 1500);
+						} else {
+							foxui.message({
+								text: res.msg,
+								type: 'info',
+							});
+						}
+					},
+					error: function (res) {
+						foxui.closeLoading();
+						foxui.message({
+							text: res.msg || '请求失败，请稍后再试',
+							type: 'info',
+						});
+					}
+				});
+
+				// 关闭确认对话框
+				callback();
+			},
+			cancel: function () {
+				foxui.message({
+					text: '操作已取消',
+					type: 'info'
+				});
+			},
+		});
+	});
+
+</script>
+
+{/block}

@@ -1,0 +1,137 @@
+{extend name="foxcms" /}
+
+{block name="css"}
+{/block}
+
+{block name="body"}
+<input type="hidden" name="id" value="{$advertisingSpace.id}"/>
+<div class="foxcms-content-inner">
+    <!-- page content -->
+    <div class="contact-way-content">
+        <div class="section section-panel">
+            <div class="section-title">编辑广告位</div>
+            <div class="section-main">
+                <div class="section-main-item">
+                    <div class="foxui-input-group">
+                        <div class="input-label">
+                            <label>标题：</label>
+                        </div>
+                        <div class="input-box">
+                            <div class="foxui-input-suffix">
+                                <input class="foxui-size-small" maxlength="30" placeholder="请输入标题" name="name" value="{$advertisingSpace.name}"/>
+                                <i class="foxui-suffix-icon foxui-suffix-count">0/30</i>
+                            </div>
+                        </div>
+                    </div>
+                </div>
+
+                <div class="section-main-item">
+                    <div class="foxui-input-group foxui-align-items-start">
+                        <div class="input-label">
+                            <label>描述：</label>
+                        </div>
+                        <div class="input-box">
+                            <div class="foxui-textarea">
+                                <textarea autocomplete="off" rows="2" placeholder="请输入广告位描述" name="remark">{$advertisingSpace.remark}</textarea>
+                            </div>
+                        </div>
+                    </div>
+                </div>
+
+                <div class="section-main-item">
+                    <div class="foxui-input-group">
+                        <div class="input-label">
+                            <label class="foxui-required">状态：</label>
+                        </div>
+                        <div class="input-box">
+                            <div class="foxui-radio-group">
+                                <div class="foxui-radio {if ($advertisingSpace->status) == 1} is-checked {/if}">
+                                    <span class="foxui-radio-input">
+                                        <i class="foxui-radio-icon"></i>
+                                        <input type="radio" value="1" name="status"/>
+                                    </span>
+                                    <span class="foxui-radio-label">启用</span>
+                                </div>
+                                <div class="foxui-radio {if ($advertisingSpace->status) == 0} is-checked {/if}">
+                                    <span class="foxui-radio-input">
+                                        <i class="foxui-radio-icon"></i>
+                                        <input type="radio" value="0" name="status"/>
+                                    </span>
+                                    <span class="foxui-radio-label">禁用</span>
+                                </div>
+                            </div>
+                        </div>
+                    </div>
+                </div>
+            </div>
+        </div>
+    </div>
+</div>
+
+{include file="footed-copy"/}
+<div class="foxcms-content-footer">
+    <button class="is-long foxui-size-small foxui-solid-primary" id="save">保存</button>
+</div>
+{/block}
+
+{block name="js"}
+
+<script>
+
+    //保存
+    $('#save').click(function (){
+        //名称
+        let name = $('input[name="name"]').val();
+        if(name == "" || !name){
+            foxui.message({
+                type:'info',
+                text:'请输入广告位名称'
+            })
+            return;
+        }
+
+        let id = $('input[name="id"]').val()
+        //状态
+        let status = $('.foxui-radio.is-checked input').val();
+        let remark = $('textarea[name="remark"]').val();
+        let datas ={"id": id, "name":name, "status":status, remark};
+        foxui.dialog({
+            title: '保存',
+            content: '您确定要保存吗',
+            cancelText: '取消',
+            confirmText: '保存',
+            confirm: function (callback) {
+                ajaxR('edit', 'post', datas, {}, function (res) {
+                    if (res.code == 1) {
+                        foxui.message({
+                            type:'success',
+                            text:res.msg
+                        })
+                        window.location.href=document.referrer;//返回并且刷新
+                    } else {
+                        foxui.message({
+                            type:'danger',
+                            text:res.msg
+                        })
+                    }
+                }, function (res) {
+                    foxui.message({
+                        type:'danger',
+                        text:res.msg
+                    })
+                })
+
+                callback();
+            },
+            cancel: function () {
+                foxui.message({
+                    type:'warning',
+                    text:'取消操作'
+                })
+            },
+        });
+
+    })
+
+</script>
+{/block}

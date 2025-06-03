@@ -11,16 +11,14 @@
  */
 function getStep()
 {
-    $step1 = $_GET['step'];
-    // 初始化参数
-    $step2 = $_POST['step'];
-    if (!empty($step1)) {
+    $step1 = filter_input(INPUT_GET, 'step', FILTER_SANITIZE_NUMBER_INT);
+    $step2 = filter_input(INPUT_POST, 'step', FILTER_SANITIZE_NUMBER_INT);
+
+    if ($step1 !== null && $step1 !== false) {
         $step2 = $step1;
     }
-    if (empty($step2)) {
-        $step2 = 1;
-    }
-    return $step2;
+
+    return $step2 ?: 1;
 }
 
 /**
@@ -58,7 +56,7 @@ function getSessionState()
 }
 
 /**
- * 服务器环境监测
+ * 服务器环境检测
  */
 function getEnvCheck()
 {
@@ -196,15 +194,23 @@ function set_php_arr($phpPath, $filename, $saveData)
 function getServerURL()
 {
     $prefixURL = 'http';
-    if ($_SERVER["HTTPS"] == "on") {
+
+    // 处理 HTTPS 环境判断，兼容代理
+    if (
+        (isset($_SERVER['HTTPS']) && strtolower($_SERVER['HTTPS']) == 'on') ||
+        (isset($_SERVER['HTTP_X_FORWARDED_PROTO']) && $_SERVER['HTTP_X_FORWARDED_PROTO'] == 'https')
+    ) {
         $prefixURL .= "s";
     }
+
     $prefixURL .= "://";
+
     if ($_SERVER["SERVER_PORT"] != "80") {
         $domain = $_SERVER["SERVER_NAME"] . ":" . $_SERVER["SERVER_PORT"];
     } else {
         $domain = $_SERVER["SERVER_NAME"];
     }
+
     return [
         'url_prefix' => $prefixURL,
         'domain' => $domain

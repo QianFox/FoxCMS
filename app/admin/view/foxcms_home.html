@@ -1,0 +1,93 @@
+<!DOCTYPE html>
+<html lang="cn">
+<head>
+    {include file="css"}
+    {block name="css"}{/block}
+</head>
+<body>
+<div class="foxcms-container company-introduction-page-container">
+
+    <div class="foxcms-header">
+        <div class="foxcms-logo">
+            <img style="width: 100px;" src="/static/images/foxcms_logo.svg">
+        </div>
+        <div class="foxcms-bar">
+            <div class="foxcms-bar-left">
+                <span class="foxui-text-primary">{$dateTimeText}</span>
+                <span class="foxui-text-dark">欢迎登录</span>
+                <span class="foxui-text-dark">{$basic.name}管理后台</span>
+            </div>
+            <div class="foxcms-bar-right">
+                <div class="foxui-dropdown lang-select">
+                    {if sizeof($otherLangs) > 0}
+                    <button class="foxui-dropdown-handle foxui-dropdown-icon lang-btn" data-trigger="hover" data-lang="{$curlang.lang}">{$curlang.name}</button>
+                    <div class="foxui-dropdown-menu">
+                        <ul class="foxui-dropdown-slide">
+                            {foreach $otherLangs as $key=>$vo}
+                            <li class="foxui-dropdown-item" data-id="{$vo.id}" data-lang="{$vo.lang}" onclick="langHandover(this)">{$vo.name}</li>
+                            {/foreach}
+                        </ul>
+                    </div>
+                    {else/}
+                    <button class="foxui-dropdown-handle foxui-dropdown-icon lang-btn display-none" data-trigger="hover" data-lang="{$curlang.lang}">{$curlang.name}</button>
+                    {/if}
+                </div>
+                <div class="item icon index">
+                    <i class="foxui-icon-shouye-o"></i>
+                </div>
+                <div class="item role">
+                    <div class="foxui-dropdown">
+                        <button class="foxui-text foxui-dropdown-handle foxui-dropdown-icon" data-trigger="hover" id="barService">
+                            <i class="foxui-icon-kefu-o"></i>
+                        </button>
+                    </div>
+                    <div class="foxui-dropdown dropdown">
+                        <button class="foxui-text foxui-dropdown-handle foxui-dropdown-icon" data-trigger="hover">{:session("admin_auth.nickname")}</button>
+                        <div class="foxui-dropdown-menu">
+                            <ul class="foxui-dropdown-slide">
+                                <li class="foxui-dropdown-item" data-id="1">个人中心</li>
+                                <li class="foxui-dropdown-item" data-id="2">修改密码</li>
+                                <li class="foxui-dropdown-item" data-id="3">更新缓存</li>
+                                <li class="foxui-divided" data-id="4"></li>
+                                <li class="foxui-dropdown-item" data-id="5">退出系统</li>
+                            </ul>
+                        </div>
+                    </div>
+                </div>
+                <div class="item icon logout">
+                    <a onclick="logout()"><i class="foxui-icon-tuichu-o"></i></a>
+                </div>
+            </div>
+        </div>
+    </div>
+
+
+
+    <div class="foxcms-main">
+
+        <!--左侧第一栏菜单-->
+        <div class="foxcms-nav">
+            <ul>
+                {foreach name="menu" item="vo"}
+                <li>
+                    <a class="{if $pid == $vo.id}active{/if}" href="{$vo.name}">
+                        <i class="foxui-{$vo.icon}"></i>
+                        <span>{$vo.title}</span>
+                    </a>
+                </li>
+                {/foreach}
+            </ul>
+        </div>
+
+        <div class="foxcms-article foxui-scroll-container">
+            <div class="foxcms-content">
+                <!-- page content -->
+                {block name="body"}{/block}
+            </div>
+        </div>
+    </div>
+</div>
+</body>
+{include file="script"}
+{block name="js"}{/block}
+</html>

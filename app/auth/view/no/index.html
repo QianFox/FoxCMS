@@ -1,0 +1,30 @@
+{extend name="foxcms" /}
+
+{block name="css"}
+<link rel="stylesheet" href="{$staticPath}authorize/common.min.css" />
+{/block}
+
+{block name="body"}
+
+<div class="authorize-page">
+    <!-- 内容 -->
+    <div class="authorize-content-inner" style="border-radius:0px;">
+        <div class="authorize-content-head unauthorized">没有访问权限</div>
+        <div class="authorize-content-body">
+            <div class="foxui-padding-top-12 foxui-padding-bottom-20">
+                <i class="foxui-icon-warn-solid unauthorized-icon"></i>
+                <p class="unauthorized-info">抱歉，你没有访问改页面权限!</p>
+            </div>
+        </div>
+    </div>
+</div>
+
+{include file="footed-copy"/}
+{/block}
+
+{block name="js"}
+<script src="{$staticPath}js/jquery-3.6.0.min.js"></script>
+<script src="{$staticPath}authorize/html2canvas.min.js"></script>
+<script src="{$staticPath}authorize/canvas-bg.js"></script>
+<script src="{$staticPath}authorize/authorize.js"></script>
+{/block}

@@ -1,0 +1,1077 @@
+{extend name="foxcms_apply" /}
+
+{block name="css"}
+<style>
+    #tabsCardAccess{
+        display: flex;
+        justify-content: center;
+        align-items: center;
+    }
+    #tabsCardEnter{
+        display: flex;
+        justify-content: center;
+        align-items: center;
+    }
+    .content-top-operation{
+        padding: 12px 16px !important;
+    }
+    .content-top-operation .item-input {
+        width: 220px !important;
+    }
+    #tabsCardVisitorAnalyse .foxui-tabs-item{
+        padding: 0 30px !important;
+    }
+    #tabsCardEnter .foxui-tabs-item{
+        padding: 0 30px !important;
+    }
+    #tabsCardAccess .foxui-tabs-item{
+        padding: 0 30px !important;
+    }
+</style>
+{/block}
+
+{block name="body"}
+
+<div class="foxcms-content-inner">
+    <!-- page content -->
+    <div id="tabsCardHeader" class="foxui-tabs foxui-type-line">
+        <div class="foxui-tabs-header">
+            <div class="foxui-tabs-item is-active" data-index="0">概况</div>
+            <div class="foxui-tabs-item" data-index="1">访客分析</div>
+            <div class="foxui-tabs-item" data-index="2">入口页面</div>
+            <div class="foxui-tabs-item " data-index="3">受访页面</div>
+        </div>
+        <div class="foxui-tabs-content">
+            <div class="foxui-tabs-pane">
+
+                <div class="index-content" >
+                    <div class="foxui-row">
+                        <div class="section">
+                            <div class="foxui-row foxui-gutter-6">
+                                <div class="foxui-col-sm-24 foxui-col-xs-24">
+                                    <div class="foxui-bg-white foxui-padding-top-20 foxui-padding-left-20 foxui-padding-right-20">今日流量</div>
+                                    <div class="foxui-table foxui-padding-20">
+                                        <ul class="foxui-table-thead">
+                                            <li class="foxui-table-tr">
+                                                <div class="foxui-table-th"></div>
+                                                <div class="foxui-table-th">浏览量(PV)</div>
+                                                <div class="foxui-table-th">访客数(UV)</div>
+                                                <div class="foxui-table-th">IP数</div>
+                                                <div class="foxui-table-th">平均访问时长</div>
+                                            </li>
+                                        </ul>
+                                        <ul class="foxui-table-tbody">
+
+                                            {foreach traffics as $key=>$vo }
+                                            <li class="foxui-table-tr">
+                                                <div class="foxui-table-td">{$vo.text}</div>
+                                                <div class="foxui-table-td" style="font-weight:bold;">{$vo.pv}</div>
+                                                <div class="foxui-table-td" style="font-weight:bold;">{$vo.uv}</div>
+                                                <div class="foxui-table-td" style="font-weight:bold;">{$vo.ip}</div>
+                                                <div class="foxui-table-td" style="font-weight:bold">{$vo.avgTime}</div>
+                                            </li>
+                                            {/foreach}
+                                        </ul>
+                                    </div>
+                                </div>
+
+                                <div class="foxui-col-sm-14 foxui-col-xs-14">
+                                    <div class="section section-panel">
+                                        <div class="foxui-bg-white">
+
+                                            <div class="panel-title">
+                                                <h3>
+                                                    <i class="foxui-icon-xiaoxi-o"></i>
+                                                    <span>访问概况</span>
+                                                </h3>
+                                            </div>
+                                            <div class="content">
+                                                <div class="foxui-tabs foxui-type-line foxui-position-right" id="viewTabs">
+                                                    <div class="foxui-tabs-header">
+                                                        <div class="foxui-tabs-item is-active">今日</div>
+                                                        <div class="foxui-tabs-item">昨日</div>
+                                                        <div class="foxui-tabs-item">近7日</div>
+                                                        <div class="foxui-tabs-item">近30日</div>
+                                                    </div>
+                                                    <div class="foxui-tabs-content">
+                                                        <div class="foxui-tabs-pane todayChart">
+                                                            <div class="foxui-row foxui-align-items-center">
+                                                                <div class="foxui-col-xs-6 foxui-col-sm-6">
+                                                                    <div class="pv">
+                                                                        <p>
+                                                                            <span>总浏览量(PV)</span>
+                                                                            <i class="foxui-icon-wenti-f pv-tip"></i>
+                                                                        </p>
+                                                                        <h1>4</h1>
+                                                                    </div>
+                                                                    <div class="uv">
+                                                                        <p>
+                                                                            <span>总访问量(UV)</span>
+                                                                            <i class="foxui-icon-question-solid uv-tip"></i>
+                                                                        </p>
+                                                                        <h1>5</h1>
+                                                                    </div>
+                                                                </div>
+                                                                <div class="foxui-col-xs-18 foxui-col-sm-18">
+                                                                    <div class="echart-box" id="todayChart"></div>
+                                                                </div>
+                                                            </div>
+                                                        </div>
+
+                                                        <div class="foxui-tabs-pane yesterdayChart">
+                                                            <div class="foxui-row foxui-align-items-center">
+                                                                <div class="foxui-col-xs-6 foxui-col-sm-6">
+                                                                    <div class="pv">
+                                                                        <p>
+                                                                            <span>总浏览量(PV)</span>
+                                                                            <i class="foxui-icon-wenti-f pv-tip"></i>
+                                                                        </p>
+                                                                        <h1>48</h1>
+                                                                    </div>
+                                                                    <div class="uv">
+                                                                        <p>
+                                                                            <span>总访问量(UV)</span>
+                                                                            <i class="foxui-icon-question-solid uv-tip"></i>
+                                                                        </p>
+                                                                        <h1>25</h1>
+                                                                    </div>
+                                                                </div>
+                                                                <div class="foxui-col-xs-18 foxui-col-sm-18">
+                                                                    <div class="echart-box" id="yesterdayChart"></div>
+                                                                </div>
+                                                            </div>
+                                                        </div>
+
+                                                        <div class="foxui-tabs-pane weekChart">
+                                                            <div class="foxui-row foxui-align-items-center">
+                                                                <div class="foxui-col-xs-6 foxui-col-sm-6">
+                                                                    <div class="pv">
+                                                                        <p>
+                                                                            <span>总浏览量(PV)</span>
+                                                                            <i class="foxui-icon-wenti-f pv-tip"></i>
+                                                                        </p>
+                                                                        <h1>460</h1>
+                                                                    </div>
+                                                                    <div class="uv">
+                                                                        <p>
+                                                                            <span>总访问量(UV)</span>
+                                                                            <i class="foxui-icon-question-solid uv-tip"></i>
+                                                                        </p>
+                                                                        <h1>115</h1>
+                                                                    </div>
+                                                                </div>
+                                                                <div class="foxui-col-xs-18 foxui-col-sm-18">
+                                                                    <div class="echart-box" id="weekChart"></div>
+                                                                </div>
+                                                            </div>
+                                                        </div>
+
+                                                        <div class="foxui-tabs-pane monthChart">
+                                                            <div class="foxui-row foxui-align-items-center">
+                                                                <div class="foxui-col-xs-6 foxui-col-sm-6">
+                                                                    <div class="pv">
+                                                                        <p>
+                                                                            <span>总浏览量(PV)</span>
+                                                                            <i class="foxui-icon-wenti-f pv-tip"></i>
+                                                                        </p>
+                                                                        <h1>46</h1>
+                                                                    </div>
+                                                                    <div class="uv">
+                                                                        <p>
+                                                                            <span>总访问量(UV)</span>
+                                                                            <i class="foxui-icon-question-solid uv-tip"></i>
+                                                                        </p>
+                                                                        <h1>15</h1>
+                                                                    </div>
+                                                                </div>
+                                                                <div class="foxui-col-xs-18 foxui-col-sm-18">
+                                                                    <div class="echart-box" id="monthChart"></div>
+                                                                </div>
+                                                            </div>
+                                                        </div>
+
+                                                    </div>
+                                                </div>
+                                            </div>
+
+                                        </div>
+                                    </div>
+                                </div>
+                                <div class="foxui-col-sm-10 foxui-col-xs-10">
+                                    <div class="section section-panel" style="min-height: 100%">
+                                        <div class="foxui-bg-white">
+
+                                            <div class="foxui-col-sm-24 foxui-col-xs-24">
+                                                <div class="foxui-bg-white foxui-padding-top-20 foxui-padding-left-20 foxui-padding-right-20">Top10入口页面</div>
+                                                <div class="foxui-table foxui-padding-20">
+                                                    <ul class="foxui-table-thead">
+                                                        <li class="foxui-table-tr">
+                                                            <div class="foxui-table-th" style="width: 60%; flex:inherit;">入口页面</div>
+                                                            <div class="foxui-table-th">浏览量(PV)</div>
+                                                            <div class="foxui-table-th">占比</div>
+                                                        </li>
+                                                    </ul>
+                                                    <ul class="foxui-table-tbody">
+                                                        {foreach $entranceList as $key=>$vo}
+                                                        <li class="foxui-table-tr">
+                                                            <div class="foxui-table-td" style="width: 60%; flex:inherit;cursor: pointer;">
+                                                                <a>
+                                                                    {$vo.from_page}
+                                                                </a>
+                                                            </div>
+                                                            <div class="foxui-table-td" style="font-weight:bold">{$vo.count}</div>
+                                                            <div class="foxui-table-td" style="font-weight:bold">{$vo.percent}</div>
+                                                        </li>
+                                                        {/foreach}
+                                                    </ul>
+                                                </div>
+                                            </div>
+
+                                        </div>
+                                    </div>
+                                </div>
+
+
+                                <!---隔开-->
+                                <div class="foxui-col-sm-14 foxui-col-xs-14">
+                                    <div class="section section-panel">
+                                        <div class="foxui-bg-white">
+
+                                            <div class="panel-title">
+                                                <h3>
+                                                    <i class="foxui-icon-xiaoxi-o"></i>
+                                                    <span>地域分布</span>
+                                                </h3>
+                                            </div>
+
+                                            <div class="content">
+                                                <div class="foxui-tabs foxui-type-line" id="viewRegionTabs">
+                                                    <div class="foxui-tabs-header">
+                                                        <div class="foxui-tabs-item is-active">今日</div>
+                                                        <div class="foxui-tabs-item">昨日</div>
+                                                        <div class="foxui-tabs-item">近7日</div>
+                                                    </div>
+                                                    <div class="foxui-tabs-content">
+
+                                                        <div class="foxui-tabs-pane">
+                                                            <div id="containerToday" style="height: 600px;width: 100%;background:white;margin:20px 0 0;"></div>
+                                                        </div>
+
+                                                        <div class="foxui-tabs-pane">
+                                                            <div id="containerYesterday" style="height: 600px;width: 100%;background:white;margin:20px 0 0;"></div>
+                                                        </div>
+
+                                                        <div class="foxui-tabs-pane">
+                                                            <div id="containerWeek" style="height: 600px;width: 100%;background:white;margin:20px 0 0;"></div>
+                                                        </div>
+                                                    </div>
+                                                </div>
+                                            </div>
+                                        </div>
+                                    </div>
+                                </div>
+
+                                <div class="foxui-col-sm-10 foxui-col-xs-10">
+                                    <div class="section section-panel" style="min-height: 100%">
+                                        <div class="foxui-bg-white">
+
+                                            <div class="foxui-col-sm-24 foxui-col-xs-24">
+                                                <div class="foxui-bg-white foxui-padding-top-20 foxui-padding-left-20 foxui-padding-right-20">Top10受访页面</div>
+                                                <div class="foxui-table foxui-padding-20">
+                                                    <ul class="foxui-table-thead">
+                                                        <li class="foxui-table-tr">
+                                                            <div class="foxui-table-th" style="width: 60%; flex:inherit;">受访页面</div>
+                                                            <div class="foxui-table-th">浏览量(PV)</div>
+                                                            <div class="foxui-table-th">占比</div>
+                                                        </li>
+                                                    </ul>
+                                                    <ul class="foxui-table-tbody">
+
+                                                        {foreach $visitedList as $key=>$vo}
+                                                        <li class="foxui-table-tr">
+                                                            <div class="foxui-table-td" style="width: 60%; flex:inherit;cursor: pointer;">
+                                                                <a>
+                                                                    {$vo.from_page}
+                                                                </a>
+                                                            </div>
+                                                            <div class="foxui-table-td" style="font-weight:bold">{$vo.count}</div>
+                                                            <div class="foxui-table-td" style="font-weight:bold">{$vo.percent}</div>
+                                                        </li>
+                                                        {/foreach}
+
+                                                    </ul>
+                                                </div>
+                                            </div>
+
+                                        </div>
+                                    </div>
+                                </div>
+
+                            </div>
+                        </div>
+                    </div>
+                </div>
+
+            </div>
+            <div class="foxui-tabs-pane">
+
+                <div class="diy-form-content">
+                    <div class="content-top-operation">
+                        <div class="left">
+                            <div id="tabsCardVisitorAnalyse" class="foxui-tabs foxui-type-card foxui-margin-top-24">
+                                <div class="foxui-tabs-header" style="height:32px;">
+                                    <div class="foxui-tabs-item is-active" data-index="0">今天</div>
+                                    <div class="foxui-tabs-item" data-index="1">昨天</div>
+                                    <div class="foxui-tabs-item" data-index="2">最近7天</div>
+                                </div>
+                            </div>
+                        </div>
+                        <div class="right display-flex tabsCardVisitorAnalyse">
+                            <div class="foxui-input-group">
+                                <input class="foxui-size-small" placeholder="输入访问IP" value="" name="ip" style="width: 318px;">
+                            </div>
+                            <div class="btn-box foxui-margin-left-20">
+                                <button class="foxui-solid-primary foxui-size-small search-btn-visitorAnalyse">搜索</button>
+                            </div>
+                        </div>
+                    </div>
+                    <div class="section section-panel margin-top-10">
+                        <div class="foxui-table foxui-table-border-bottom foxui-table-hover foxui-checkbox-group">
+
+                            <ul class="foxui-table-thead foxui-checkbox-head">
+                                <li class="foxui-table-tr">
+                                    <div class="foxui-table-th">访问时间</div>
+                                    <div class="foxui-table-th">地域</div>
+                                    <div class="foxui-table-th">页面标题</div>
+                                    <div class="foxui-table-th">入口页面</div>
+                                    <div class="foxui-table-th">访问IP</div>
+                                </li>
+                            </ul>
+
+                            <ul class="foxui-table-tbody foxui-checkbox-list" id="visitorAnalyseTable">
+                                <!--表格内容-->
+                            </ul>
+                        </div>
+
+                        <div id="pagination2" class="margin-top-24"></div>
+                    </div>
+                </div>
+
+            </div>
+            <div class="foxui-tabs-pane">
+
+                <div class="diy-form-content">
+                    <div class="content-top-operation">
+                        <div class="left">
+                            <div id="tabsCardEnterPage" class="foxui-tabs foxui-type-card">
+                                <div class="foxui-tabs-header" style="height:32px;">
+                                    <div class="foxui-tabs-item is-active" data-index="0">今天</div>
+                                    <div class="foxui-tabs-item" data-index="1">昨天</div>
+                                    <div class="foxui-tabs-item" data-index="2">最近7天</div>
+                                    <div class="foxui-tabs-item" data-index="3">最近30天</div>
+                                </div>
+                            </div>
+                        </div>
+                        <div class="right display-flex tabsCardEnterPage">
+                            <div class="foxui-input-group">
+                                <input class="foxui-size-small" placeholder="输入标题" value="" name="keyword" style="width: 318px;">
+                            </div>
+                            <div class="btn-box foxui-margin-left-20">
+                                <button class="foxui-solid-primary foxui-size-small search-btn-enterpage">搜索</button>
+                            </div>
+                        </div>
+                    </div>
+                    <div class="section section-panel margin-top-10">
+                        <div class="foxui-table foxui-table-border-bottom foxui-table-hover foxui-checkbox-group">
+
+                            <ul class="foxui-table-thead foxui-checkbox-head">
+                                <li class="foxui-table-tr">
+                                    <div class="foxui-table-th">页面标题</div>
+                                    <div class="foxui-table-th">页面URL</div>
+                                    <div class="foxui-table-th">访客数(UV)</div>
+                                    <div class="foxui-table-th">IP数</div>
+                                </li>
+                            </ul>
+
+                            <ul class="foxui-table-tbody foxui-checkbox-list" id="enterTable">
+                                <!--表格内容-->
+                            </ul>
+                        </div>
+
+                        <div id="pagination1" class="margin-top-24"></div>
+                    </div>
+                </div>
+
+            </div>
+            <div class="foxui-tabs-pane">
+
+                <div class="diy-form-content">
+                    <div class="content-top-operation">
+                        <div class="left">
+                            <div id="tabsCardAccessPage" class="foxui-tabs foxui-type-card ">
+                                <div class="foxui-tabs-header" style="height:32px;">
+                                    <div class="foxui-tabs-item is-active" data-index="0">今天</div>
+                                    <div class="foxui-tabs-item" data-index="1">昨天</div>
+                                    <div class="foxui-tabs-item" data-index="2">最近7天</div>
+                                    <div class="foxui-tabs-item" data-index="3">最近30天</div>
+                                </div>
+                            </div>
+
+                        </div>
+                        <div class="right display-flex tabsCardAccessPage">
+                            <div class="foxui-input-group">
+                                <input class="foxui-size-small" placeholder="输入标题" value="" name="keyword" style="width: 318px;">
+                            </div>
+                            <div class="btn-box foxui-margin-left-20">
+                                <button class="foxui-solid-primary foxui-size-small search-btn-access-page" name="search">搜索</button>
+                            </div>
+                        </div>
+                    </div>
+                    <div class="section section-panel margin-top-10">
+                        <div class="foxui-table foxui-table-border-bottom foxui-table-hover foxui-checkbox-group">
+
+                            <ul class="foxui-table-thead foxui-checkbox-head">
+                                <li class="foxui-table-tr">
+                                    <div class="foxui-table-th">页面标题</div>
+                                    <div class="foxui-table-th">页面URL</div>
+                                    <div class="foxui-table-th">浏览量(PV)</div>
+                                    <div class="foxui-table-th">访客数(UV)</div>
+                                </li>
+                            </ul>
+
+                            <ul class="foxui-table-tbody foxui-checkbox-list" id="accessTable">
+                                <!--表格内容-->
+                            </ul>
+                        </div>
+
+                        <div id="pagination" class="margin-top-24"></div>
+                    </div>
+                </div>
+
+            </div>
+
+        </div>
+    </div>
+
+</div>
+
+{include file="footed-copy"/}
+{/block}
+
+
+{block name="js"}
+<script src="{$staticPath}js/index.js"></script>
+<script src="{$staticPath}js/china.js"></script>
+<script>
+    $.ajax({
+        type: "get",
+        url:"{:url('SiteProfile/del30AccessStat')}",
+        dataType: "json",
+        success: function (res) {
+        },
+        error: function (res) {
+        }
+    });
+</script>
+<script type="text/javascript">
+    //访问概况
+    function accessProfile(param) {
+        let indexItem = param.type;
+        foxui.loading();
+        $.ajax({
+            type: "post",
+            url: "{:url('SiteProfile/accessProfile')}",
+            dataType: "json",
+            data:param,
+            success: function (res) {
+                foxui.closeLoading();
+                if (res.code == 1) {
+                    let data = res.data;
+                    if(indexItem == 2){
+                        let pvList = data.pvList;
+                        let uvList = data.uvList;
+                        let labelList = data.labelList;
+                        let pvTotal = data.pvTotal;
+                        let uvTotal = data.uvTotal;
+                        $('.yesterdayChart .pv h1').html(pvTotal);
+                        $('.yesterdayChart .uv h1').html(uvTotal);
+                        // 昨日
+                        let yesterdayChart = echarts.init(document.getElementById('yesterdayChart'));
+                        yesterdayChart.setOption(chartOption({ pvList, uvList, labelList }));
+                        window.onresize = () => {
+                            yesterdayChart.resize();
+                        };
+                    }else if(indexItem == 3){
+                        let pvList = data.pvList;
+                        let uvList = data.uvList;
+                        let labelList = data.labelList;
+                        let pvTotal = data.pvTotal;
+                        let uvTotal = data.uvTotal;
+                        $('.weekChart .pv h1').html(pvTotal);
+                        $('.weekChart .uv h1').html(uvTotal);
+
+                        // 近7日
+                        let weekChart = echarts.init(document.getElementById('weekChart'));
+                        weekChart.setOption(chartOption({ pvList, uvList, labelList }));
+                        window.onresize = () => {
+                            weekChart.resize();
+                        };
+                    }else if(indexItem == 4){
+                        let pvList = data.pvList;
+                        let uvList = data.uvList;
+                        let labelList = data.labelList;
+                        let pvTotal = data.pvTotal;
+                        let uvTotal = data.uvTotal;
+                        $('.monthChart .pv h1').html(pvTotal);
+                        $('.monthChart .uv h1').html(uvTotal);
+
+                        // 近30日
+                        let monthChart = echarts.init(document.getElementById('monthChart'));
+                        monthChart.setOption(chartOption({ pvList, uvList, labelList }));
+                        window.onresize = () => {
+                            monthChart.resize();
+                        };
+                    }else {
+                        let pvList = data.pvList;
+                        let uvList = data.uvList;
+                        let labelList = data.labelList;
+                        let pvTotal = data.pvTotal;
+                        let uvTotal = data.uvTotal;
+                        $('.todayChart .pv h1').html(pvTotal);
+                        $('.todayChart .uv h1').html(uvTotal);
+                        // 今日
+                        let todayChart = echarts.init(document.getElementById('todayChart'));
+                        todayChart.setOption(chartOption({ pvList, uvList, labelList }));
+                        window.onresize = () => {
+                            todayChart.resize();
+                        };
+                    }
+                }
+            },
+            error: function (res) {
+                foxui.closeLoading();
+            }
+        });
+    }
+    //初始化当日（默认）
+    accessProfile({'type':1});
+
+    //地域分布
+    function region(param){
+        let indexItem = param.type;
+        foxui.loading();
+        $.ajax({
+            type: "get",
+            url:"{:url('SiteProfile/region')}",
+            dataType: "json",
+            data:param,
+            success: function (res) {
+                foxui.closeLoading();
+                if (res.code == 1) {
+                    let data = res.data;
+                    if( data.is_auth == 1){
+                        let dataMap = [],specialMap=[];
+                        //授权
+                        dataMap = data.provinceMap;
+                        specialMap = data.specialMap;
+                        // // 全国省份列表
+                        // var dataMap = [{ name: '北京', value:8 }, { name: '天津' }, { name: '上海' }, { name: '重庆' }, { name: '河北' }, { name: '河南' }, { name: '云南' }, { name: '辽宁' },
+                        //     { name: '黑龙江' }, { name: '湖南' }, { name: '安徽' }, { name: '山东' }, { name: '新疆' }, { name: '江苏' }, { name: '浙江' }, { name: '江西' }, { name: '湖北' },
+                        //     { name: '广西' }, { name: '甘肃' }, { name: '山西' }, { name: '内蒙古' }, { name: '陕西' }, { name: '吉林' }, { name: '福建' }, { name: '贵州' }, { name: '广东' },
+                        //     { name: '青海' }, { name: '西藏' }, { name: '四川' }, { name: '宁夏' }, { name: '海南' }, { name: '台湾' }, { name: '香港' }, { name: '澳门' }]
+                        // // 需要在页面上直接标记出来的城市
+                        // var specialMap = ['浙江', '云南', '陕西','四川','天津'];
+                        // 对dataMap进行处理，使其可以直接在页面上展示
+                        for (var i = 0; i < specialMap.length; i++) {
+                            for (var j = 0; j < dataMap.length; j++) {
+                                if (specialMap[i] == dataMap[j].name) {
+                                    dataMap[j].selected = true;
+                                    break;
+                                }
+
+                            }
+                        }
+                        // 绘制图表，准备数据
+                        let option = {
+                            tooltip: {
+                                formatter: function (params) {
+                                    var info = '<p style="font-size:18px">' + params.name + "---" + params.value +'</p><p style="font-size:14px">这里可以写一些，想展示在页面上的别的信息</p>'
+                                    return info;
+                                },
+                                backgroundColor: "#ff7f50",//提示标签背景颜色
+                                textStyle: { color: "#fff" } //提示标签字体颜色
+                            },
+                            series: [
+                                {
+                                    name: '中国',
+                                    type: 'map',
+                                    mapType: 'china',
+                                    selectedMode: 'multiple',
+                                    label: {
+                                        normal: {
+                                            show: true,//显示省份标签
+                                            // textStyle:{color:"#c71585"}//省份标签字体颜色
+                                        },
+                                        emphasis: {
+                                            show: true,//对应的鼠标悬浮效果
+                                            // textStyle:{color:"#800080"}
+                                        }
+                                    },
+                                    itemStyle: {
+                                        normal: {
+                                            borderWidth: .5,//区域边框宽度
+                                            // borderColor: '#009fe8',//区域边框颜色
+                                            // areaColor:"#ffefd5",//区域颜色
+                                        },
+                                        emphasis: {
+                                            borderWidth: .5,
+                                            borderColor: '#045aca',
+                                            areaColor: "#145eff",
+                                        }
+                                    },
+                                    data: dataMap
+                                }
+                            ]
+                        };
+                        //初始化echarts实例
+                        if(indexItem == 1){
+                            let myChart = echarts.init(document.getElementById('containerToday'));
+                            //使用制定的配置项和数据显示图表
+                            myChart.setOption(option);
+                        }else if (indexItem == 2){
+                            let myChart = echarts.init(document.getElementById('containerYesterday'));
+                            //使用制定的配置项和数据显示图表
+                            myChart.setOption(option);
+                        }else if (indexItem == 3){
+                            let myChart = echarts.init(document.getElementById('containerWeek'));
+                            //使用制定的配置项和数据显示图表
+                            myChart.setOption(option);
+                        }
+                    }else{
+                        //未授权或过期
+                        let html = `<div class="authorize-content-inner" style="border-radius:0px;text-align: center; color: #909399">
+                        <div class="authorize-content-body">
+                            <div class="foxui-padding-top-12 foxui-padding-bottom-20">
+                                <i class="foxui-icon-warn-solid unauthorized-icon"></i>
+                                <p class="unauthorized-info">尚未获得商业授权或授权已过期!</p>
+                            </div>
+                        </div>
+                        </div>`;
+                        if(indexItem == 1){
+                            $('#containerToday').empty().append(html);
+                        }else if (indexItem == 2){
+                            $('#containerYesterday').empty().append(html);
+                        }else if (indexItem == 3){
+                            $('#containerWeek').empty().append(html);
+                        }
+                    }
+                }else{
+                    //未授权或过期
+                    let html = `<div class="authorize-content-inner" style="border-radius:0px;text-align: center; color: #909399">
+                        <div class="authorize-content-body">
+                            <div class="foxui-padding-top-12 foxui-padding-bottom-20">
+                                <i class="foxui-icon-warn-solid unauthorized-icon"></i>
+                                <p class="unauthorized-info">尚未获得商业授权或授权已过期!</p>
+                            </div>
+                        </div>
+                        </div>`;
+                    if(indexItem == 1){
+                        $('#containerToday').empty().append(html);
+                    }else if (indexItem == 2){
+                        $('#containerYesterday').empty().append(html);
+                    }else if (indexItem == 3){
+                        $('#containerWeek').empty().append(html);
+                    }
+                }
+            },
+            error: function (res) {
+                foxui.closeLoading();
+            }
+        });
+    }
+    region({'type':1});
+
+    foxui.tabs.$on(function ({ index, id }) {
+        if(id === 'tabsCardHeader'){
+            if (index === 0) {
+                //初始化当日（默认）
+                accessProfile({'type':1});
+                //地域分布
+                region({'type':1});
+            } else if (index === 1) {
+                //访客分析初始化
+                visitorAnalyseInit({'type':1});
+            } else if (index === 2) {
+                //受访页面初始化
+                enterInit({'index':0});
+            } else if (index === 3) {
+                //受访页面初始化
+                accessInit({'index':0});
+            }
+        }else if (id === 'viewRegionTabs') {
+            if (index === 0) {
+                region({'type':1});
+            } else if (index === 1) {
+                region({'type':2});
+            } else if (index === 2) {
+                region({'type':3});
+            }
+        }else if (id === 'viewTabs') {
+            if (index === 0) {
+                accessProfile({'type':1});
+            } else if (index === 1) {
+                accessProfile({'type':2});
+            } else if (index === 2) {
+                accessProfile({'type':3});
+            } else if (index === 3) {
+                accessProfile({'type':4});
+            }
+        }else if (id === 'tabsCardVisitorAnalyse') {
+            //访客分析
+            if (index === 0) {
+                visitorAnalyseInit({'type':1});
+            } else if (index === 1) {
+                visitorAnalyseInit({'type':2});
+            } else if (index === 2) {
+                visitorAnalyseInit({'type':3});
+            }
+        }
+    });
+</script>
+
+<script>
+
+    //访客分析
+    function visitorAnalyseInit(param){
+        let ip = $(".tabsCardVisitorAnalyse").find('input[name="ip"]').val();
+        if(param == undefined){
+            param = new Object();
+        }
+        param.ip = ip;
+        visitorAnalysePage(param)
+    }
+    //访客分析
+    function visitorAnalysePage(param){
+        foxui.loading();
+        $.ajax({
+            type: "post",
+            url:"{:url('SiteProfile/visitorAnalyse')}",
+            dataType: "json",
+            data:param,
+            success: function (res) {
+                foxui.closeLoading();
+                if (res.code == 1 && res.data) {
+                    let data = res.data;
+                    let paginationData = {
+                        pageSize: data.per_page,
+                        total: data.total,
+                        currentPage: data.current_page
+                    };
+                    initTable2(paginationData, data.data);
+                }
+            },
+            error: function (res) {
+                foxui.closeLoading();
+            }
+        });
+    }
+    /**
+     * @description: 初始化表格
+     * @param {*} pageSize
+     * @param {*} total
+     * @param {*} currentPage
+     * @param {*} dataList
+     * @return {*}
+     * @Date: 2022-01-12 10:55:11
+     */
+    function initTable2({ pageSize, total, currentPage }, dataList) {
+        // 追加表格 html
+        _appendToTable2(dataList);
+        //分页
+        foxui.pagination(
+            {
+                el: '#pagination2',
+                currentPage: currentPage,
+                total: total,
+                onchange: function ({ currentPage, pageSize, total }, callback) {
+                    callback({ total, pageSize, currentPage });
+                    let param = {pageSize, currentPage};
+                    visitorAnalyseInit(param);
+                },
+            },
+            {
+                type: 'plain',
+                size: 'mini',
+                isShowTotal: true,
+                isShowSize: true,
+                pageSize: pageSize
+            }
+
+        );
+    }
+
+    /**
+     * @description: 追加表格 html
+     * @param {*} dataList
+     * @return {*}
+     * @Date: 2022-01-12 00:18:40
+     */
+    function _appendToTable2(dataList) {
+        const html = _trsHtml2(dataList);
+        $('#visitorAnalyseTable').empty().append(html);
+    }
+
+    /**
+     * @description: 表格 html
+     * @param {*} dataList
+     * @return {*}
+     * @Date: 2022-01-12 00:18:52
+     */
+    function _trsHtml2(dataList) {
+        let htmlArr = [];
+        dataList.forEach(item => {
+            htmlArr.push(`
+            <li class="foxui-table-tr">
+                <div class="foxui-table-td">${item.create_time}</div>
+                <div class="foxui-table-td">${item.area}</div>
+                <div class="foxui-table-td">${item.page_title??""}</div>
+                <div class="foxui-table-td blue-color"><a href="${item.from_page}" target="_blank">${item.from_page}</a></div>
+                <div class="foxui-table-td">${item.ip}</div>
+            </li>
+        `);
+        });
+        return htmlArr.join('');
+    }
+
+    $('.search-btn-visitorAnalyse').click(function () {
+        visitorAnalyseInit();
+    })
+</script>
+
+<script>
+    //入口页面
+    //点击切换
+    $("#tabsCardEnterPage").find(".foxui-tabs-header").children('.foxui-tabs-item').click(function () {
+        let index = $(this).attr('data-index');
+        enterPage({"index": index})
+    })
+
+    function enterInit(param){
+        if(param == undefined){
+            param = new Object();
+        }
+        let keyword = $(".tabsCardEnterPage").find('input[name="keyword"]').val();
+        param.keyword = keyword;
+        enterPage(param)
+    }
+    //受访页面
+    function enterPage(param){
+        $.ajax({
+            type: "post",
+            url:"{:url('SiteProfile/enterPage')}",
+            dataType: "json",
+            data:param,
+            success: function (res) {
+                if (res.code == 1 && res.data) {
+                    let data = res.data;
+                    let paginationData = {
+                        pageSize: data.per_page,
+                        total: data.total,
+                        currentPage: data.current_page
+                    };
+                    initTable1(paginationData, data.data);
+                }
+            },
+            error: function (res) {
+            }
+        });
+    }
+
+    /**
+     * @description: 初始化表格
+     * @param {*} pageSize
+     * @param {*} total
+     * @param {*} currentPage
+     * @param {*} dataList
+     * @return {*}
+     * @Date: 2022-01-12 10:55:11
+     */
+    function initTable1({ pageSize, total, currentPage }, dataList) {
+        // 追加表格 html
+        _appendToTable1(dataList);
+        //分页
+        foxui.pagination(
+            {
+                el: '#pagination1',
+                currentPage: currentPage,
+                total: total,
+                onchange: function ({ currentPage, pageSize, total }, callback) {
+                    callback({ total, pageSize, currentPage });
+                    let param = {pageSize, currentPage};
+                    enterInit(param);
+                },
+            },
+            {
+                type: 'plain',
+                size: 'mini',
+                isShowTotal: true,
+                isShowSize: true,
+                pageSize: pageSize
+            }
+
+        );
+    }
+
+    /**
+     * @description: 追加表格 html
+     * @param {*} dataList
+     * @return {*}
+     * @Date: 2022-01-12 00:18:40
+     */
+    function _appendToTable1(dataList) {
+        const html = _trsHtml1(dataList);
+        $('#enterTable').empty().append(html);
+    }
+
+    /**
+     * @description: 表格 html
+     * @param {*} dataList
+     * @return {*}
+     * @Date: 2022-01-12 00:18:52
+     */
+    function _trsHtml1(dataList) {
+        let htmlArr = [];
+        dataList.forEach(item => {
+            htmlArr.push(`
+            <li class="foxui-table-tr">
+                <div class="foxui-table-td">${item.page_title??""}</div>
+                <div class="foxui-table-td blue-color"><a href="${item.from_page}" target="_blank">${item.from_page}</a></div>
+                <div class="foxui-table-td">${item.uvcount}</div>
+                <div class="foxui-table-td">${item.ipcount}</div>
+            </li>
+        `);
+        });
+        return htmlArr.join('');
+    }
+
+    $('.search-btn-enterpage').click(function () {
+        enterInit();
+    })
+</script>
+
+<script>
+    //受访页面
+    //点击切换
+    $("#tabsCardAccessPage").find(".foxui-tabs-header").children('.foxui-tabs-item').click(function () {
+        let index = $(this).attr('data-index');
+        let param = {"index":index};
+        accessPage(param)
+    })
+
+    function accessInit(param){
+        if(param == undefined){
+            param = new Object();
+        }
+        let keyword = $(".tabsCardAccessPage").find('input[name="keyword"]').val();
+        param.keyword = keyword;
+        accessPage(param)
+    }
+    //受访页面
+    function accessPage(param){
+        foxui.loading();
+        $.ajax({
+            type: "post",
+            url:"{:url('SiteProfile/accessPage')}",
+            dataType: "json",
+            data:param,
+            success: function (res) {
+                foxui.closeLoading();
+                if (res.code == 1 && res.data) {
+                    let data = res.data;
+                    let paginationData = {
+                        pageSize: data.per_page,
+                        total: data.total,
+                        currentPage: data.current_page
+                    };
+                    initTable(paginationData, data.data);
+                }
+            },
+            error: function (res) {
+                foxui.closeLoading();
+            }
+        });
+    }
+
+    /**
+     * @description: 初始化表格
+     * @param {*} pageSize
+     * @param {*} total
+     * @param {*} currentPage
+     * @param {*} dataList
+     * @return {*}
+     * @Date: 2022-01-12 10:55:11
+     */
+    function initTable({ pageSize, total, currentPage }, dataList) {
+        // 追加表格 html
+        _appendToTable(dataList);
+        //分页
+        foxui.pagination(
+            {
+                el: '#pagination',
+                currentPage: currentPage,
+                total: total,
+                onchange: function ({ currentPage, pageSize, total }, callback) {
+                    callback({ total, pageSize, currentPage });
+                    let param = {pageSize, currentPage};
+                    accessInit(param);
+                },
+            },
+            {
+                type: 'plain',
+                size: 'mini',
+                isShowTotal: true,
+                isShowSize: true,
+                pageSize: pageSize
+            }
+
+        );
+    }
+
+    /**
+     * @description: 追加表格 html
+     * @param {*} dataList
+     * @return {*}
+     * @Date: 2022-01-12 00:18:40
+     */
+    function _appendToTable(dataList) {
+        const html = _trsHtml(dataList);
+        $('#accessTable').empty().append(html);
+    }
+
+    /**
+     * @description: 表格 html
+     * @param {*} dataList
+     * @return {*}
+     * @Date: 2022-01-12 00:18:52
+     */
+    function _trsHtml(dataList) {
+        let htmlArr = [];
+        dataList.forEach(item => {
+            htmlArr.push(`
+            <li class="foxui-table-tr">
+                <div class="foxui-table-td">${item.page_title??""}</div>
+                <div class="foxui-table-td blue-color"><a href="${item.from_page}" target="_blank">${item.from_page}</a></div>
+                <div class="foxui-table-td">${item.pvcount}</div>
+                <div class="foxui-table-td">${item.uvcount}</div>
+            </li>
+        `);
+        });
+        return htmlArr.join('');
+    }
+
+    $('.search-btn-access-page').click(function () {
+        accessInit();
+    })
+</script>
+
+{/block}

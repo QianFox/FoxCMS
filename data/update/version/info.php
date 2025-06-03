@@ -1,5 +1,5 @@
 <?php
 return [
-	'version' => '1.2.0',
-	'only' => '6e983aa08bfcc1757f62cf028392c631',
+	'version' => '1.2.6',
+	'only' => '47df25674d3ec07ff53bceca5b2da58f',
 ];

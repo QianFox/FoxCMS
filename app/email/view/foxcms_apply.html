@@ -1,0 +1,144 @@
+<!DOCTYPE html>
+<html lang="cn">
+<head>
+    {include file="css"}
+    {block name="css"}{/block}
+</head>
+<body>
+<div class="foxcms-container apply-page-container">
+    <div class="foxcms-header">
+        <div class="foxcms-logo">
+            <span>FOX</span>
+            <strong>CMS</strong>
+        </div>
+        <div class="foxcms-modal">
+            {if $clickName}
+            <p class="foxui-ellipsis foxui-padding-right-8">{$clickName}</p>
+            {else/}
+            <button class="foxui-text" onclick="window.history.go(-1)">
+                <i class="foxui-icon-fanhui-o"></i>
+                <span>返回</span>
+            </button>
+            {/if}
+        </div>
+        <div class="foxcms-bar">
+            <div class="foxcms-bar-left">
+                <ul class="foxui-breadcrumb">
+                    {foreach name="breadcrumb" item="vo"}
+                    <li class="foxui-breadcrumb-item">
+                        <a href="{$vo.url}">{$vo.title}</a>
+                    </li>
+                    {/foreach}
+                </ul>
+
+            </div>
+            <div class="foxcms-bar-right">
+                <div class="item icon index">
+                    <i class="foxui-icon-shouye-o"></i>
+                </div>
+                <div class="item role">
+                    <div class="foxui-dropdown">
+                        <button class="foxui-text foxui-dropdown-handle foxui-dropdown-icon" data-trigger="hover" id="barService">
+                            <i class="foxui-icon-kefu-o"></i>
+                        </button>
+                    </div>
+                    <div class="foxui-dropdown dropdown">
+                        <button class="foxui-text foxui-dropdown-handle foxui-dropdown-icon" data-trigger="hover">{:session("admin_auth.nickname")}</button>
+                        <div class="foxui-dropdown-menu">
+                            <ul class="foxui-dropdown-slide">
+                                <li class="foxui-dropdown-item" data-id="1">个人中心</li>
+                                <li class="foxui-dropdown-item" data-id="2">修改密码</li>
+                                <li class="foxui-dropdown-item" data-id="3">更新缓存</li>
+                                <li class="foxui-divided" data-id="4"></li>
+                                <li class="foxui-dropdown-item" data-id="5">退出系统</li>
+                            </ul>
+                        </div>
+                    </div>
+                </div>
+                <div class="item icon logout">
+                    <a onclick="logout()"><i class="foxui-icon-tuichu-o"></i></a>
+                </div>
+            </div>
+        </div>
+    </div>
+    <div class="foxcms-main">
+        <div class="foxcms-nav" id="par_menu">
+            <ul>
+                {foreach name="menu" item="vo"}
+                <li>
+                    <a class="{if $columnId == $vo.id}active{/if}" href="{$vo.name}">
+                        <i class="foxui-{$vo.icon}"></i>
+                        <span>{$vo.title}</span>
+                    </a>
+                </li>
+                {/foreach}
+            </ul>
+        </div>
+        {if sizeof($chileMenus) > 0}
+        <div class="foxcms-menu-nav" style="{$fox_menu}">
+            <div class="foxcms-menu-nav-inner" id="foxMenuFrame">
+
+                <ul class="foxui-menu foxui-type-vertical">
+                    {foreach name="chileMenus" item="cm"}
+                    {if condition="empty($cm._data) neq true"}
+                    <li class="foxui-menu-submenu">
+                        <div class="foxui-menu-handle foxui-menu-icon is-active">
+                            <span>{$cm.title}</span>
+                        </div>
+                        <div class="foxui-menu-menu" style="display: block">
+                            <ul class="foxui-menu-slide">
+                                {foreach name="$cm._data" item="ccm"}
+
+                                {if condition="empty($ccm._data) neq true"}
+                                <li class="foxui-menu-submenu">
+                                    <div class="foxui-menu-handle foxui-menu-icon is-active">
+                                        <span>{$ccm.title}</span>
+                                    </div>
+                                    <div class="foxui-menu-menu" style="display: block">
+                                        <ul class="foxui-menu-slide">
+                                            {foreach name="$ccm._data" item="cccm"}
+                                            {if $clickId == $cccm.id}
+                                            <li class="foxui-menu-item is-active">{$cccm.title}</li>
+                                            {else/}
+                                            <li class="foxui-menu-item">
+                                                <a href="{$cccm.name}">{$cccm.title}</a>
+                                            </li>
+                                            {/if}
+                                            {/foreach}
+                                        </ul>
+                                    </div>
+                                </li>
+                                {else/}
+                                <li class="foxui-menu-item {if $clickId == $ccm.id}is-active{/if}">
+                                    <a href="{$ccm.name}">{$ccm.title}</a>
+                                </li>
+                                {/if}
+                                {/foreach}
+                            </ul>
+                        </div>
+                    </li>
+                    {else/}
+                    <li class="foxui-menu-item {if $clickId == $cm.id}is-active{/if}">
+                        <a href="{$cm.name}">{$cm.title}</a>
+                    </li>
+                    {/if}
+                    {/foreach}
+                </ul>
+            </div>
+            <div class="foxcms-menu-nav-fold">
+                <i class="foxui-icon-zuizuo"></i>
+            </div>
+        </div>
+        {/if}
+        <div class="foxcms-article">
+            <div class="foxcms-content">
+                <!-- page content -->
+                {block name="body"}{/block}
+            </div>
+        </div>
+    </div>
+</div>
+</body>
+{include file="script"}
+{block name="js"}{/block}
+</html>

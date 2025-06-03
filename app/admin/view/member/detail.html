@@ -1,0 +1,41 @@
+{extend name="foxcms" /}
+
+{block name="css"}
+{/block}
+
+{block name="body"}
+<input name="columnId" type="hidden" value="{$columnId}"/>
+<input name="id" type="hidden" value="{$id}"/>
+<input name="nid" type="hidden" value="{$nid}"/>
+
+<div class="foxcms-content-inner">
+    <!-- page content -->
+    <div class="contact-way-content">
+        <div class="section section-panel">
+            <div class="section-title">详情</div>
+            <div class="section-main">
+
+                <!--动态标签start-->
+                <div class="field">
+                    <?php echo memberFieldTag($nid, $id); ?>
+                </div>
+                <!--动态标签end-->
+
+                <!--动态标签start-->
+                <div class="field">
+                    <?php echo memberFieldTag($nid, $id, $member_model_id); ?>
+                </div>
+                <!--动态标签end-->
+            </div>
+        </div>
+    </div>
+</div>
+
+{include file="footed-copy"/}
+{/block}
+
+{block name="js"}
+<script>
+
+</script>
+{/block}

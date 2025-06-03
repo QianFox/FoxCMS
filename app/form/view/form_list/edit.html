@@ -1,0 +1,1230 @@
+{extend name="foxcms_apply" /}
+
+{block name="css"}
+<style>
+    .foxcms-article{
+        overflow-y: hidden;
+    }
+</style>
+
+{/block}
+
+{block name="body"}
+
+<div class="foxcms-content-inner">
+    <input type="hidden" name="id" value="{$id}">
+    <!-- page content -->
+    <div class="diy_form_edit_content foxui-row">
+        <div class="foxui-col-sm-8 foxui-col-xs-8">
+            <div class="section section-panel">
+                <div class="diy-title">自定义表单预览</div>
+                <div id="previewDiyForm"></div>
+            </div>
+        </div>
+        <div class="foxui-col-sm-16 foxui-col-xs-16">
+            <div class="section section-panel">
+                <div class="section-title">基本信息</div>
+                <div class="section-main">
+                    <div class="section-main-item">
+                        <div class="foxui-input-group">
+                            <div class="input-label">
+                                <label class="foxui-required">表单名称：</label>
+                            </div>
+                            <div class="input-box">
+                                <div class="foxui-input-suffix">
+                                    <input class="foxui-size-small" maxlength="30" placeholder="" value="{$formList.name}" name="name"/>
+                                    <i class="foxui-suffix-icon foxui-suffix-count">0/30</i>
+                                </div>
+                            </div>
+                        </div>
+                    </div>
+                    <div class="section-main-item">
+                        <div class="foxui-input-group">
+                            <div class="input-label">
+                                <label class="foxui-required">数据库表名：</label>
+                            </div>
+                            <div class="input-box">
+                                <input class="foxui-size-small" placeholder="只能输入小写字母和下划线" required value="{$formList.table_name}" name="table_name" onkeyup="this.value=this.value.replace(/[^a-z_]/g,'');"/>
+                            </div>
+                        </div>
+                    </div>
+                </div>
+                <div class="section-title margin-top-46">添加字段</div>
+                <div class="section-main">
+                    <div class="section-main-item select-field-box">
+                        <div class="foxui-input-group foxui-align-items-start">
+                            <div class="input-label">
+                                <label>选择表单字段：</label>
+                            </div>
+                            <div class="block-box">
+                                <ul class="field-list">
+                                    <li class="field-item" data-type="inputtext">
+                                        <div class="field-item-mark">添加字段</div>
+                                        <div class="field-item-inner">
+                                            <i class="foxui-icon-ziti-o"></i>
+                                            <span>单行文本</span>
+                                        </div>
+                                    </li>
+                                    <li class="field-item" data-type="textarea">
+                                        <div class="field-item-mark">添加字段</div>
+                                        <div class="field-item-inner">
+                                            <i class="foxui-icon-duanla-o"></i>
+                                            <span>多行文本</span>
+                                        </div>
+                                    </li>
+                                    <li class="field-item" data-type="radio">
+                                        <div class="field-item-mark">添加字段</div>
+                                        <div class="field-item-inner">
+                                            <i class="foxui-icon-danxuan-f"></i>
+                                            <span>单选项</span>
+                                        </div>
+                                    </li>
+                                    <li class="field-item" data-type="checkbox">
+                                        <div class="field-item-mark">添加字段</div>
+                                        <div class="field-item-inner">
+                                            <i class="foxui-icon-fuxuan-f"></i>
+                                            <span>多选项</span>
+                                        </div>
+                                    </li>
+                                    <li class="field-item" data-type="select">
+                                        <div class="field-item-mark">添加字段</div>
+                                        <div class="field-item-inner">
+                                            <i class="foxui-icon-xiala-o"></i>
+                                            <span>下拉框</span>
+                                        </div>
+                                    </li>
+                                    <li class="field-item" data-type="switch">
+                                        <div class="field-item-mark">添加字段</div>
+                                        <div class="field-item-inner">
+                                            <i class="foxui-icon-kaiguan-f"></i>
+                                            <span>Switch开关</span>
+                                        </div>
+                                    </li>
+                                    <li class="field-item" data-type="datepicker">
+                                        <div class="field-item-mark">添加字段</div>
+                                        <div class="field-item-inner">
+                                            <i class="foxui-icon-rili-o"></i>
+                                            <span>日期</span>
+                                        </div>
+                                    </li>
+                                    <li class="field-item" data-type="timepicker">
+                                        <div class="field-item-mark">添加字段</div>
+                                        <div class="field-item-inner">
+                                            <i class="foxui-icon-gongzuo-o"></i>
+                                            <span>时间</span>
+                                        </div>
+                                    </li>
+                                    <li class="field-item" data-type="datetimepicker">
+                                        <div class="field-item-mark">添加字段</div>
+                                        <div class="field-item-inner">
+                                            <i class="foxui-icon-riqi-o"></i>
+                                            <span>日期时间</span>
+                                        </div>
+                                    </li>
+                                    <li class="field-item" data-type="image">
+                                        <div class="field-item-mark">添加字段</div>
+                                        <div class="field-item-inner">
+                                            <i class="foxui-icon-tupian-o"></i>
+                                            <span>图片文件</span>
+                                        </div>
+                                    </li>
+                                    <li class="field-item" data-type="color">
+                                        <div class="field-item-mark">添加字段</div>
+                                        <div class="field-item-inner">
+                                            <i class="foxui-icon-sepan-f"></i>
+                                            <span>颜色选择</span>
+                                        </div>
+                                    </li>
+                                </ul>
+                            </div>
+                        </div>
+                    </div>
+                </div>
+                <div class="section-title margin-top-46">表单设置</div>
+                <div class="section-main">
+                    <ul id="diyFormSet" class="foxui-drag foxui-drag-container"></ul>
+                </div>
+                <div class="section-title margin-top-46">设置</div>
+                <div class="section-main">
+                    <div class="section-main-item">
+                        <div class="foxui-input-group">
+                            <div class="input-label">
+                                <label>提交限制：</label>
+                            </div>
+                            <div class="input-box">
+                                <div class="foxui-radio-group commit-type">
+                                    <div class="foxui-radio {if $formList.commit_type == 0} is-checked {/if}">
+                                        <span class="foxui-radio-input">
+                                            <i class="foxui-radio-icon"></i>
+                                            <input type="radio" value="0" checked="checked" />
+                                        </span>
+                                        <span class="foxui-radio-label">不限制</span>
+                                    </div>
+                                    <div class="foxui-radio {if $formList.commit_type == 1} is-checked {/if}">
+                                        <span class="foxui-radio-input">
+                                            <i class="foxui-radio-icon"></i>
+                                            <input type="radio" value="1" />
+                                        </span>
+                                        <span class="foxui-radio-label">5分钟内限提交1次</span>
+                                    </div>
+                                </div>
+                            </div>
+                        </div>
+                        <p class="input-box-info">同IP在5分钟内允许提交1次，可免避恶意频繁提交</p>
+                    </div>
+                    <div class="section-main-item">
+                        <div class="foxui-input-group">
+                            <div class="input-label">
+                                <label>邮件通知：</label>
+                            </div>
+                            <div class="input-box">
+                                <div class="foxui-radio-group email-setting">
+                                    <div class="foxui-radio {if $formList.email_setting == 1} is-checked {/if}" onclick="emailNotice(1)">
+                                        <span class="foxui-radio-input">
+                                            <i class="foxui-radio-icon"></i>
+                                            <input type="radio" value="1" checked="checked" />
+                                        </span>
+                                        <span class="foxui-radio-label">开启</span>
+                                    </div>
+                                    <div class="foxui-radio {if $formList.email_setting == 0} is-checked {/if}" onclick="emailNotice(0)">
+                                        <span class="foxui-radio-input">
+                                            <i class="foxui-radio-icon"></i>
+                                            <input type="radio" value="0" />
+                                        </span>
+                                        <span class="foxui-radio-label">关闭</span>
+                                    </div>
+                                </div>
+                            </div>
+                        </div>
+
+                        <div class="foxui-input-group margin-top-24 email-template" style="{if $formList.email_setting == 0}display: none;{/if}">
+                            <div class="input-label">
+                                <label>邮件模板：</label>
+                            </div>
+                            <div class="input-box">
+                                <div class="foxui-select">
+                                    <div class="foxui-select-handle foxui-select-icon">
+                                        <input class="foxui-select-input" readonly="readonly" name="template_id" placeholder="请选择" value="{$pmt['name']}" data-id="{$pmt['id']}" />
+                                    </div>
+                                    <div class="foxui-select-menu">
+                                        <ul class="foxui-select-slide">
+                                            {foreach $pmtList as $vo }
+                                            <li class="foxui-select-item" data-id="{$vo.id}">{$vo.name}</li>
+                                            {/foreach}
+                                        </ul>
+                                    </div>
+                                </div>
+                            </div>
+                            {if $mail_config == 1}
+                            <a href="{$mail_config_url}" target="_blank">邮件配置</a>
+                            {/if}
+                        </div>
+
+                    </div>
+
+                    <div class="section-main-item">
+                        <div class="foxui-input-group">
+                            <div class="input-label">
+                                <label>验证码配置：</label>
+                            </div>
+                            <div class="input-box">
+                                <div class="foxui-radio-group verify">
+                                    <div class="foxui-radio {if $formList.verify == 1} is-checked {/if}">
+                                        <span class="foxui-radio-input">
+                                            <i class="foxui-radio-icon"></i>
+                                            <input type="radio" value="1" checked="checked" />
+                                        </span>
+                                        <span class="foxui-radio-label">开启</span>
+                                    </div>
+                                    <div class="foxui-radio {if $formList.verify == 0} is-checked {/if}">
+                                        <span class="foxui-radio-input">
+                                            <i class="foxui-radio-icon"></i>
+                                            <input type="radio" value="0" />
+                                        </span>
+                                        <span class="foxui-radio-label">关闭</span>
+                                    </div>
+                                </div>
+                            </div>
+                        </div>
+                    </div>
+                </div>
+            </div>
+            <div class="foxcms-content-footer">
+                <button class="is-long foxui-size-small foxui-solid-primary" id="save">保存</button>
+                <button class="is-long foxui-size-small" onclick="window.history.go(-1)">返回</button>
+            </div>
+        </div>
+    </div>
+</div>
+
+{/block}
+
+
+{block name="js"}
+<script src="{$staticPath}js/diy_form_edit.js"></script>
+<script>
+    // 删除字段
+    $(document).on('click', '#diyFormSet .delete-item-btn', function () {
+        let that = this;
+        foxui.dialog({
+            title: '删除',
+            content: '您确定要删除字段吗？',
+            cancelText: '取消',
+            confirmText: '删除',
+            buttonType: 'danger',
+            confirm: function (callback) {
+                let $this = $(that),
+                    $item = $this.closest('.foxui-drag-item'),
+                    id = $this.closest('.foxui-drag-item').attr('data-diyid');
+
+                let field_id = id.replace("diyid", "");
+                $.ajax({
+                    type: "post",
+                    url: 'deleteField',
+                    dataType: "json",
+                    data: {field_id},
+                    success: function (res) {
+                        if (res.code == 1 || res.data == "ts") {
+                            $(`#${id}`).slideUp(function () {
+                                $(this).remove();
+                            });
+                            $item.slideUp(function () {
+                                $(this).remove();
+                            });
+                        } else {
+                            foxui.message({
+                                type:'danger',
+                                text:res.msg
+                            })
+                        }
+                    }, error: function (res) {
+                        foxui.message({
+                            type:'danger',
+                            text:'操作失败'
+                        })
+                    }
+                });
+                callback();
+            },
+        });
+    });
+</script>
+
+
+<script>
+    //邮件通知
+    function emailNotice(state) {
+        if(state == 0){
+            $(".email-template").css({"display":'none'})
+        }else {
+            $(".email-template").css({"display":''})
+        }
+    }
+
+    //拼装数据
+    function initItems(dataList){
+        let $diyContainer = $('#previewDiyForm'),
+            $formContainer = $('#diyFormSet'),
+            fieldHtml = '',
+            itemHtml = '';
+
+        dataList.forEach(item => {
+            let type = item.dtype;
+            let diyId = 'diyid' + item.id;
+            let required = (item.is_require == 1)?'foxui-required':'';//是否必填
+            switch (type) {
+                case 'inputtext':
+                case 'text':
+                    fieldHtml =  [
+                        '<div class="foxui-input-group" data-id="'+item.id+'">',
+                        '<label class="'+required+' form-label">' + item.title + '</label>',
+                        '<input class="foxui-size-small form-input-placeholder" placeholder="'+ item.marke_word +'" style="flex:1" value="'+item.val+'" />',
+                        '</div>',
+                    ].join('');
+                    break;
+                case 'textarea':
+                case 'multitext':
+                    fieldHtml = [
+                        '<div class="foxui-input-group foxui-align-items-start" data-id="'+item.id+'">',
+                        '<label class="'+required+' form-label">' + item.title + '</label>',
+                        '<div class="foxui-textarea" style="flex:1">',
+                        '<textarea class="form-input-placeholder" autocomplete="off" rows="3" placeholder="'+item.marke_word+'">'+item.val+'</textarea>',
+                        '</div>',
+                        '</div>',
+                    ].join('');
+                    break;
+                case 'radio':
+                    let radioDefaultVal = item.dfvalue;
+                    let radioDefaultArr = radioDefaultVal.split(",");
+                    let fieldHtmlRadio = [
+                        '<div class="foxui-input-group">',
+                        '<label class="'+required+' form-label">' + item.title + '</label>',
+                        '<div class="foxui-radio-group form-option-group radio-box-multi-line" style="flex:1">'];
+                    radioDefaultArr.forEach(it => {
+                        let isCheck = (it == item.val)?'is-checked':'';
+                        fieldHtmlRadio.push('<div class="foxui-radio form-option '+ isCheck+'">');
+                        fieldHtmlRadio.push('<span class="foxui-radio-input">');
+                        fieldHtmlRadio.push('<i class="foxui-radio-icon"></i>');
+                        fieldHtmlRadio.push('<input type="radio" value="" />');
+                        fieldHtmlRadio.push('</span>');
+                        fieldHtmlRadio.push('<span class="foxui-radio-label option-label">'+ it +'</span>');
+                        fieldHtmlRadio.push('</div>');
+                    })
+                    fieldHtmlRadio.push('</div></div>');
+                    fieldHtml = fieldHtmlRadio.join('');
+                    break;
+                case 'checkbox':
+                    //默认值
+                    let checkboxDefaultVal = item.dfvalue;
+                    let checkboxDefaultArr = checkboxDefaultVal.split(",");
+                    //选择值
+                    let checkboxVal = item.val;
+                    let checkboxArr = checkboxVal.split(",");
+                    let fieldHtmlCheckbox = [
+                        '<div class="foxui-input-group">',
+                        '<label class="'+required+' form-label">' + item.title + '</label>',
+                        '<div class="foxui-checkbox-group form-option-group checkbox-box-multi-line" style="flex:1">'];
+                    checkboxDefaultArr.forEach(it => {
+                        let index = $.inArray(it,checkboxArr);
+                        let isCheck = (index>-1) ? 'is-checked' : '';
+                        fieldHtmlCheckbox.push('<div class="foxui-checkbox form-option '+ isCheck +'">');
+                        fieldHtmlCheckbox.push('<span class="foxui-checkbox-input">');
+                        fieldHtmlCheckbox.push('<i class="foxui-checkbox-icon"></i>');
+                        fieldHtmlCheckbox.push('<input type="checkbox" value="" />');
+                        fieldHtmlCheckbox.push('</span>');
+                        fieldHtmlCheckbox.push('<span class="foxui-checkbox-label option-label">'+it+'</span>');
+                        fieldHtmlCheckbox.push('</div>');
+                    })
+                    fieldHtmlCheckbox.push('</div></div>');
+                    fieldHtml = fieldHtmlCheckbox.join('');
+                    break;
+                case 'select':
+                    //默认值
+                    let selectDefaultVal = item.dfvalue;
+                    let selectDefaultArr = selectDefaultVal.split(",");
+
+                    let fieldHtmlSelect = [
+                        '<div class="foxui-input-group">',
+                        '<label class="'+required+' form-label">'+ item.title +'</label>',
+                        '<div class="foxui-select" style="flex: 1">',
+                        '<div class="foxui-select-handle foxui-select-icon">',
+                        '<input class="foxui-select-input foxui-size-small form-input-placeholder" readonly="readonly" placeholder="'+item.marke_word+'" value="'+ item.val +'" />',
+                        '</div>',
+                        '<div class="foxui-select-menu">',
+                        '<ul class="foxui-select-slide form-option-group">'
+                    ];
+
+                    selectDefaultArr.forEach(it => {
+                        fieldHtmlSelect.push('<li class="foxui-select-item form-option"><span class="option-label">'+it+'</span></li>');
+                    })
+                    fieldHtmlSelect.push('</ul>');
+                    fieldHtmlSelect.push('</div></div></div>');
+                    fieldHtml = fieldHtmlSelect.join('');
+                    break;
+                case 'switch':
+
+                    let isCheckSwitch = (item.val == 1) ? 'is-checked' : '';
+                    fieldHtml = [
+                        '<div class="foxui-input-group">',
+                        '<label class="'+required+' form-label">'+ item.title +'</label>',
+                        '<div class="switch" style="flex:1">',
+                        '<div class="foxui-switch '+ isCheckSwitch +'">',
+                        '<input type="checkbox" value="'+ item.val +'" class="foxui-switch-input" />',
+                        '<span class="foxui-switch-core"></span>',
+                        '</div>',
+                        '</div>',
+                        '</div>',
+                    ].join('');
+                    break;
+                case 'datepicker':
+                case 'timepicker':
+                case 'datetimepicker':
+                case 'datetime':
+
+                    let typeText = "";
+                    let typeIconText = "";
+                    if(type === "datepicker"){
+                        typeText = "foxui-date-picker";
+                        typeIconText = "foxui-icon-calendar";
+                    }else if(type === "timepicker"){
+                        typeText = "foxui-time-picker has-seconds";
+                        typeIconText = "foxui-icon-time";
+                    }else if(type === "datetimepicker" || type === "datetime"){
+                        typeText = "foxui-datetime-picker has-seconds";
+                        typeIconText = "foxui-icon-time";
+                    }
+
+                    fieldHtml = [
+                        '<div class="foxui-input-group">',
+                        `<label class="${required} form-label"> ${item.title}</label>`,
+                        `<div class="foxui-picker ${typeText} " style="flex:1">`,
+                        '<div class="foxui-picker-handle foxui-input-prefix">',
+                        `<i class="${typeIconText} foxui-prefix-icon"></i>`,
+                        '<input class="foxui-size-small form-input-placeholder" readonly="readonly" placeholder="'+item.marke_word+'" value="" />',
+                        '<i class="foxui-icon-close-circle foxui-suffix-icon foxui-suffix-clear"></i>',
+                        '</div>',
+                        '</div>',
+                        '</div>',
+                    ].join('');
+                    break;
+                case 'image':
+                case 'pic':
+                    let picText = `<ul class="foxui-images-list ">
+                        <li class="foxui-images-item foxui-animate-fadeInDown">
+                            <div class="content">
+                                <img data-id="${item.img.id}" src="${item.img.url}">
+                                <span class="replace">替换</span><i class="foxui-icon-cuowu-f delete"></i>
+                            </div>
+                        </li>
+                    </ul>`;
+
+                    let displayText = "";
+                    if(item.img != undefined && item.img.id != undefined){
+                        displayText = "none";
+                    }
+
+                    fieldHtml = [
+                        '<div class="foxui-input-group foxui-align-items-start">',
+                        '<label class="'+required+' form-label">图片文件：</label>',
+                        '<div class="foxui-images" data-count="1">',
+                        '<div class="foxui-images-card">',
+                        '<ul class="foxui-images-list">',
+                        `${picText}`,
+                        `<div class="foxui-images-handle" style="display: ${displayText};">`,
+                        '<div class="foxui-images-handle-inner">',
+                        '<i class="foxui-icon-jiahao-o"></i>',
+                        '<span class="text">添加图片</span>',
+                        '</div>',
+                        '</div>',
+                        '</ul>',
+                        '</div>',
+                        '</div>',
+                        '</div>',
+                    ].join('');
+                    break;
+                case 'color':
+
+                    fieldHtml = [
+                        '<div class="foxui-input-group">',
+                        '<label class="'+required+' form-label">'+ item.title +'</label>',
+                        '<div class="foxui-color">',
+                        '<div class="foxui-color-handle is-alpha">',
+                        '<span class="foxui-color-show" style="background-color: '+item.val +'"></span>',
+                        '<i class="foxui-icon-close" style="display: none"></i>',
+                        '<span class="foxui-color-background"></span>',
+                        '<input class="foxui-color-input" "'+item.val +'"  />',
+                        '</div>',
+                        '</div>',
+                        '</div>',
+                    ].join('');
+                    break;
+            }
+
+            let isCheck = (item.is_require == 1)?'is-checked':'';//是否必填
+            switch (type) {
+                case 'inputtext':
+                case 'text':
+                    itemHtml = [
+                        '<div class="foxui-col-xs-2 foxui-col-sm-2 display-flex foxui-justify-content-center">',
+                        '<span class="foxui-drag-handle foxui-icon-liebiao-o"></span>',
+                        '</div>',
+                        '<div class="foxui-col-xs-2 foxui-col-sm-2">',
+                        '<span>单行文本</span>',
+                        '</div>',
+                        '<div class="foxui-col-xs-5 foxui-col-sm-5">',
+                        '<div class="foxui-input-group">',
+                        '<div class="foxui-input-prepend">',
+                        '<div class="foxui-prepend-inner is-grey">标题</div>',
+                        '<input class="foxui-size-small form-label title" placeholder="请输入" value="'+ item.title +'" />',
+                        '</div>',
+                        '</div>',
+                        '</div>',
+                        '<div class="foxui-col-xs-9 foxui-col-sm-9">',
+                        '<div class="foxui-input-group">',
+                        '<div class="foxui-input-prepend">',
+                        '<div class="foxui-prepend-inner is-grey">说明</div>',
+                        '<input class="foxui-size-small explain" placeholder="请输入说明文字" value="'+ item.remark +'"/>',
+                        '</div>',
+                        '</div>',
+                        '<div class="foxui-input-group">',
+                        '<div class="foxui-input-prepend">',
+                        '<div class="foxui-prepend-inner is-grey">提示语</div>',
+                        '<input class="foxui-size-small form-input-placeholder tip" placeholder="请输入" value="'+item.marke_word+'" />',
+                        '</div>',
+                        '</div>',
+                        '</div>',
+                        '<div class="foxui-col-xs-4 foxui-col-sm-4">',
+                        '<div class="display-flex foxui-justify-content-center">',
+                        '<div class="foxui-switch '+ isCheck +' form-label-require">',
+                        '<input type="checkbox" value="'+ item.is_require +'" checked="checked" class="foxui-switch-input required" />',
+                        '<span class="foxui-switch-core"></span>',
+                        '</div>',
+                        '<label class="margin-left-8">必填</label>',
+                        '</div>',
+                        '</div>',
+                        '<div class="foxui-col-xs-2 foxui-col-sm-2 display-flex foxui-justify-content-center">',
+                        '<button class="foxui-text-primary foxui-size-small delete-item-btn">删除</button>',
+                        '</div>',
+                    ].join('');
+                    break;
+                case 'textarea':
+                case 'multitext':
+                    itemHtml = [
+                        '<div class="foxui-col-xs-2 foxui-col-sm-2 display-flex foxui-justify-content-center">',
+                        '<span class="foxui-drag-handle foxui-icon-liebiao-o"></span>',
+                        '</div>',
+                        '<div class="foxui-col-xs-2 foxui-col-sm-2">',
+                        '<span>多行文本</span>',
+                        '</div>',
+                        '<div class="foxui-col-xs-5 foxui-col-sm-5">',
+                        '<div class="foxui-input-group">',
+                        '<div class="foxui-input-prepend">',
+                        '<div class="foxui-prepend-inner is-grey">标题</div>',
+                        '<input class="foxui-size-small form-label title" placeholder="请输入" value="'+ item.title +'" />',
+                        '</div>',
+                        '</div>',
+                        '</div>',
+                        '<div class="foxui-col-xs-9 foxui-col-sm-9">',
+                        '<div class="foxui-input-group">',
+                        '<div class="foxui-input-prepend">',
+                        '<div class="foxui-prepend-inner is-grey">说明</div>',
+                        '<input class="foxui-size-small explain" placeholder="请输入说明文字" value="'+ item.remark +'" />',
+                        '</div>',
+                        '</div>',
+                        '<div class="foxui-input-group">',
+                        '<div class="foxui-input-prepend">',
+                        '<div class="foxui-prepend-inner is-grey">提示语</div>',
+                        '<input class="foxui-size-small form-input-placeholder tip" placeholder="请输入" value="'+ item.marke_word +'" />',
+                        '</div>',
+                        '</div>',
+                        '</div>',
+                        '<div class="foxui-col-xs-4 foxui-col-sm-4">',
+                        '<div class="display-flex foxui-justify-content-center">',
+                        '<div class="foxui-switch '+ isCheck +' form-label-require">',
+                        '<input type="checkbox" value="'+ item.is_require +'" class="foxui-switch-input required" />',
+                        '<span class="foxui-switch-core"></span>',
+                        '</div>',
+                        '<label class="margin-left-8">必填</label>',
+                        '</div>',
+                        '</div>',
+                        '<div class="foxui-col-xs-2 foxui-col-sm-2 display-flex foxui-justify-content-center">',
+                        '<button class="foxui-text-primary foxui-size-small delete-item-btn">删除</button>',
+                        '</div>',
+                    ].join('');
+                    break;
+                case 'radio':
+
+                    let radioDefaultVal = item.dfvalue;
+                    let radioDefaultArr = radioDefaultVal.split(",");
+                    let radioDefaultChildArr = [];
+                    radioDefaultArr.forEach(it => {
+                        radioDefaultChildArr.push('<div class="foxui-input-group">');
+                        radioDefaultChildArr.push('<div class="foxui-input-prepend">');
+                        radioDefaultChildArr.push('<div class="foxui-prepend-inner is-grey">选项</div>');
+                        radioDefaultChildArr.push('<input class="foxui-size-small form-input-option" placeholder="请输入" value="'+it+'" />');
+                        radioDefaultChildArr.push('</div>');
+                        radioDefaultChildArr.push('<button class="foxui-text-primary foxui-size-small delete-option-btn margin-left-8">删除</button>');
+                        radioDefaultChildArr.push('</div>');
+                    })
+
+                    itemHtml = [
+                        '<div class="foxui-col-xs-2 foxui-col-sm-2 display-flex foxui-justify-content-center">',
+                        '<span class="foxui-drag-handle foxui-icon-liebiao-o"></span>',
+                        '</div>',
+                        '<div class="foxui-col-xs-2 foxui-col-sm-2">',
+                        '<span>单选</span>',
+                        '</div>',
+                        '<div class="foxui-col-xs-5 foxui-col-sm-5">',
+                        '<div class="foxui-input-group">',
+                        '<div class="foxui-input-prepend">',
+                        '<div class="foxui-prepend-inner is-grey">标题</div>',
+                        '<input class="foxui-size-small form-label title" placeholder="请输入" value="'+ item.title +'" />',
+                        '</div>',
+                        '</div>',
+                        '</div>',
+                        '<div class="foxui-col-xs-9 foxui-col-sm-9">',
+                        '<div class="foxui-input-group">',
+                        '<div class="foxui-input-prepend">',
+                        '<div class="foxui-prepend-inner is-grey">说明</div>',
+                        '<input class="foxui-size-small explain" placeholder="请输入说明文字" value="'+ item.remark +'" />',
+                        '</div>',
+                        '</div>',
+                        '<div class="option-box margin-top-10">',
+
+                        radioDefaultChildArr.join(''),
+
+                        '</div>',
+                        '<div>',
+                        '<button class="foxui-text-primary add-option-btn" data-type="radio"><i class="foxui-icon-jiahao-o"></i><span>添加选项</span></button>',
+                        '</div>',
+                        '</div>',
+                        '<div class="foxui-col-xs-4 foxui-col-sm-4">',
+                        '<div class="display-flex foxui-justify-content-center">',
+                        '<div class="foxui-switch '+ isCheck +' form-label-require">',
+                        '<input type="checkbox" value="'+item.is_require+'" checked="checked" class="foxui-switch-input required" />',
+                        '<span class="foxui-switch-core"></span>',
+                        '</div>',
+                        '<label class="margin-left-8">必填</label>',
+                        '</div>',
+                        '</div>',
+                        '<div class="foxui-col-xs-2 foxui-col-sm-2">',
+                        '<button class="foxui-text-primary foxui-size-small delete-item-btn">删除</button>',
+                        '</div>',
+                    ].join('');
+                    break;
+                case 'checkbox':
+
+                    let checkboxDefaultVal = item.dfvalue;
+                    let checkboxDefaultArr = checkboxDefaultVal.split(",");
+                    let checkboxDefaultChildArr = [];
+                    checkboxDefaultArr.forEach(it => {
+                        checkboxDefaultChildArr.push('<div class="foxui-input-group">');
+                        checkboxDefaultChildArr.push('<div class="foxui-input-prepend">');
+                        checkboxDefaultChildArr.push('<div class="foxui-prepend-inner is-grey">选项</div>');
+                        checkboxDefaultChildArr.push('<input class="foxui-size-small form-input-option" placeholder="请输入" value="'+ it +'" />');
+                        checkboxDefaultChildArr.push('</div>');
+                        checkboxDefaultChildArr.push('<button class="foxui-text-primary foxui-size-small delete-option-btn margin-left-8">删除</button>');
+                        checkboxDefaultChildArr.push('</div>');
+                    })
+                    itemHtml = [
+                        '<div class="foxui-col-xs-2 foxui-col-sm-2 display-flex foxui-justify-content-center">',
+                        '<span class="foxui-drag-handle foxui-icon-liebiao-o"></span>',
+                        '</div>',
+                        '<div class="foxui-col-xs-2 foxui-col-sm-2">',
+                        '<span>多选</span>',
+                        '</div>',
+                        '<div class="foxui-col-xs-5 foxui-col-sm-5">',
+                        '<div class="foxui-input-group">',
+                        '<div class="foxui-input-prepend">',
+                        '<div class="foxui-prepend-inner is-grey">标题</div>',
+                        '<input class="foxui-size-small form-label title" placeholder="请输入" value="'+item.title+'" />',
+                        '</div>',
+                        '</div>',
+                        '</div>',
+                        '<div class="foxui-col-xs-9 foxui-col-sm-9">',
+                        '<div class="foxui-input-group">',
+                        '<div class="foxui-input-prepend">',
+                        '<div class="foxui-prepend-inner is-grey">说明</div>',
+                        '<input class="foxui-size-small explain" placeholder="请输入说明文字" value="'+item.remark+'"/>',
+                        '</div>',
+                        '</div>',
+                        '<div class="option-box margin-top-10">',
+
+                        checkboxDefaultChildArr.join(""),
+
+                        '</div>',
+                        '<div>',
+                        '<button class="foxui-text-primary add-option-btn" data-type="checkbox"><i class="foxui-icon-jiahao-o"></i><span>添加选项</span></button>',
+                        '</div>',
+                        '</div>',
+                        '<div class="foxui-col-xs-4 foxui-col-sm-4">',
+                        '<div class="display-flex foxui-justify-content-center">',
+                        '<div class="foxui-switch is-checked form-label-require">',
+                        '<input type="checkbox" value="" checked="checked" class="foxui-switch-input required" />',
+                        '<span class="foxui-switch-core"></span>',
+                        '</div>',
+                        '<label class="margin-left-8">必填</label>',
+                        '</div>',
+                        '</div>',
+                        '<div class="foxui-col-xs-2 foxui-col-sm-2">',
+                        '<button class="foxui-text-primary foxui-size-small delete-item-btn">删除</button>',
+                        '</div>',
+                    ].join('');
+                    break;
+                case 'select':
+
+                    let selectDefaultVal = item.dfvalue;
+                    let selectDefaultArr = selectDefaultVal.split(",");
+                    let selectDefaultChildArr = [];
+                    selectDefaultArr.forEach(it => {
+                        selectDefaultChildArr.push('<div class="foxui-input-group">');
+                        selectDefaultChildArr.push('<div class="foxui-input-prepend">');
+                        selectDefaultChildArr.push('<div class="foxui-prepend-inner is-grey">选项</div>');
+                        selectDefaultChildArr.push('<input class="foxui-size-small form-input-option" placeholder="请输入" value="'+ it +'" />');
+                        selectDefaultChildArr.push('</div>');
+                        selectDefaultChildArr.push('<button class="foxui-text-primary foxui-size-small delete-option-btn margin-left-8">删除</button>');
+                        selectDefaultChildArr.push('</div>');
+                    })
+
+                    itemHtml = [
+                        '<div class="foxui-col-xs-2 foxui-col-sm-2 display-flex foxui-justify-content-center">',
+                        '<span class="foxui-drag-handle foxui-icon-liebiao-o"></span>',
+                        '</div>',
+                        '<div class="foxui-col-xs-2 foxui-col-sm-2">',
+                        '<span>下拉框</span>',
+                        '</div>',
+                        '<div class="foxui-col-xs-5 foxui-col-sm-5">',
+                        '<div class="foxui-input-group">',
+                        '<div class="foxui-input-prepend">',
+                        '<div class="foxui-prepend-inner is-grey">标题</div>',
+                        '<input class="foxui-size-small form-label title" placeholder="请输入" value="'+item.title+'" />',
+                        '</div>',
+                        '</div>',
+                        '</div>',
+                        '<div class="foxui-col-xs-9 foxui-col-sm-9">',
+                        '<div class="foxui-input-group">',
+                        '<div class="foxui-input-prepend">',
+                        '<div class="foxui-prepend-inner is-grey">说明</div>',
+                        '<input class="foxui-size-small explain" placeholder="请输入说明文字" value="'+item.remark+'" />',
+                        '</div>',
+                        '</div>',
+                        '<div class="foxui-input-group">',
+                        '<div class="foxui-input-prepend">',
+                        '<div class="foxui-prepend-inner is-grey">提示语</div>',
+                        '<input class="foxui-size-small form-input-placeholder tip" placeholder="请输入"  value="'+item.marke_word+'"/>',
+                        '</div>',
+                        '</div>',
+                        '<div class="option-box margin-top-10">',
+
+                        selectDefaultChildArr.join(''),
+
+                        '</div>',
+                        '<div>',
+                        '<button class="foxui-text-primary add-option-btn" data-type="select"><i class="foxui-icon-jiahao-o"></i><span>添加选项</span></button>',
+                        '</div>',
+                        '</div>',
+                        '<div class="foxui-col-xs-4 foxui-col-sm-4">',
+                        '<div class="display-flex foxui-justify-content-center">',
+                        '<div class="foxui-switch '+ isCheck +' form-label-require">',
+                        '<input type="checkbox" checked="checked" value="'+item.is_require+'" class="foxui-switch-input required" />',
+                        '<span class="foxui-switch-core"></span>',
+                        '</div>',
+                        '<label class="margin-left-8">必填</label>',
+                        '</div>',
+                        '</div>',
+                        '<div class="foxui-col-xs-2 foxui-col-sm-2">',
+                        '<button class="foxui-text-primary foxui-size-small delete-item-btn">删除</button>',
+                        '</div>',
+                    ].join('');
+                    break;
+                case 'switch':
+                    itemHtml = [
+                        '<div class="foxui-col-xs-2 foxui-col-sm-2 display-flex foxui-justify-content-center">',
+                        '<span class="foxui-drag-handle foxui-icon-liebiao-o"></span>',
+                        '</div>',
+                        '<div class="foxui-col-xs-2 foxui-col-sm-2">',
+                        '<span>Switch开关</span>',
+                        '</div>',
+                        '<div class="foxui-col-xs-5 foxui-col-sm-5">',
+                        '<div class="foxui-input-group">',
+                        '<div class="foxui-input-prepend">',
+                        '<div class="foxui-prepend-inner is-grey">标题</div>',
+                        '<input class="foxui-size-small form-label title" placeholder="请输入" value="'+ item.title +'" />',
+                        '</div>',
+                        '</div>',
+                        '</div>',
+                        '<div class="foxui-col-xs-9 foxui-col-sm-9">',
+                        '<div class="foxui-input-group">',
+                        '<div class="foxui-input-prepend">',
+                        '<div class="foxui-prepend-inner is-grey">说明</div>',
+                        '<input class="foxui-size-small explain" placeholder="请输入说明文字" value="'+item.remark+'" />',
+                        '</div>',
+                        '</div>',
+                        '</div>',
+                        '<div class="foxui-col-xs-4 foxui-col-sm-4">',
+                        '<div class="display-flex foxui-justify-content-center">',
+                        '<div class="foxui-switch '+isCheck+' form-label-require">',
+                        '<input type="checkbox" checked="checked" value="'+item.is_require+'" class="foxui-switch-input required" />',
+                        '<span class="foxui-switch-core"></span>',
+                        '</div>',
+                        '<label class="margin-left-8">必填</label>',
+                        '</div>',
+                        '</div>',
+                        '<div class="foxui-col-xs-2 foxui-col-sm-2">',
+                        '<button class="foxui-text-primary foxui-size-small delete-item-btn">删除</button>',
+                        '</div>',
+                    ].join('');
+                    break;
+                case 'datepicker':
+                case 'timepicker':
+                case 'datetimepicker':
+                case 'datetime':
+
+                    itemHtml = [
+                        '<div class="foxui-col-xs-2 foxui-col-sm-2 display-flex foxui-justify-content-center">',
+                        '<span class="foxui-drag-handle foxui-icon-liebiao-o"></span>',
+                        '</div>',
+                        '<div class="foxui-col-xs-2 foxui-col-sm-2">',
+                        `<span>${type === 'datepicker' ? '日期' : type === 'timepicker' ? '时间' : type === 'datetimepicker' ? '日期时间' : ''}</span>`,
+                        '</div>',
+                        '<div class="foxui-col-xs-5 foxui-col-sm-5">',
+                        '<div class="foxui-input-group">',
+                        '<div class="foxui-input-prepend">',
+                        '<div class="foxui-prepend-inner is-grey">标题</div>',
+                        `<input class="foxui-size-small form-label title" placeholder="请输入" value="${
+                            type === 'datepicker' ? '日期' : type === 'timepicker' ? '时间' : type === 'datetimepicker' ? '日期时间' : ''
+                        }" />`,
+                        '</div>',
+                        '</div>',
+                        '</div>',
+                        '<div class="foxui-col-xs-9 foxui-col-sm-9">',
+                        '<div class="foxui-input-group">',
+                        '<div class="foxui-input-prepend">',
+                        '<div class="foxui-prepend-inner is-grey">说明</div>',
+                        '<input class="foxui-size-small explain" placeholder="请输入说明文字" value="'+item.remark+'" />',
+                        '</div>',
+                        '</div>',
+                        '<div class="foxui-input-group">',
+                        '<div class="foxui-input-prepend">',
+                        '<div class="foxui-prepend-inner is-grey">提示语</div>',
+                        '<input class="foxui-size-small form-input-placeholder tip" placeholder="请输入" value="'+item.marke_word+'" />',
+                        '</div>',
+                        '</div>',
+                        '</div>',
+                        '<div class="foxui-col-xs-4 foxui-col-sm-4">',
+                        '<div class="display-flex foxui-justify-content-center">',
+                        '<div class="foxui-switch '+isCheck+' form-label-require">',
+                        '<input type="checkbox" checked="checked" value="'+item.is_require+'" class="foxui-switch-input required" />',
+                        '<span class="foxui-switch-core"></span>',
+                        '</div>',
+                        '<label class="margin-left-8">必填</label>',
+                        '</div>',
+                        '</div>',
+                        '<div class="foxui-col-xs-2 foxui-col-sm-2">',
+                        '<button class="foxui-text-primary foxui-size-small delete-item-btn">删除</button>',
+                        '</div>',
+                    ].join('');
+                    break;
+                case 'image':
+                case 'pic':
+                    itemHtml = [
+                        '<div class="foxui-col-xs-2 foxui-col-sm-2 display-flex foxui-justify-content-center">',
+                        '<span class="foxui-drag-handle foxui-icon-liebiao-o"></span>',
+                        '</div>',
+                        '<div class="foxui-col-xs-2 foxui-col-sm-2">',
+                        '<span>图片文件</span>',
+                        '</div>',
+                        '<div class="foxui-col-xs-5 foxui-col-sm-5">',
+                        '<div class="foxui-input-group">',
+                        '<div class="foxui-input-prepend">',
+                        '<div class="foxui-prepend-inner is-grey">标题</div>',
+                        '<input class="foxui-size-small form-label title" placeholder="请输入" value="'+item.title+'" />',
+                        '</div>',
+                        '</div>',
+                        '</div>',
+                        '<div class="foxui-col-xs-9 foxui-col-sm-9">',
+                        '<div class="foxui-input-group">',
+                        '<div class="foxui-input-prepend">',
+                        '<div class="foxui-prepend-inner is-grey">说明</div>',
+                        '<input class="foxui-size-small explain" placeholder="请输入说明文字" value="'+item.marke_word+'" />',
+                        '</div>',
+                        '</div>',
+                        '<div class="foxui-input-group">',
+                        '<div class="foxui-input-prepend">',
+                        '<div class="foxui-prepend-inner is-grey">上传图片数量</div>',
+                        '<input class="foxui-size-small image-count" placeholder="请输入说明文字" value="1" />',
+                        '</div>',
+                        '</div>',
+                        '</div>',
+                        '<div class="foxui-col-xs-4 foxui-col-sm-4">',
+                        '<div class="display-flex foxui-justify-content-center">',
+                        '<div class="foxui-switch '+isCheck+' form-label-require">',
+                        '<input type="checkbox" checked="checked" value="'+item.is_require+'" class="foxui-switch-input required" />',
+                        '<span class="foxui-switch-core"></span>',
+                        '</div>',
+                        '<label class="margin-left-8">必填</label>',
+                        '</div>',
+                        '</div>',
+                        '<div class="foxui-col-xs-2 foxui-col-sm-2">',
+                        '<button class="foxui-text-primary foxui-size-small delete-item-btn">删除</button>',
+                        '</div>',
+                    ].join('');
+                    break;
+                case 'color':
+                    itemHtml = [
+                        '<div class="foxui-col-xs-2 foxui-col-sm-2 display-flex foxui-justify-content-center">',
+                        '<span class="foxui-drag-handle foxui-icon-liebiao-o"></span>',
+                        '</div>',
+                        '<div class="foxui-col-xs-2 foxui-col-sm-2">',
+                        '<span>颜色选择</span>',
+                        '</div>',
+                        '<div class="foxui-col-xs-5 foxui-col-sm-5">',
+                        '<div class="foxui-input-group">',
+                        '<div class="foxui-input-prepend">',
+                        '<div class="foxui-prepend-inner is-grey">标题</div>',
+                        '<input class="foxui-size-small form-label title" placeholder="请输入" value="'+item.title+'" />',
+                        '</div>',
+                        '</div>',
+                        '</div>',
+                        '<div class="foxui-col-xs-9 foxui-col-sm-9">',
+                        '<div class="foxui-input-group">',
+                        '<div class="foxui-input-prepend">',
+                        '<div class="foxui-prepend-inner is-grey">说明</div>',
+                        '<input class="foxui-size-small explain" placeholder="请输入说明文字" value="'+item.remark+'" />',
+                        '</div>',
+                        '</div>',
+                        '</div>',
+                        '<div class="foxui-col-xs-4 foxui-col-sm-4">',
+                        '<div class="display-flex foxui-justify-content-center">',
+                        '<div class="foxui-switch '+isCheck+' form-label-require">',
+                        '<input type="checkbox" value="'+item.is_require+'" checked="checked" class="foxui-switch-input required" />',
+                        '<span class="foxui-switch-core"></span>',
+                        '</div>',
+                        '<label class="margin-left-8">必填</label>',
+                        '</div>',
+                        '</div>',
+                        '<div class="foxui-col-xs-2 foxui-col-sm-2">',
+                        '<button class="foxui-text-primary foxui-size-small delete-item-btn">删除</button>',
+                        '</div>',
+                    ].join('');
+                    break;
+            }
+
+            if (fieldHtml && itemHtml) {
+                $diyContainer.append(`<div class="item" data-type="${type}" id="${diyId}" data-id="${item.id}" style="display:none">` + fieldHtml + '</div>');
+                $formContainer.append(
+                    [
+                        `<li class="foxui-drag-item" data-diyid="${diyId}" style="display:none">`,
+                        '<div class="foxui-drag-content">',
+                        '<div class="foxui-row foxui-gutter-6 foxui-align-items-center">',
+                        itemHtml,
+                        '</div>',
+                        '</div>',
+                        '</li>',
+                    ].join('')
+                );
+                $(`#${diyId}`).slideDown();
+                $(`.foxui-drag-item[data-diyid="${diyId}"]`).slideDown();
+            }
+        });
+    }
+
+    //初始化选项数据
+    function init(){
+        let id = $('input[name="id"]').val();
+        let datas = {'id': id};
+        $.ajax({
+            type: "get",
+            url: 'findFormFields',
+            dataType: "json",
+            data: datas,
+            success: function (res) {
+                if (res.code == 1) {
+                    initItems(res.data);
+                }
+            }, error: function (res) {
+
+            }
+        });
+    }
+
+    init();//调用初始化
+
+    //保存
+    $('#save').click(function (){
+
+        let itemList = $("#previewDiyForm .item");
+        let columns = [];
+        itemList.each(function (index, item){
+            let id = $(item).attr("id");
+            let dataId = $(item).attr("data-id");
+            let type = $(item).attr("data-type");
+            let itemR = $('li[data-diyid="'+id+'"]');
+            let column = {'id': dataId};
+            switch (type) {
+                case 'inputtext':
+                case 'text':
+                    column.name = "text" + index;//字段
+                    column.dtype = "text";//字段类型
+                    column.dfvalue = $(item).find("input").val();
+                    column.val = column.dfvalue;
+                    column.remark = $(itemR).find(".explain").val();//说明
+                    column.markeWord = $(itemR).find(".tip").val();//提示语言
+                    break;
+                case 'textarea':
+                case 'multitext':
+                    column.name = "multitext" + index;//字段
+                    column.dtype = "multitext";//字段类型
+                    column.dfvalue = $(item).find("textarea").val();
+                    column.val = column.dfvalue;
+                    column.remark = $(itemR).find(".explain").val();//说明
+                    column.markeWord = $(itemR).find(".tip").val();//提示语言
+                    break;
+                case 'radio':
+                    column.name = "radio" + index;//字段
+                    column.dtype = "radio";//字段类型
+                    column.val = $(item).find("div.is-checked").find(".foxui-radio-label.option-label").html();
+                    let inputs = $(itemR).find(".option-box .foxui-input-group").find("input");
+                    let dfvalue = "";
+                    inputs.each(function (ix, input){
+                        dfvalue += $(input).val() + ",";
+                    });
+                    if(dfvalue.length > 0){
+                        dfvalue = dfvalue.substr(0, dfvalue.length - 1);
+                    }
+                    column.dfvalue = dfvalue;
+                    column.remark = $(itemR).find(".explain").val();//说明
+                    column.markeWord = $(itemR).find(".tip").val();//提示语言
+                    break;
+                case 'checkbox':
+                    column.name = "checkbox" + index;//字段
+                    column.dtype = "checkbox";//字段类型
+                    let checks = $(item).find("div.is-checked").find(".foxui-checkbox-label.option-label");
+                    let checkVal = "";
+                    checks.each(function (ci, check){
+                        checkVal += $(check).html() + ",";
+                    });
+                    if(checkVal.length > 0){
+                        checkVal = checkVal.substr(0, checkVal.length - 1);
+                    }
+                    column.val = checkVal;
+                    let inputsCD = $(itemR).find(".option-box .foxui-input-group").find("input");
+                    let dfvalueCD = "";
+                    inputsCD.each(function (ix, input){
+                        dfvalueCD += $(input).val() + ",";
+                    });
+                    if(dfvalueCD.length > 0){
+                        dfvalueCD = dfvalueCD.substr(0, dfvalueCD.length - 1);
+                    }
+                    column.dfvalue = dfvalueCD;
+                    column.remark = $(itemR).find(".explain").val();//说明
+                    column.markeWord = $(itemR).find(".tip").val();//提示语言
+
+                    break;
+                case 'select':
+                    column.name = "select" + index;//字段
+                    column.dtype = "select";//字段类型
+                    column.val = $(item).find(".foxui-select").find("input").val();
+                    let inputsS = $(itemR).find(".option-box .foxui-input-group").find("input");
+                    let dfvalueS = "";
+                    inputsS.each(function (ix, input){
+                        dfvalueS += $(input).val() + ",";
+                    });
+                    if(dfvalueS.length > 0){
+                        dfvalueS = dfvalueS.substr(0, dfvalueS.length - 1);
+                    }
+                    column.dfvalue = dfvalueS;
+                    column.remark = $(itemR).find(".explain").val();//说明
+                    column.markeWord = $(itemR).find(".tip").val();//提示语言
+
+                    break;
+                case 'switch':
+
+                    column.name = "switch" + index;//字段
+                    column.dtype = "switch";//字段类型
+                    column.val = $(item).find(".foxui-switch.is-checked").length;
+                    column.dfvalue = column.val;
+                    column.remark = $(itemR).find(".explain").val();//说明
+                    break;
+                case 'datepicker':
+
+                    column.name = "datepicker" + index;//字段
+                    column.dtype = "datepicker";//字段类型
+                    column.val = $(item).find(".foxui-date-picker input").val();
+                    column.dfvalue = column.val;
+                    column.remark = $(itemR).find(".explain").val();//说明
+                    column.markeWord = $(itemR).find(".tip").val();//提示语言
+                    break;
+                case 'timepicker':
+
+                    column.name = "timepicker" + index;//字段
+                    column.dtype = "timepicker";//字段类型
+                    column.val = $(item).find(".foxui-time-picker input").val();
+                    column.dfvalue = column.val;
+                    column.remark = $(itemR).find(".explain").val();//说明
+                    column.markeWord = $(itemR).find(".tip").val();//提示语言
+                    break;
+                case 'datetimepicker':
+                case 'datatime':
+
+                    column.name = "datetime" + index;//字段
+                    column.dtype = "datetime";//字段类型
+                    column.val = $(item).find(".foxui-datetime-picker input").val();
+                    column.dfvalue = column.val;
+                    column.remark = $(itemR).find(".explain").val();//说明
+                    column.markeWord = $(itemR).find(".tip").val();//提示语言
+                    break;
+                case 'image':
+                case 'pic':
+                    column.name = "pic" + index;//字段
+                    column.dtype = "pic";//字段类型
+                    column.val = $(item).find("img").attr("data-id");
+                    column.dfvalue = column.val;
+                    column.remark = $(itemR).find(".explain").val();//说明
+                    column.markeWord = $(itemR).find(".image-count").val();//提示语言
+
+                    break;
+                case 'color':
+                    column.name = "color" + index;//字段
+                    column.dtype = "color";//字段类型
+                    column.val = $(item).find(".foxui-color-input").val();
+                    column.dfvalue = column.val;
+                    column.remark = $(itemR).find(".explain").val();//说明
+                    break;
+                default:
+                    column = null;
+            }
+            column.title = $(itemR).find(".title").val();//字段名
+            column.isRequire =  $(itemR).find(".foxui-switch.form-label-require.is-checked").length;//是否必填
+            if(column != null){
+                columns.push(column);
+            }
+        });
+
+        let name = $('input[name="name"]').val();
+        if(name == "" || !name){
+            foxui.message({
+                type:'warning',
+                text:'请输入表单名称'
+            })
+            return;
+        }
+        let table_name = $('input[name="table_name"]').val();
+        if(table_name == "" || !table_name){
+            foxui.message({
+                type:'warning',
+                text:'请输入数据库表名'
+            })
+            return;
+        }
+
+        let commit_type = $('.commit-type .is-checked').find('input').val();
+        let notice_setting = $('.notice-setting .is-checked').find('input').val();
+        let email_setting = $('.email-setting .is-checked').find('input').val();
+        let template_id = $('input[name="template_id"]').attr('data-id');
+        let verify = $('.verify .is-checked').find('input').val();
+        let id = $('input[name="id"]').val();
+        let datas ={'id':id, 'columns': columns, "name": name, "table_name": table_name, "commit_type": commit_type, "notice_setting": notice_setting, verify, email_setting, template_id};
+        foxui.dialog({
+            title: '保存',
+            content: '您确定要保存吗',
+            cancelText: '取消',
+            confirmText: '保存',
+            confirm: function () {
+                $.ajax({
+                    type: "post",
+                    url: 'edit',
+                    dataType: "json",
+                    data: datas,
+                    success: function (res) {
+                        if (res.code == 1) {
+                            foxui.message({
+                                type:'success',
+                                text:'保存成功'
+                            })
+                            window.location.href=document.referrer;//返回并且刷新
+                        } else {
+                            foxui.message({
+                                type:'danger',
+                                text:res.msg
+                            })
+                        }
+                    }, error: function (res) {
+                        foxui.message({
+                            type:'danger',
+                            text:'保存失败'
+                        })
+                    }
+                });
+            },
+            cancel: function () {
+                foxui.message({
+                    type:'warning',
+                    text:'取消操作'
+                })
+            },
+        });
+
+    })
+</script>
+{/block}

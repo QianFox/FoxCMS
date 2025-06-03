@@ -1,0 +1,1293 @@
+{extend name="foxcms_content" /}
+
+{block name="css"}
+{/block}
+
+{block name="body"}
+<input name="bcid" value="{$bcid}" type="hidden" />
+<div class="foxcms-content-inner">
+	<!-- page content -->
+	<div class="company-news-add-content">
+		<div class="foxui-tabs foxui-type-line" id="contentTabs">
+			<div class="foxui-tabs-header">
+				<div class="foxui-tabs-item is-active">基本</div>
+				<div class="foxui-tabs-item">参数</div>
+				<div class="foxui-tabs-item">详情</div>
+			</div>
+			<div class="foxui-tabs-content">
+				<div class="foxui-tabs-pane">
+					<div class="section">
+						<div class="section-title">基本信息</div>
+						<div class="section-main">
+							<div class="display-flex">
+								<div class="section-main-item">
+									<div class="foxui-input-group foxui-align-items-start">
+										<div class="input-label">
+											<label class="foxui-required">文章标题：</label>
+										</div>
+										<div class="input-box">
+											<div class="foxui-textarea">
+												<textarea autocomplete="off" rows="2" maxlength="120" placeholder="" name="title"></textarea>
+												<span class="foxui-textarea-count">0/120</span>
+											</div>
+										</div>
+									</div>
+								</div>
+								<div class="section-main-item second-item">
+									<div class="foxui-input-group foxui-align-items-start">
+										<div class="input-label">
+											<label>简略标题：</label>
+										</div>
+										<div class="input-box">
+											<div class="foxui-textarea">
+												<textarea autocomplete="off" rows="2" maxlength="60" placeholder="" name="brief_title"></textarea>
+												<span class="foxui-textarea-count">0/60</span>
+											</div>
+										</div>
+									</div>
+								</div>
+							</div>
+							<div class="section-main-item">
+								<div class="foxui-input-group foxui-align-items-start">
+									<div class="input-label">
+										<label>文章属性：</label>
+									</div>
+									<div class="article-field">
+
+										<div class="foxui-checkbox">
+											<span class="foxui-checkbox-input">
+												<i class="foxui-checkbox-icon"></i>
+												<input type="checkbox" value="t"/>
+											</span>
+											<span class="foxui-checkbox-label">头条(t)</span>
+										</div>
+										<div class="foxui-checkbox">
+											<span class="foxui-checkbox-input">
+												<i class="foxui-checkbox-icon"></i>
+												<input type="checkbox" value="c" />
+											</span>
+											<span class="foxui-checkbox-label">推荐(c)</span>
+										</div>
+										<div class="foxui-checkbox">
+											<span class="foxui-checkbox-input">
+												<i class="foxui-checkbox-icon"></i>
+												<input type="checkbox" value="h" />
+											</span>
+											<span class="foxui-checkbox-label">热门(h)</span>
+										</div>
+										<div class="foxui-checkbox">
+											<span class="foxui-checkbox-input">
+												<i class="foxui-checkbox-icon"></i>
+												<input type="checkbox" value="b" />
+											</span>
+											<span class="foxui-checkbox-label">加粗(b)</span>
+										</div>
+										<div class="foxui-checkbox">
+											<span class="foxui-checkbox-input">
+												<i class="foxui-checkbox-icon"></i>
+												<input type="checkbox" value="s" />
+											</span>
+											<span class="foxui-checkbox-label">幻灯(s)</span>
+										</div>
+									</div>
+								</div>
+							</div>
+							<div class="section-main-item">
+								<div class="foxui-input-group">
+									<div class="input-label">
+										<label class="foxui-required">所属栏目：</label>
+									</div>
+									<div class="input-box">
+										<div class="foxui-select">
+											<div class="foxui-select-handle foxui-select-icon">
+												<input class="foxui-select-input foxui-size-small" readonly="readonly" placeholder="请选择所属栏目" data-id="{$column.id}" value="{$column.name}" name="column" />
+												<i class="foxui-icon-close-circle" style="display: none"></i>
+											</div>
+											<div class="foxui-select-menu">
+												<ul class="foxui-select-slide">
+													{foreach $columns as $key=>$vo }
+													<li class="foxui-select-item" data-id="{$vo.id}">{$vo.title}</li>
+													{/foreach}
+												</ul>
+											</div>
+										</div>
+									</div>
+								</div>
+							</div>
+
+							<div class="section-main-item">
+								<div class="foxui-input-group">
+									<div class="input-label">
+										<label>文档标签：</label>
+									</div>
+									<div class="input-box">
+										<div class="foxui-select foxui-select-settable">
+											<div class="foxui-select-handle">
+												<input class="foxui-select-input foxui-size-small" placeholder="多个标签之间以逗号隔开" value="" name="tags"/>
+											</div>
+											<div class="foxui-select-menu">
+												<ul class="foxui-select-slide member-list">
+													{foreach tagList as $key=>$vo }
+													<li class="foxui-select-item multiple" data-id="{$vo.name}">{$vo.name}</li>
+													{/foreach}
+												</ul>
+											</div>
+										</div>
+									</div>
+								</div>
+							</div>
+
+							<div class="section-main-item">
+								<div class="foxui-input-group foxui-align-items-start">
+									<div class="input-label">
+										<label>文章缩略图：</label>
+									</div>
+									<div class="input-box">
+										<div class="foxui-images foxui-images-fluid">
+											<div class="foxui-images-card breviary_pic">
+												<ul class="foxui-images-list">
+													<div class="foxui-images-handle">
+														<div class="foxui-images-handle-inner">
+															<i class="foxui-icon-jiahao-o"></i>
+															<span class="text">添加图片</span>
+														</div>
+													</div>
+												</ul>
+											</div>
+										</div>
+									</div>
+								</div>
+								<p class="input-box-info">图片尺寸建议根据前端网站模板的尺寸制作</p>
+							</div>
+
+							<div class="section-main-item">
+								<div class="foxui-input-group foxui-align-items-start">
+									<div class="input-label">
+										<label>图片集：</label>
+									</div>
+									<div class="input-box">
+										<div class="foxui-images foxui-drag" data-count="-1">
+											<div class="foxui-images-card picset">
+												<ul class="foxui-images-list foxui-drag-container">
+													<div class="foxui-images-handle">
+														<div class="foxui-images-handle-inner">
+															<i class="foxui-icon-jiahao-o"></i>
+															<span class="text">添加图片</span>
+														</div>
+													</div>
+												</ul>
+											</div>
+										</div>
+									</div>
+								</div>
+								<p class="input-box-info">建议尺寸：800*800像素，可以拖拽图片调整顺序</p>
+							</div>
+
+							<div class="section-main-item">
+								<div class="foxui-input-group">
+									<div class="input-label">
+										<label>SEO关键词：</label>
+									</div>
+									<div class="input-box">
+										<input class="foxui-size-small" placeholder="" value="" name="keywords"/>
+									</div>
+								</div>
+								<p class="input-box-info">一般不超过100个字符，多个关键词请用英文逗号隔开，建议3到5个关键词</p>
+							</div>
+							<div class="section-main-item">
+								<div class="foxui-input-group foxui-align-items-start">
+									<div class="input-label">
+										<label>SEO描述：</label>
+									</div>
+									<div class="input-box">
+										<div class="foxui-textarea">
+											<textarea autocomplete="off" rows="2" maxlength="200" placeholder="" name="description"></textarea>
+											<span class="foxui-textarea-count">0/200</span>
+										</div>
+									</div>
+								</div>
+								<p class="input-box-info">描述一般不超过200个字符，不填写时系统自动提取正文的前200个字符</p>
+							</div>
+							<div class="display-flex">
+								<div class="section-main-item">
+									<div class="foxui-input-group">
+										<div class="input-label">
+											<label>文章来源：</label>
+										</div>
+										<div class="input-box">
+											<div class="foxui-select foxui-select-settable" data-title="文章来源" id="article_source">
+												<div class="foxui-select-handle">
+													<input class="foxui-select-input foxui-size-small" placeholder="" value="" />
+													<button class="foxui-select-set foxui-size-small foxui-plain">设置</button>
+												</div>
+												<div class="foxui-select-menu">
+													<ul class="foxui-select-slide">
+														{foreach $articleSources as $key=>$vo }
+														<li class="foxui-select-item" data-id="{$articleSourceDictCode}">{$vo}</li>
+														{/foreach}
+													</ul>
+												</div>
+											</div>
+										</div>
+									</div>
+								</div>
+								<div class="section-main-item second-item">
+									<div class="foxui-input-group">
+										<div class="input-label">
+											<label>作者：</label>
+										</div>
+										<div class="input-box">
+											<div class="foxui-select foxui-select-settable" data-title="作者" id="author">
+												<div class="foxui-select-handle">
+													<input class="foxui-select-input foxui-size-small" placeholder="" value="" />
+													<button class="foxui-select-set foxui-size-small foxui-plain">设置</button>
+												</div>
+												<div class="foxui-select-menu">
+													<ul class="foxui-select-slide">
+														{foreach $authors as $key=>$vo }
+														<li class="foxui-select-item" data-id="{$authorDictCode}">{$vo}</li>
+														{/foreach}
+													</ul>
+												</div>
+											</div>
+										</div>
+									</div>
+								</div>
+							</div>
+							<div class="section-main-item">
+								<div class="foxui-input-group">
+									<div class="input-label">
+										<label>发布时间：</label>
+									</div>
+									<div class="input-box">
+										<div class="foxui-picker foxui-datetime-picker">
+											<div class="foxui-picker-handle foxui-input-prefix">
+												<i class="foxui-icon-gongzuo-o foxui-prefix-icon"></i>
+												<input class="foxui-size-small" readonly="readonly" placeholder="请选择时间" value="" name="release_time"/>
+											</div>
+										</div>
+									</div>
+								</div>
+							</div>
+							<div class="section-main-item">
+								<div class="foxui-input-group">
+									<div class="input-label">
+										<label>浏览量：</label>
+									</div>
+									<div class="input-box">
+										<input class="foxui-size-small" placeholder="" required="" value="" name="click"/>
+									</div>
+								</div>
+							</div>
+
+							<!--动态标签start-->
+							<div class="field">
+								<?php echo modelFieldTag('product'); ?>
+							</div>
+							<!--动态标签end-->
+
+						</div>
+					</div>
+				</div>
+
+				<div class="foxui-tabs-pane">
+					<div class="section">
+						<div class="section-title">参数信息</div>
+						<div class="section-main-item">
+							<div class="foxui-input-group foxui-align-items-start">
+								<div class="input-label">
+									<label>参数编辑：</label>
+								</div>
+								<div>
+									<div class="foxui-radio-group param-edit" onclick="clickParamEdit(this)">
+										<div class="foxui-radio is-checked">
+											<span class="foxui-radio-input">
+												<i class="foxui-radio-icon"></i>
+												<input type="radio" value="1" checked="checked" />
+											</span>
+											<span class="foxui-radio-label">开启</span>
+										</div>
+										<div class="foxui-radio">
+											<span class="foxui-radio-input">
+												<i class="foxui-radio-icon"></i>
+												<input type="radio" value="0" />
+											</span>
+											<span class="foxui-radio-label">关闭</span>
+										</div>
+									</div>
+								</div>
+							</div>
+						</div>
+						<div class="section-main-item">
+							<div class="param-box">
+								<div class="left">
+									<div class="head">
+										<h3>参数预设管理</h3>
+										<button class="foxui-size-medium color-primary" id="addParamGroup">
+											<i class="foxui-icon-jiahao-o"></i>
+											<span>添加</span>
+										</button>
+									</div>
+									<ul class="foxui-drag foxui-drag-container" id="paramGroupTable">
+
+										{foreach productAttrList as $key=>$vo }
+										<li class="foxui-drag-item" data-id="{$vo.id}">
+											<div class="foxui-drag-content">
+												<div>
+													<span class="foxui-drag-handle foxui-icon-liebiao-o"></span>
+													<span class="parts-name">{$vo.name}</span>
+												</div>
+												<div class="btn-box">
+													<button class="foxui-text-primary foxui-size-mini append" onclick="initAttrParams(this)">
+														<i class="foxui-icon-jiahao-o"></i>
+													</button>
+													<button class="foxui-text-primary foxui-size-mini edit" onclick="paramGroupEdit(event)">
+														<i class="foxui-icon-bianji-o"></i>
+													</button>
+													<button class="foxui-text-primary foxui-size-mini delete" onclick="paramGroupDelete(event)">
+														<i class="foxui-icon-shanchu-o"></i>
+													</button>
+												</div>
+											</div>
+										</li>
+										{/foreach}
+
+									</ul>
+								</div>
+								<div class="right">
+									<div class="param-table-box">
+										<div class="foxui-table foxui-table-border-bottom" id="paramTable">
+											<ul class="foxui-table-thead">
+												<li class="foxui-table-tr">
+													<div class="foxui-table-th"></div>
+													<div class="foxui-table-th">参数名称</div>
+													<div class="foxui-table-th">参数值</div>
+													<div class="foxui-table-th">操作</div>
+												</li>
+											</ul>
+											<ul class="foxui-table-tbody foxui-drag foxui-drag-container">
+
+												<!-- 表格内容 -->
+												<!-- <li class="foxui-table-tr foxui-drag-item" data-id="1">
+                                                    <div class="foxui-table-td">
+                                                        <span class="foxui-drag-handle foxui-icon-liebiao-o"></span>
+                                                    </div>
+                                                    <div class="foxui-table-td param-title">
+                                                        <input class="foxui-size-small" value="品牌" />
+                                                    </div>
+                                                    <div class="foxui-table-td">
+                                                        <input class="foxui-size-small" value="黔狐" />
+                                                    </div>
+                                                    <div class="foxui-table-td">
+                                                        <button class="foxui-text-primary foxui-size-small delete">删除</button>
+                                                    </div>
+                                                </li> -->
+
+											</ul>
+										</div>
+									</div>
+									<div class="add-param" id="addParam">
+										<button class="foxui-text-primary">
+											<i class="foxui-icon-jiahao-o"></i>
+											<span>添加参数</span>
+										</button>
+									</div>
+								</div>
+							</div>
+						</div>
+					</div>
+				</div>
+
+
+				<div class="foxui-tabs-pane">
+					<div class="section">
+						<div class="section-title">内容详情</div>
+						<div class="section-main-item">
+							<div class="foxui-input-group foxui-align-items-start">
+								<div class="input-label">
+									<label>状态：</label>
+								</div>
+								<div>
+									<div class="foxui-checkbox">
+										<span class="foxui-checkbox-input">
+											<i class="foxui-checkbox-icon"></i>
+											<input type="checkbox" value="" checked="checked" name="statusDown"/>
+										</span>
+										<span class="foxui-checkbox-label">下载远程图片</span>
+									</div>
+									<div class="foxui-checkbox">
+										<span class="foxui-checkbox-input">
+											<i class="foxui-checkbox-icon"></i>
+											<input type="checkbox" value="" name="statusDel"/>
+										</span>
+										<span class="foxui-checkbox-label">删除非站内链接</span>
+									</div>
+								</div>
+							</div>
+						</div>
+						<div class="section-main-item">
+							<div class="foxui-input-group foxui-align-items-start">
+								<div class="input-label">
+									<label>内容详情：</label>
+								</div>
+								<div class="block-box rich-text">
+									<!-- 富文本 -->
+									<textarea class="richText" id="initRT"></textarea>
+								</div>
+							</div>
+						</div>
+					</div>
+				</div>
+			</div>
+		</div>
+	</div>
+</div>
+
+<div class="foxcms-content-footer">
+	<button class="is-long foxui-size-small foxui-solid-primary next-btn">下一步</button>
+	<button class="is-long foxui-size-small foxui-plain-primary save-btn">保存</button>
+</div>
+
+{include file="footed-copy"/}
+{/block}
+
+{block name="js"}
+<!--<script src="{$staticPath}js/product_packing_add.js?v=1.9"></script>-->
+<script>
+	/**
+	 *
+	 * 拼装参数预设管理
+	 *
+	 */
+	function pinAttrParam(){
+		$.ajax({
+			type: "GET",
+			url: "{:url('Product/getAttrParamList')}" ,
+			dataType: "json",
+			async:false,
+			success: function (res) {
+				if (res.code == 1 && res.data) {
+					let content = "";
+					$.each(res.data, function(i, item){
+						content+=`<li class="foxui-drag-item" data-id="`+item.id+`">`;
+						content+=`<div class="foxui-drag-content">
+                            <div>
+                                <span class="foxui-drag-handle foxui-icon-liebiao-o"></span>
+                                <span class="parts-name">`+item.name+`</span>
+                            </div>
+                            <div class="btn-box">
+                            	<button  class="foxui-text-primary foxui-size-mini append" onclick="initAttrParams(this)">
+                                    <i class="foxui-icon-jiahao-o"></i>
+                                </button>
+                                <button  class="foxui-text-primary foxui-size-mini edit" onclick="paramGroupEdit(event)">
+                                    <i class="foxui-icon-bianji-o"></i>
+                                </button>
+                                <button  class="foxui-text-primary foxui-size-mini delete" onclick="paramGroupDelete(event)">
+                                    <i class="foxui-icon-shanchu-o"></i>
+                                </button>
+                            </div>
+                        </div>
+                    </li>`;
+					});
+					$("#paramGroupTable").html(content);
+				}
+			}, error: function (res) {
+			}
+		});
+
+	}
+
+	/**
+	 * 获取预设产品参数
+	 * @param attrParamId
+	 */
+	function getAttrParams(attrParamId){
+		let data = {"attrParamId": attrParamId};
+		ajaxR("{:url('Product/getAttrParams')}","post",data,{},function (res) {
+			if (res.code == 1 && res.data) {
+				addParamInit(res.data);
+				$("#paramGroupTable li").removeClass('is-active');
+				$("#paramGroupTable").find('li[data-id=' + attrParamId+']').addClass("is-active");
+
+			}
+		},function (res) {
+		})
+	}
+
+	/**
+	 * @description: 绑定删除参数组
+	 * @param {*}
+	 * @return {*}
+	 * @Date: 2022-01-14 16:24:35
+	 */
+	function paramGroupDelete(event){
+		event.stopPropagation();//阻止冒泡
+		const $item = $(event.target).closest('.foxui-drag-item');
+		const id = $item.attr('data-id');
+		const title = $item.find('.parts-name').text();
+		foxui.dialog({
+			title: '删除',
+			content: `您确定要删除 ${title} 所有参数吗`,
+			cancelText: '取消',
+			confirmText: '删除',
+			buttonType: 'danger',
+			confirm: function (callback) {
+				// 添加异步请求
+				$item.slideUp('fast', function () {
+					$(this).remove();
+				});
+				let data = {"attrParamId": id};
+				ajaxR("{:url('Product/attrParamDelete')}","post",data,{},function (res) {
+					if (res.code == 1) {
+						pinAttrParam();//重新刷新产品参数
+					}else{
+
+					}
+				}, function (res) {
+				})
+				callback();
+			},
+			cancel: function () {},
+		});
+	}
+
+	/**
+	 * @description: 修改/新增参数组（id存在是修改，否则是新增） -> 左侧
+	 * @param {*} id
+	 * @param {*} title
+	 * @return {*}
+	 * @Date: 2022-01-14 16:58:54
+	 */
+	function modifyParamGroup(id, title) {
+		let dataList = [{}];
+		if (id) {
+			// 如果id存在，须先异步请求数据
+			dataList = [
+				// { id: 1, title: '品牌', type: '下拉选择', typeId: 13, value: '' },
+				// { id: 2, title: '产地', type: '默认输入', typeId: 11, value: '' },
+				// { id: 3, title: '颜色', type: '手动输入', typeId: 12 },
+				// { id: 4, title: '保质期', type: '手动输入', typeId: 12 },
+				// { id: 5, title: '厚薄', type: '手动输入', typeId: 12 },
+				// { id: 6, title: '生产企业', type: '默认输入', typeId: 13, value: '贵州黔狐科技股份有限公司' },
+			];
+			let data = {"attrParamId": id};
+			$.ajax({
+				type: "post",
+				url: "{:url('Product/attrParamEdit')}" ,
+				dataType: "json",
+				data: data,
+				async:false,
+				success: function (res) {
+					if (res.code == 1 && res.data) {
+						dataList = res.data;
+					}
+				}, error: function (res) {
+				}
+			});
+		}
+		foxui.dialog({
+			title: `${id ? '编辑' : '新增'}参数预设`,
+			content: _modifyParamGroupHtml(title, dataList),
+			cancelText: '取消',
+			confirmText: '确定',
+			buttonSize: 'small',
+			buttonAlign: 'center',
+			width: '1130px',
+			longButton: true,
+			border: true,
+			marginTop: '10vh',
+			confirm: function (callback) {
+				callback();
+				// 摸拟异步提交
+				foxui.loading({
+					text: '加载中...',
+				});
+				let ppb = $(".foxui-dialog .param-preset-box");
+				let attrName = $(ppb).find('input[name="attrName"]').val();
+				let attrParamArr = [];
+				let fttl = $(ppb).find('.foxui-table-tbody').children('li');
+				$(fttl).each(function (){
+					let pId = $(this).attr("data-id");
+					let paramName = $(this).find('input[name="paramName"]').val();
+					let dataId = $(this).find('input[name="type"]').attr('data-id');
+					let type = "";//参数类型
+					let dfvalue = "";//默认值
+					let type_desc = $(this).find('input[name="type"]').val();//参数类型描述
+					if(dataId == "11"){
+						//默认输入
+						type = "varchar(255)";
+						dfvalue = $(this).find('input[name="dfvalue"]').val();
+					}else if(dataId == "12"){
+						//手动输入
+						type = "varchar(255)";
+					}else if(dataId == "13"){
+						//下拉选择
+						type = "text";
+						dfvalue = $(this).find('textarea[name="dfvalue"]').val();
+
+					}
+					if(pId == "undefined"){
+						attrParamArr.push({'name': paramName, 'type': type, 'dfvalue': dfvalue,'type_desc': type_desc, 'type_id': dataId});
+					}else{
+						attrParamArr.push({'name': paramName, 'type': type, 'dfvalue': dfvalue,'type_desc': type_desc, 'type_id': dataId, 'id': pId});
+					}
+				})
+				let data = {"id": id , "attrName": attrName,  "attrParamArr": attrParamArr};
+
+				ajaxR("{:url('Product/addAttrParam')}","post",data,{},function (res) {
+					if (res.code == 1 && res.data) {
+						let attrParams = sessionStorage.getItem("attrParams");
+						if(!(attrParams == undefined || attrParams == "")){
+							attrParams += res.data + ",";
+						}else{
+							attrParams = res.data + ",";
+						}
+						sessionStorage.setItem("attrParams", attrParams);
+						foxui.message({
+							text: res.msg,
+							type: 'success',
+						});
+						pinAttrParam();//拼装参数预设管理
+					}else{
+						foxui.message({
+							text: res.msg,
+							type: 'error',
+						});
+					}
+					foxui.closeLoading();
+				}, function (res) {
+					foxui.closeLoading();
+					foxui.message({
+						text: res.msg,
+						type: 'error',
+					});
+				})
+			},
+		});
+	}
+</script>
+
+<script>
+	let $nextBtn = $('.foxcms-content-footer .next-btn'),
+			$tabsItem = $('#contentTabs .foxui-tabs-item'),
+			tabsLen = $tabsItem.length;
+
+	foxui.tabs.$on(getIndex);
+	function getIndex(data) {
+		const { index, id } = data;
+		if(id === 'contentTabs'){
+			if (index === tabsLen - 1) {
+				$nextBtn.hide();
+			} else {
+				$nextBtn.show();
+			}
+		}
+	}
+
+	$nextBtn.click(function () {
+		let index = $('#contentTabs .foxui-tabs-item.is-active').index();
+		$tabsItem.eq(index + 1).click();
+	});
+
+	//设置回调
+	foxui.select.$off();
+	foxui.select.$on(getSetData);
+	function getSetData(data) {
+		foxui.loading();
+		$.ajax({
+			type: "POST",
+			url: "{:url('saveDict')}",
+			dataType: "json",
+			async:false,
+			data:data,
+			success: (res)=> {
+				if (res.code == 1 && res.data) {
+					let id = data.id;
+					let liHtml = [];
+					let dataList = res.data.dataList;
+					if(dataList.length > 0){
+						dataList.forEach(item => {
+							liHtml.push(`<li class="foxui-select-item" data-id="${res.data.id}">${item}</li>`);
+						});
+					}
+					$('#' + id).find(".foxui-select-slide").empty().append(liHtml.join(""));
+				}else{
+					foxui.message({
+						type:"danger",
+						text:res.msg
+					})
+				}
+				foxui.closeLoading();
+			},
+			error: function(res) {
+				foxui.message({
+					type:"danger",
+					text:res.msg
+				})
+				foxui.closeLoading();
+			}
+		});
+	}
+
+</script>
+
+<script>
+
+	//初始化产品参数
+	// pinAttrParam();
+
+	//保存
+	$('.save-btn').click(function() {
+
+		let bcid = $("input[name='bcid']").val();
+
+		//状态
+		let status = $('.param-edit .foxui-radio.is-checked input').val();
+
+		//获取参数
+		let productParamArr = [];//产品参数数组
+		if(status == 1){
+			let lis = $('#paramTable .foxui-table-tbody').children('li');
+			$(lis).each(function (index){
+				let pid = $(this).attr("data-id");
+				let paramTitle = $(this).find(".param-title .foxui-size-small").val();
+				let valObj = $(this).find(".param-val");
+				let paramVal = $(valObj).find("input").val();
+				productParamArr.push({'name': paramTitle, 'dfvalue': paramVal, 'pid': pid, 'is_select': $(valObj).find('.foxui-select').length, "sort":index});
+			});
+		}
+
+		//文章标题
+		let title = $('textarea[name="title"]').val();
+		//简略标题
+		let brief_title = $('textarea[name="brief_title"]').val();
+
+		//文章属性
+		let articleField = "";
+		$('.article-field .foxui-checkbox').each(function (){
+			let isCheck =  $(this).is('.is-checked');
+			if(isCheck){
+				let af = $(this).find('input[type="checkbox"]').val();
+				articleField += af + ",";
+			}
+		});
+		if(articleField.length> 0){
+			articleField = articleField.substr(0, articleField.length -1);
+		}
+
+		//所属栏目
+		let columnId = $('input[name="column"]').attr('data-id');
+		//栏目名称
+		let column = $('input[name="column"]').val();
+		//文章缩率图
+		let breviary_pic_id = $('.breviary_pic img').attr('data-id');
+
+		//图片集
+		let picset_ids = "";
+		$('.picset img').each(function (){
+			picset_ids += $(this).attr('data-id') + ",";
+		});
+
+		//SEO关键词
+		let keywords = $('input[name="keywords"]').val();
+		//SEO描述
+		let description = $('textarea[name="description"]').val();
+		//文章来源
+		let article_source = $('#article_source input').val();
+		//作者
+		let author = $('#author input').val();
+		//发布时间
+		let release_time = $('input[name="release_time"]').val();
+		//预览量
+		let click = $('input[name="click"]').val();
+		//下载远程图片
+		let statusDown = $('input[name="statusDown"]').closest('.foxui-checkbox').is('.is-checked') ? 'down' : '';
+		//删除非站内链接
+		let statusDel = $('input[name="statusDel"]').closest('.foxui-checkbox').is('.is-checked') ? 'del' : '';
+		//内容
+		let content = getRTtContent("initRT");
+		//文档标签
+		let tags = $('input[name="tags"]').val();
+
+		//查询参数预设管理
+		let product_attr_ids = "";
+		$('#paramGroupTable li').each(function (){
+			product_attr_ids += $(this).attr('data-id') + ",";
+		});
+
+		let datas = {
+			'title': title,
+			"brief_title": brief_title,
+			"article_field": articleField,
+			"column_id": columnId,
+			"column": column,
+			"breviary_pic_id": breviary_pic_id||"",
+			"keywords": keywords,
+			"description": description,
+			"article_source": article_source,
+			"author": author,
+			"team_status": statusDown + "," + statusDel,
+			"content": content,
+			"picset_ids":picset_ids,
+			"release_time":release_time,
+			"click":click,
+			"status":status,
+			"productParams":productParamArr,
+			tags,
+			product_attr_ids
+		};
+
+		//拉取模型属性
+		// let feildUrl = ADMIN_PATH + '/Product/getField?model=product';
+		let feildUrl = "{:url('Product/getField')}?model=product";
+		let saveData = getField($(".field"), feildUrl);
+		let curData = Object.assign(datas, saveData);
+		foxui.dialog({
+			title: '保存',
+			content: '您确定要保存吗',
+			cancelText: '取消',
+			confirmText: '保存',
+			confirm: function(callback) {
+				foxui.loading({text:"发布中"});
+				ajaxR("{:url('add')}","post",curData,{},function(res) {
+							if (res.code == 1) {
+								foxui.message({
+									type: 'success',
+									text: res.msg
+								})
+								if(res.data != ""){
+									let params = res.data;
+									if(params.oneId && params.oneId == "key3"){
+										addDataBuildDetail(params);
+										singleAllSite(params);
+									}
+									foxui.closeLoading();
+								}
+								window.location.href=document.referrer;//返回并且刷新
+							} else {
+								foxui.message({
+									type: 'warning',
+									text: res.msg
+								})
+							}
+							foxui.closeLoading();
+						},
+						function(res) {
+							foxui.message({
+								type: 'warning',
+								text: res.responseJSON.msg
+							})
+							foxui.closeLoading();
+						})
+				callback();
+			},
+			cancel: function() {
+				foxui.message({
+					type: 'warning',
+					text: res.msg
+				})
+			},
+		});
+
+	})
+</script>
+
+
+<script>
+	/**
+	 * 参数编辑点击
+	 * @param event
+	 */
+	function clickParamEdit(obj){
+		$(".param-box").toggle();
+	}
+
+	/**
+	 * 拼接产品参数数据
+	 * @param attrParamId
+	 */
+	function initAttrParams(obj){
+		let liItem = $(obj).closest('.foxui-drag-item');
+
+		let data_append = $(obj).attr("data-append");//追加状态
+		let attrParamId = $(liItem).attr('data-id');
+		if(data_append == "append"){
+			foxui.dialog({
+				title: '参数继续追加',
+				content: `您确定要继续追加参数吗`,
+				cancelText: '取消',
+				confirmText: '确定',
+				type: 'danger',
+				confirm: function (callback) {
+					getAttrParams(attrParamId);
+					callback();
+				},
+				cancel: function () {},
+			});
+		}else{
+			$(obj).attr("data-append", "append");
+			getAttrParams(attrParamId);
+		}
+
+	}
+
+	/**
+	 * @description: 绑定编辑参数组
+	 * @param {*}
+	 * @return {*}
+	 * @Date: 2022-01-14 16:50:22
+	 */
+	function paramGroupEdit(event){
+		event.stopPropagation();//阻止冒泡
+		const id = $(event.target).closest('.foxui-drag-item').attr('data-id');
+		const title = $(event.target).closest('.foxui-drag-content').find('.parts-name').text();
+		modifyParamGroup(id, title);
+	}
+
+	/**
+	 * @description: 参数表格初始化 或 整体更新
+	 * @param {*} dataList
+	 * @return {*}
+	 * @Date: 2022-01-14 14:48:16
+	 */
+	function addParamInit(dataList) {
+		$('#paramTable .foxui-table-tbody').append(_addParamHtml(dataList));
+	}
+
+	/**
+	 * @description: 绑定删除参数 -> 右侧
+	 * @param {*}
+	 * @return {*}
+	 * @Date: 2022-01-14 15:26:42
+	 */
+	$(document).on('click', '#paramTable button.delete', function () {
+		const $item = $(this).closest('.foxui-table-tr'),
+				id = $item.attr('data-id'),
+				title = $item.find('.param-title input').val();
+
+		foxui.dialog({
+			title: '删除',
+			content: `您确定要删除 ${title} 参数吗`,
+			confirmText: '删除',
+			cancelText: '取消',
+			buttonType: 'danger',
+			confirm: function (callback) {
+				callback();
+				// 添加异步请求
+				$item.slideUp('fast', function () {
+					$(this).remove();
+				});
+				foxui.message({
+					text: '删除成功',
+					type: 'success',
+				});
+			},
+		});
+	});
+
+	/**
+	 * @description: 新增参数 -> 右侧
+	 * @param {*}
+	 * @return {*}
+	 * @Date: 2022-01-14 15:18:53
+	 */
+	$(document).on('click', '#addParam button', function () {
+		const $tbody = $('#paramTable .foxui-table-tbody');
+		$tbody.append(_addParamHtml([{}]));
+		$tbody.find('.foxui-table-tr:last-child').css('display', 'none').slideDown('fast');
+	});
+
+	/**
+	 * @description: 绑定新增参数组 -> 左侧
+	 * @param {*}
+	 * @return {*}
+	 * @Date: 2022-01-14 16:37:36
+	 */
+	$(document).on('click', '#addParamGroup', function () {
+		modifyParamGroup();
+	});
+
+	/**
+	 * @description: 绑定编辑参数组 -> 左侧
+	 * @param {*}
+	 * @return {*}
+	 * @Date: 2022-01-14 16:50:22
+	 */
+	$(document).on('click', '#paramGroupTable .edit', function () {
+		const id = $(this).closest('.foxui-drag-item').attr('data-id');
+		const title = $(this).closest('.foxui-drag-content').find('.parts-name').text();
+		modifyParamGroup(id, title);
+	});
+
+	/**
+	 * @description: 绑定删除参数组
+	 * @param {*}
+	 * @return {*}
+	 * @Date: 2022-01-14 16:24:35
+	 */
+	$(document).on('click', '#paramGroupTable button.delete', function () {
+		const $item = $(this).closest('.foxui-drag-item');
+		const id = $item.attr('data-id');
+		const title = $item.find('.parts-name').text();
+		foxui.dialog({
+			title: '删除',
+			content: `您确定要删除 ${title} 所有参数吗`,
+			cancelText: '取消',
+			confirmText: '删除',
+			buttonType: 'danger',
+			confirm: function (callback) {
+				callback();
+				// 添加异步请求
+				$item.slideUp('fast', function () {
+					$(this).remove();
+				});
+				foxui.message({
+					text: '删除成功',
+					type: 'success',
+				});
+			},
+			cancel: function () {},
+		});
+	});
+
+	/**
+	 * @description: 添加参数 html -> 右侧
+	 * @param {*} dataList
+	 * @return {*}
+	 * @Date: 2022-01-14 14:40:18
+	 */
+	function _addParamHtml(dataList) {
+		dataList = dataList || [];
+		let htmlArr = [];
+		dataList.forEach(item => {
+			htmlArr.push(`
+            <li class="foxui-table-tr foxui-drag-item" data-id="${item.id || ''}">
+                <div class="foxui-table-td">
+                    <span class="foxui-drag-handle foxui-icon-liebiao-o"></span>
+                </div>
+                <div class="foxui-table-td param-title">
+                    <input class="foxui-size-small" value="${item.title || ''}" />
+                </div>
+                <div class="foxui-table-td param-val">
+                    ${_judgeTypeHtml(item)}
+                </div>
+                <div class="foxui-table-td">
+                    <button class="foxui-text-primary foxui-size-small delete">删除</button>
+                </div>
+            </li>
+        `);
+		});
+		return htmlArr.join('');
+	}
+
+	/**
+	 * @description: 根据判断typeId，生成相应的表单
+	 * @param {*} item
+	 * @return {*}
+	 * @Date: 2022-02-09 16:20:49
+	 */
+	function _judgeTypeHtml(item) {
+		const { typeId, value, valueId, selectList } = item;
+		let html = '';
+		if (typeId === 13) {
+			let itemHtmlArr = [];
+			selectList.forEach(select => {
+				itemHtmlArr.push(`
+                <li class="foxui-select-item" data-id="${select.id}">${select.text}</li>
+            `);
+			});
+			html = `
+            <div class="foxui-select">
+                <div class="foxui-select-handle foxui-select-icon">
+                    <input class="foxui-select-input foxui-size-small" readonly="readonly" data-id="${valueId || ''}" value="${value || ''}" />
+                </div>
+                <div class="foxui-select-menu">
+                    <ul class="foxui-select-slide">
+                        ${itemHtmlArr.join('')}
+                    </ul>
+                </div>
+            </div>
+        `;
+		} else {
+			html = `<input class="foxui-size-small" value="${value || ''}" />`;
+		}
+		return html;
+	}
+
+	/**
+	 * @description: 新增/编辑参数预设弹框 html  ->  弹框
+	 * @param {*} title
+	 * @param {*} dataList
+	 * @return {*}
+	 * @Date: 2022-01-14 17:07:15
+	 */
+	function _modifyParamGroupHtml(title, dataList) {
+		return `
+        <div class="param-preset-box">
+            <div class="section-main-item margin-top-0">
+                <div class="foxui-input-group">
+                    <div class="input-label">
+                        <label class="foxui-required">预设名称：</label>
+                    </div>
+                    <div class="input-box">
+                        <div class="foxui-input-suffix">
+                            <input maxlength="10" class="foxui-size-small" placeholder="" required value="${title || ''}" name="attrName"/>
+                            <i class="foxui-suffix-icon foxui-suffix-count">0/10</i>
+                        </div>
+                    </div>
+                </div>
+            </div>
+            <div class="section-main-item">
+                <div class="foxui-input-group foxui-align-items-start">
+                    <div class="input-label">
+                        <label>参数列表：</label>
+                    </div>
+                    <div class="block-box foxui-border">
+                        <div class="foxui-table foxui-table-border-bottom">
+                            <ul class="foxui-table-thead">
+                                <li class="foxui-table-tr">
+                                    <div class="foxui-table-th"></div>
+                                    <div class="foxui-table-th">参数名称</div>
+                                    <div class="foxui-table-th">参数类型</div>
+                                    <div class="foxui-table-th">参数值</div>
+                                    <div class="foxui-table-th">操作</div>
+                                </li>
+                            </ul>
+                            <ul class="foxui-table-tbody foxui-drag foxui-drag-container">
+                                ${_modifyParamGroupTrHtml(dataList)}
+                            </ul>
+                        </div>
+                        <div class="add-param">
+                            <button class="foxui-text-primary" onclick="_handleAddParamPop(event)">
+                                <i class="foxui-icon-jiahao-o"></i>
+                                <span>添加参数</span>
+                            </button>
+                        </div>
+                    </div>
+                </div>
+            </div>
+        </div>
+    `;
+	}
+
+	/**
+	 * @description: 新增/编辑参数预设弹框tr的 html
+	 * @param {*} dataList
+	 * @return {*}
+	 * @Date: 2022-01-14 22:52:25
+	 */
+	function _modifyParamGroupTrHtml(dataList) {
+		dataList = dataList || [];
+		let htmlArr = [];
+		dataList.forEach(item => {
+			htmlArr.push(`
+            <li class="foxui-table-tr foxui-drag-item" data-id="${item.id}">
+                <div class="foxui-table-td">
+                    <span class="foxui-drag-handle foxui-icon-liebiao-o"></span>
+                </div>
+                <div class="foxui-table-td param-title">
+                    <input name="paramName" class="foxui-size-small" value="${item.title || ''}" />
+                </div>
+                <div class="foxui-table-td">
+                    <div class="foxui-select">
+                        <div class="foxui-select-handle foxui-select-icon">
+                            <input name="type" class="foxui-select-input foxui-size-small" readonly="readonly" data-id="${item.typeId || ''}" value="${item.type || ''}" />
+                        </div>
+                        <div class="foxui-select-menu">
+                            <ul class="foxui-select-slide">
+                                <li class="foxui-select-item" data-id="11" onclick="_handleTypeChange(event)">默认输入</li>
+                                <li class="foxui-select-item" data-id="12" onclick="_handleTypeChange(event)">手动输入</li>
+                                <li class="foxui-select-item" data-id="13" onclick="_handleTypeChange(event)">下拉选择</li>
+                            </ul>
+                        </div>
+                    </div>
+                </div>
+                <div class="foxui-table-td">
+                    ${_paramValueBySelectHtml(item.type, item.value)}
+                </div>
+                <div class="foxui-table-td">
+                    <button class="foxui-text-primary foxui-size-small delete" onclick="_handleDeleteParamPop(event)">删除</button>
+                </div>
+            </li>
+        `);
+		});
+		return htmlArr.join('');
+	}
+
+	/**
+	 * @description: 通过 type 生成参数预设参数值 html
+	 * @param {*} type
+	 * @param {*} value
+	 * @return {*}
+	 * @Date: 2022-01-14 23:22:34
+	 */
+	function _paramValueBySelectHtml(type, value) {
+		let html = '<p>/</p>';
+		if (type === '默认输入') {
+			html = `<input name="dfvalue"  class="foxui-size-small" placeholder="请输入默认参数值" value="${value || ''}" />`;
+		} else if (type === '手动输入') {
+			html = '<p>/</p>';
+		} else if (type === '下拉选择') {
+			html = `<textarea name="dfvalue"  autocomplete="off" rows="2" maxlength="120" placeholder="一行一个可选值">${value || ''}</textarea>`;
+		}
+		return html;
+	}
+
+	/**
+	 * @description: 参数预设弹框新增字段
+	 * @param {*} event
+	 * @return {*}
+	 * @Date: 2022-01-15 00:23:25
+	 */
+	function _handleAddParamPop(event) {
+		const target = event.target;
+		const html = _modifyParamGroupTrHtml([{}]);
+		const $mainItem = $(target).closest('.section-main-item');
+		$mainItem.find('.foxui-table .foxui-table-tbody').append(html);
+		$mainItem.find('.foxui-table .foxui-table-tbody .foxui-table-tr:last-child').css('display', 'none').slideDown('fast');
+	}
+
+	/**
+	 * @description: 参数预设弹框删除字段
+	 * @param {*} event
+	 * @return {*}
+	 * @Date: 2022-01-15 00:18:29
+	 */
+	function _handleDeleteParamPop(event) {
+		const target = event.target;
+		const $item = $(target).closest('.foxui-table-tr');
+		foxui.dialog({
+			title: '删除',
+			content: `您确定要删除吗`,
+			cancelText: '取消',
+			confirmText: '删除',
+			buttonType: 'danger',
+			confirm: function (callback) {
+				callback();
+				$item.slideUp('fast', function () {
+					$(this).remove();
+				});
+				foxui.message({
+					text: '删除成功',
+					type: 'success',
+				});
+			},
+			cancel: function () {},
+		});
+	}
+
+	/**
+	 * @description: 绑定监听type，改变更新html
+	 * @param {*}
+	 * @return {*}
+	 * @Date: 2022-01-14 23:44:42
+	 */
+	function _handleTypeChange(event) {
+		const target = event.target;
+		const type = $(target).text();
+		const html = _paramValueBySelectHtml(type);
+		$(target).closest('.foxui-table-td').next('.foxui-table-td').empty().append(html);
+	}
+
+</script>
+{/block}

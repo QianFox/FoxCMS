@@ -1,0 +1,273 @@
+{extend name="foxcms" /}
+
+{block name="css"}
+{/block}
+
+{block name="body"}
+
+<input name="bcid" value="{$bcid}" type="hidden"/>
+<div class="foxcms-content-inner">
+    <!-- page content -->
+    <div class="basic-set-content">
+        <div class="section section-panel">
+            <div class="section-title">添加用户</div>
+            <div class="section-main">
+                <div class="section-main-item">
+                    <div class="foxui-input-group">
+                        <div class="input-label">
+                            <label class="foxui-required">管理员用户名：</label>
+                        </div>
+                        <div class="input-box">
+                            <div class="foxui-input-suffix">
+                                <input class="foxui-size-small" maxlength="15" placeholder="请输入网站名称" value="" name="username"/>
+                                <i class="foxui-suffix-icon foxui-suffix-count">0/15</i>
+                            </div>
+                        </div>
+                    </div>
+                </div>
+                <div class="section-main-item">
+                    <div class="foxui-input-group">
+                        <div class="input-label">
+                            <label class="foxui-required">密码：</label>
+                        </div>
+                        <div class="input-box">
+                        <div class="foxui-input-suffix">
+                            <input name="password" type="password" placeholder="请输入密码" value="" />
+                            <i class="foxui-icon-xianshi-o  foxui-suffix-icon foxui-suffix-password"></i>
+                        </div>
+                        </div>
+                    </div>
+                    <p class="input-box-info">密码必须包含数字、大小写字母、特殊字符中至少3种,且不少于8位!</p>
+                </div>
+                <div class="section-main-item">
+                    <div class="foxui-input-group">
+                        <div class="input-label">
+                            <label class="foxui-required">再输入密码：</label>
+                        </div>
+                        <div class="input-box">
+                        <div class="foxui-input-suffix">
+                            <input name="repeatPassword" type="password" placeholder="请再次输入密码" value="" />
+                            <i class="foxui-icon-xianshi-o foxui-suffix-icon foxui-suffix-password"></i>
+                        </div>
+                        </div>
+                    </div>
+                </div>
+
+                <div class="section-main-item">
+                    <div class="foxui-input-group">
+                        <div class="input-label">
+                            <label>所属角色：</label>
+                        </div>
+                        <div class="input-box">
+                            <div class="foxui-select">
+                                <div class="foxui-select-handle foxui-select-icon">
+                                    <input class="foxui-select-input foxui-size-small wkk" readonly="readonly" placeholder="请选择值" value="" name="group_id">
+                                    <i class="foxui-icon-close-circle" style="display: none;"></i>
+                                </div>
+                                <div class="foxui-select-menu" x-placement="bottom-left" style="top: 38px; left: 0px; display: none;">
+                                    <ul class="foxui-select-slide">
+                                        {foreach $authGroups as $key=>$vo }
+                                        <li class="foxui-select-item" data-id="{$vo.id}">{$vo.title}</li>
+                                        {/foreach}
+                                    </ul>
+                                </div>
+                            </div>
+                        </div>
+                    </div>
+                    <p class="input-box-info">
+                        选择了角色，则此用户将会继承此角色拥有的权限
+                    </p>
+                </div>
+
+                <div class="section-main-item status">
+                    <div class="foxui-input-group">
+                        <div class="input-label">
+                            <label class="foxui-required">操作员状态：</label>
+                        </div>
+                        <div class="input-box">
+                            <div class="foxui-radio-group">
+                                <div class="foxui-radio is-checked">
+                                    <span class="foxui-radio-input">
+                                        <i class="foxui-radio-icon"></i>
+                                        <input type="radio" value="1" name="status"/>
+                                    </span>
+                                    <span class="foxui-radio-label">启用</span>
+                                </div>
+                                <div class="foxui-radio">
+                                    <span class="foxui-radio-input">
+                                        <i class="foxui-radio-icon"></i>
+                                        <input type="radio" value="0"/>
+                                    </span>
+                                    <span class="foxui-radio-label" name="status">禁用</span>
+                                </div>
+                            </div>
+                        </div>
+                    </div>
+                    <p class="input-box-info">
+                        用户可以在此角色权限的基础上附加其他权限
+                    </p>
+                </div>
+
+                <div class="section-title margin-top-32">其它信息</div>
+                <div class="section-main">
+                    <div class="section-main-item">
+                        <div class="foxui-input-group">
+                            <div class="input-label">
+                                <label class="foxui-required">操作员姓名：</label>
+                            </div>
+                            <div class="input-box">
+                                <div class="foxui-input-suffix">
+                                    <input class="foxui-size-small" maxlength="15" placeholder="请输入操作员姓名" value="" name="nickname"/>
+                                    <i class="foxui-suffix-icon foxui-suffix-count">0/15</i>
+                                </div>
+                            </div>
+                        </div>
+                    </div>
+                    <div class="section-main-item">
+                        <div class="foxui-input-group">
+                            <div class="input-label">
+                                <label class="foxui-required">操作员手机号：</label>
+                            </div>
+                            <div class="input-box">
+                                <div class="foxui-input-suffix">
+                                    <input class="foxui-size-small" maxlength="15" placeholder="请输入操作员手机号" value="" name="phone"/>
+                                    <i class="foxui-suffix-icon foxui-suffix-count">0/15</i>
+                                </div>
+                            </div>
+                        </div>
+                    </div>
+
+                    <div class="section-main-item">
+                        <div class="foxui-input-group foxui-align-items-start">
+                            <div class="input-label">
+                                <label>头像：</label>
+                            </div>
+                            <div class="input-box">
+                                <div class="foxui-images">
+                                    <div class="foxui-images-card avatar">
+                                        <ul class="foxui-images-list">
+                                            <div class="foxui-images-handle">
+                                                <div class="foxui-images-handle-inner">
+                                                    <i class="foxui-icon-jiahao-o"></i>
+                                                    <span class="text">添加图片</span>
+                                                </div>
+                                            </div>
+                                        </ul>
+                                    </div>
+                                </div>
+                            </div>
+                        </div>
+                    </div>
+                </div>
+            </div>
+        </div>
+    </div>
+</div>
+
+<div class="foxcms-content-footer">
+    <button class="is-long foxui-size-small foxui-solid-primary" id="save">保存</button>
+</div>
+
+{include file="footed-copy"/}
+{/block}
+
+{block name="js"}
+<script>
+
+	//保存
+	$('#save').click(function (){
+
+		let username = $('input[name="username"]').val();
+		if(username == "" || !username){
+			foxui.message({
+				'type':'warning',
+				text:'请输入用户名'
+			})
+			return;
+		}
+		//密码
+		let password = $('input[name="password"]').val();
+		if(password == "" || !password){
+            foxui.message({
+				type:'warning',
+				text:'请输入密码'
+			})
+			return;
+		}
+        if(!isPwd(password)){
+            foxui.message({
+                type:'warning',
+                text:'密码必须包含数字、大小写字母、特殊字符中至少3种,且不少于8位'
+            })
+            return;
+        }
+		let repeatPassword = $('input[name="repeatPassword"]').val();
+		if(password != repeatPassword){
+			foxui.message({
+				type:'warning',
+				text:'请输入密码的两次密码不一致'
+			})
+			return;
+		}
+		//角色
+		let group_id = $('input[name="group_id"]').attr("data-id");
+		//状态
+		let status = $('.status .foxui-radio.is-checked input').val();
+		//角色
+		let nickname = $('input[name="nickname"]').val();
+		if(nickname == "" || !nickname){
+			foxui.message({
+				type:'warning',
+				text:'请输入姓名'
+			})
+			return;
+		}
+		//手机
+		let phone = $('input[name="phone"]').val();
+		//头像
+        let avatar = $('.avatar img').attr('src');
+		let datas ={'username':username ,"status":status, "password":password, "group_id":group_id, "nickname":nickname, "phone":phone, "avatar": avatar};
+		foxui.dialog({
+			title: '保存',
+			content: '您确定要保存吗',
+			cancelText: '取消',
+			confirmText: '保存',
+			confirm: function (callback) {
+				$.ajax({
+					type: "post",
+					url: 'add',
+					dataType: "json",
+					data: datas,
+					success: function (res) {
+						if (res.code == 1) {
+							foxui.message({
+								type:'success',
+								text:res.msg
+							})
+							window.location.href=document.referrer;//返回并且刷新
+						} else {
+							foxui.message({
+								type:'warning',
+                                text:res.msg
+							})
+						}
+					}, error: function (res) {
+						foxui.message({
+							type:'warning',
+                            text:res.msg
+						})
+					}
+				});
+                callback();
+			},
+			cancel: function () {
+				foxui.message({
+					type:'warning',
+                    text:res.msg
+				})
+			},
+		});
+
+	})
+</script>
+{/block}

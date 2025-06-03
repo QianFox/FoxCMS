@@ -1,0 +1,70 @@
+<script src="{$staticPath}js/jquery-3.6.0.min.js"></script>
+<script src="{$staticPath}js/tinymce/tinymce.min.js"></script>
+<script src="{$staticPath}js/echarts.min.js"></script>
+<script src="{$staticPath}js/foxui-1.32.min.js"></script>
+<script>
+    //全局上传文件端口
+    var UPLOAD_FILE_URL = "{:url('upload_files/upload')}";
+    //图片粘贴下载
+    var UPIMG_URL = "{:url('upload_files/upimg')}";
+    var SERVER_URL = "/";
+    //配置的后台路径
+    var ADMIN_PATH = "/" + "{:config('adminconfig.admin_path')}";
+    //静态文件路径
+    var STATIC_PATH ="{:config('adminconfig.static_path')}";
+    //退出地址
+    var LOGOUT_PATH = "{:logout_url()}";
+    //栏目模型地址
+    var GETCOLUMMODELS_PATH = "{:getColumModels_url()}";
+    //个人中心
+    var ADMINEDIT_PATH = "{:adminEdit_url()}";
+    //更新缓存
+    var LOGINCLEARCACHE_PATH = "{:loginClearCache_url()}";
+    //修改密码
+    var ADMINUPDATEPASSWORD_PATH = "{:adminUpdatePassword_url()}";
+    //循环生成静态html
+    var SEOALLSITE_PATH = "{:seoAllSite_url()}";
+    //单独静态生成
+    var SEOADDDATABUILDDETAIL_PATH = "{:seoAddDataBuildDetail_url()}";
+    //单独静态栏目生成
+    var SINGLEALLSITE_PATH = "{:singleAllSite_url()}";
+    //删除幻灯片
+    var SLIDEDELETE_PATH = "{:slideDelete_url()}";
+    //编辑幻灯片
+    var SLIDEEDIT_PATH = "{:slideEdit_url()}";
+    //后台首页地址
+    var HOME_PATH = "{:url('Index/index')}";
+</script>
+<script src="{$staticPath}js/rich_text.js"></script>
+<script>
+
+    foxui.imagesManager.init({
+        paginationOption: {
+            type: 'solid',
+            size: 'small',
+            pageSize: 10,
+            pageNum: 7,
+            pageSizeList: [10, 20, 30, 50],
+            isShowJump: true,
+            isShowTotal: true,
+            isShowSize: true
+        },
+        url: "{:url('PicManager/picManager')}",
+    });
+
+    foxui.videoManager.init({
+        paginationOption: {
+            type: 'solid',
+            size: 'small',
+            pageSize: 10,
+            pageNum: 7,
+            pageSizeList: [10, 20, 30, 50],
+            isShowJump: true,
+            isShowTotal: true,
+            isShowSize: true,
+        },
+        url: "{:url('VideoManager/videoManager')}",
+    });
+</script>
+<script src="{$staticPath}js/common.js"></script>
+<script src="{$staticPath}js/admin_common.js"></script>

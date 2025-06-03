@@ -1,0 +1,133 @@
+{extend name="foxcms" /}
+
+{block name="css"}
+
+{/block}
+
+{block name="body"}
+<input name="columnId" type="hidden" value="{$columnId}"/>
+<input name="id" type="hidden" value="{$memberLevel.id}"/>
+<div class="foxcms-content-inner">
+    <!-- page content -->
+    <div class="contact-way-content">
+        <div class="section section-panel">
+            <div class="section-title">添加会员等级</div>
+            <div class="section-main">
+                <div class="section-main-item">
+                    <div class="foxui-input-group">
+                        <div class="input-label">
+                            <label>名称：</label>
+                        </div>
+                        <div class="input-box">
+                            <div class="foxui-input-suffix">
+                                <input class="foxui-size-small" maxlength="30" placeholder="请输入标题" name="name" value="{$memberLevel.name}"/>
+                                <i class="foxui-suffix-icon foxui-suffix-count">0/30</i>
+                            </div>
+                        </div>
+                    </div>
+                </div>
+                <div class="section-main-item">
+                    <div class="foxui-input-group">
+                        <div class="input-label">
+                            <label>会员等级：</label>
+                        </div>
+                        <div class="input-box">
+                            <input class="foxui-size-small" placeholder="请输入会员等级" required name="level" value="{$memberLevel.level}" onkeyup="this.value=this.value.replace(/[^0-9]/g,'');"/>
+                        </div>
+                    </div>
+                    <p class="input-box-info">
+                        会员等级，数字越大等级越高
+                    </p>
+                </div>
+                <div class="section-main-item">
+                    <div class="foxui-input-group">
+                        <div class="input-label">
+                            <label>折扣率：</label>
+                        </div>
+                        <div class="input-box">
+                            <input class="foxui-size-small" placeholder="请输入折扣率" required name="discount_rate" value="{$memberLevel.discount_rate}" onkeyup="this.value=this.value.replace(/[^0-9]/g,'');" />
+                        </div>
+                        <div style="font-size:16px; border: 1px solid #dcdfe6; height: 32px;line-height: 32px;border-radius:  0 4px 4px 0;padding: 0 10px;color: #909399;background-color: #f2f6fc;">%</div>
+                    </div>
+                    <p class="input-box-info">
+                        折扣率，请输入整数
+                    </p>
+                </div>
+            </div>
+        </div>
+    </div>
+</div>
+
+{include file="footed-copy"/}
+<div class="foxcms-content-footer">
+    <button class="is-long foxui-size-small foxui-solid-primary" id="save">保存</button>
+</div>
+{/block}
+
+{block name="js"}
+
+<script>
+
+
+    //保存
+    $('#save').click(function (){
+
+        let id = $('input[name="id"]').val();
+        let name = $('input[name="name"]').val();
+        if(name == "" || !name){
+            foxui.message({
+                type:'warning',
+                text:'请输入名称'
+            })
+            return;
+        }
+        let level = $('input[name="level"]').val();
+        let discount_rate = $('input[name="discount_rate"]').val();
+        let datas ={"id":id, "name": name, "level":level, "discount_rate":discount_rate};
+
+        foxui.dialog({
+            title: '保存',
+            content: '您确定要保存吗',
+            cancelText: '取消',
+            confirmText: '保存',
+            confirm: function (callback) {
+                $.ajax({
+                    type: "post",
+                    url: 'edit',
+                    dataType: "json",
+                    data: datas,
+                    success: function (res) {
+                        if (res.code == 1) {
+                            foxui.message({
+                                type:'success',
+                                text:res.msg
+                            })
+                            window.location.href=document.referrer;//返回并且刷新
+                        } else {
+                            foxui.message({
+                                type:'danger',
+                                text:res.msg
+                            })
+                        }
+                    }, error: function (res) {
+                        foxui.message({
+                            type:'danger',
+                            text:res.msg
+                        })
+                    }
+                });
+                callback();
+            },
+            cancel: function () {
+                foxui.message({
+                    type:'warning',
+                    text:'取消操作'
+                })
+            },
+        });
+
+    })
+
+
+</script>
+{/block}

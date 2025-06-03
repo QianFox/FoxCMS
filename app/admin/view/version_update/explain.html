@@ -1,0 +1,51 @@
+{extend name="foxcms" /}
+
+{block name="css"}
+{/block}
+
+{block name="body"}
+<div class="foxcms-content-inner">
+	<!-- page content -->
+	<div class="diy-form-content">
+		{if $authorize_code == 0}
+		<div style="text-align: center;color: #303133;font-size: 18px;padding-top: 80px;" >抱歉,你未授权不能更新!</div>
+		{else/}
+		<div class="section section-panel margin-top-10">
+			<p>
+				<span style="font-weight: bold; ">
+					{$version.content|raw}
+				</span>
+			</p>
+		</div>
+
+		<div class="section section-panel margin-top-10">
+			<div class="foxui-table foxui-table-border-bottom foxui-table-hover foxui-checkbox-group">
+				<ul class="foxui-table-thead foxui-checkbox-head">
+					<li class="foxui-table-tr">
+						<div class="foxui-table-th">更新文件</div>
+					</li>
+				</ul>
+				<ul class="foxui-table-tbody foxui-checkbox-list">
+					<!--表格内容-->
+					{foreach $uFiles as $key=>$vo}
+					<li class="foxui-table-tr">
+						<div class="foxui-table-td">{$vo.file_relative_path}</div>
+					</li>
+					{/foreach}
+				</ul>
+			</div>
+		</div>
+		{/if}
+	</div>
+</div>
+
+{include file="footed-copy"/}
+{/block}
+
+
+{block name="js"}
+<script>
+
+</script>
+
+{/block}

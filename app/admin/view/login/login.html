@@ -1,0 +1,186 @@
+<!DOCTYPE html>
+<html lang="cn">
+<head>
+	<meta charset="UTF-8" />
+	<meta http-equiv="X-UA-Compatible" content="IE=edge" />
+	<meta name="viewport" content="width=device-width, initial-scale=1.0" />
+	<title>{~echo xn_cfg('base.sys_name')}-登录</title>
+	<link rel="stylesheet" href="{$staticPath}css/foxui-1.32.min.css" />
+	<link rel="stylesheet" href="{$staticPath}css/common.min.css" />
+	<style>
+		html,
+		body {
+			height: 100%;
+		}
+		label {
+			position: absolute;
+			bottom: -24px;
+			left: 0;
+		}
+		label.error {
+			color: #fc5656;
+			padding-left: 2.4em;
+			vertical-align: top;
+		}
+		.item {
+			position: relative;
+		}
+		.foxui-input-suffix label {
+			left: -20px;
+		}
+		.login-panel .left .login-logo h1::after {
+			content: '';
+			font-size: 16px;
+			font-weight: normal;
+		}
+		.login-footer .copyright strong::after {
+			content: "";
+		}
+	</style>
+</head>
+<body>
+<div class="login-bg">
+	<div class="foxcms-container">
+		<div class="login-main">
+			<div class="login-panel">
+				<div class="left">
+					<div class="login-logo">
+						<h1>
+							<img src="/static/images/foxcms_logo.svg" style="width: 94%">
+						</h1>
+						<p>黔狐网站内容管理系统</p>
+					</div>
+					<div class="info">
+						<p>
+							<i class="foxui-icon-dianhua-o"></i>
+							<span>官方热线</span>
+							<b></b>
+							<span>400-888-3116</span>
+						</p>
+						<p>
+							<i class="foxui-icon-gongzuo-o"></i>
+							<span>工作时间</span>
+							<b></b>
+							<span>8:30-17:30</span>
+						</p>
+					</div>
+				</div>
+				<div class="right">
+					<div class="content">
+						<div class="title-box">
+							<h1>欢迎登录</h1>
+						</div>
+						<div class="form-box">
+							<form id="loginForm">
+								<div class="item">
+									<i class="foxfont foxui-icon-renyuan-o"></i>
+									<input placeholder="用户名" required name="username" />
+								</div>
+								<div class="item">
+									<i class="foxfont foxui-icon-jiasuo-o"></i>
+									<div class="input-group">
+										<div class="foxui-input-group">
+											<div class="foxui-input-suffix">
+												<input type="password" placeholder="请输入密码" required  name="password" value="" />
+												<i class="foxui-icon-xianshi-o foxui-suffix-icon foxui-suffix-password"></i>
+											</div>
+										</div>
+									</div>
+								</div>
+								<div class="item">
+									<i class="foxfont foxui-icon-anquan-o"></i>
+									<input placeholder="验证码" required name="vercode" />
+									<img src="{:url('login/verify')}" id="vercode" />
+								</div>
+								<div class="item">
+									<button class="foxui-solid-primary foxui-block" type="submit" onclick="return false">登录</button>
+								</div>
+							</form>
+						</div>
+					</div>
+				</div>
+			</div>
+			<ul class="login-footer">
+				<li class="nav">
+					<a href="//www.qianfox.com/contact/" target="_blank">联系我们</a>
+					<a href="//www.foxcms.cn/system/" target="_blank">关于FOXCMS</a>
+					<a href="//www.foxcms.cn/system/statement/" target="_blank">许可协议</a>
+					<a href="//www.foxcms.cn/price/service/" target="_blank">增值服务</a>
+					<a href="/www.foxcms.cn/authorize/" target="_blank">授权查询</a>
+					<a href="//www.foxcms.cn/price/join/" target="_blank">代理加盟</a>
+					<a href="//www.qianfox.com/service/" target="_blank">核心业务</a>
+					<a href="//www.foxcms.cn/about/contact/" target="_blank">客服中心</a>
+				</li>
+				<li class="record">
+					<a>FOXCMS软件著作权：2022SR1304936</a>
+					<a>FOXUI框架著作权：2022SR1337541</a>
+				</li>
+				<li class="copyright">
+					<span>Copyright © 2021-{$nowtime??'现在'}</span>
+					<strong>FOXCMS</strong>
+					<span>版权所有</span>
+				</li>
+			</ul>
+		</div>
+	</div>
+</div>
+</body>
+
+<script>
+	//配置的后台路径
+	var ADMIN_PATH = "/" + "{:config('adminconfig.admin_path')}"
+	//静态文件路径
+	var STATIC_PATH ="{:config('adminconfig.static_path')}"
+</script>
+
+<script src="{$staticPath}js/jquery-3.6.0.min.js"></script>
+<script src="{$staticPath}js/jquery.validate.min.js"></script>
+<script src="{$staticPath}js/messages_zh.js"></script>
+<script src="{$staticPath}js/foxui-1.32.min.js"></script>
+<script src="{$staticPath}js/common.js"></script>
+
+<script>
+	localStorage.removeItem("user");
+	localStorage.removeItem("MIAO_LID");
+	$(document).ready(function () {
+		$('#loginForm').validate();
+
+		let password = localStorage.getItem("password");
+		let username = localStorage.getItem("username");
+		$('input[name="password"]').val(password?window.atob(password):'');
+		$('input[name="username"]').val(username?window.atob(username):'');
+	});
+
+	$('button[type="submit"]').click(function (){
+		let formdata = $('#loginForm').serialize();
+		$.ajax({
+			type: "post",
+			url:"{:url('login/index')}",
+			data:formdata,
+			dataType:"json",
+			success:function(res){
+				if( res.code == 1 ) {
+					localStorage.setItem("user", JSON.stringify(res.data));
+					location.href = "{:url('Index/index')}"; //后台主页
+				} else {
+					foxui.message({
+						'type':'warning',
+						text:res.msg
+					})
+					$("#vercode").click();
+				}
+			},
+			error:function(res){
+				foxui.message({
+					'type':'warning',
+					text:"操作失败，请联系管理员"
+				})
+			}
+		});
+	});
+
+	$('#vercode').click(function () {
+		$(this).attr('src', "{:url('login/verify')}?" + Date.parse(new Date()))
+	})
+</script>
+</html>

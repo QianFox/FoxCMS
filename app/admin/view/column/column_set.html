@@ -1,0 +1,873 @@
+{extend name="foxcms" /}
+
+{block name="css"}
+<style>
+	.column-dialog .foxui-dialog__body{
+		max-height: 520px;
+		overflow-y: auto;
+		padding-top: 10px !important;
+		padding-bottom: 10px !important;
+	}
+</style>
+{/block}
+
+{block name="body"}
+<input name="bcid" value="{$bcid}" type="hidden"/>
+<input name="id" value="{$id}" type="hidden" />
+<input name="tempType" type="hidden"/>
+<input type="hidden" name="path"  value="" />
+<input type="hidden" name="file"  value="" />
+<input type="hidden" name="activepath"  value="{$activepath}" />
+
+<div class="foxcms-content-inner">
+	<!-- page content -->
+	<div class="column-set-content">
+		<div class="foxui-tabs foxui-type-line">
+			<div class="foxui-tabs-header">
+				<div class="foxui-tabs-item is-active">常规选项</div>
+				<div class="foxui-tabs-item">高级选项</div>
+				<div class="foxui-tabs__active-bar" style="width: 112px; transform: translateX(112px);"></div></div>
+			<div class="foxui-tabs-content">
+				<div class="foxui-tabs-pane" style="display: none;">
+					<div class="section">
+						<div class="section-main-item margin-top-0">
+							<div class="foxui-input-group">
+								<div class="input-label">
+									<label>栏目显示：</label>
+								</div>
+								<div class="input-box display-flex foxui-align-items-center status">
+									<div class="foxui-switch {if $column.status == 1} is-checked {/if}">
+										<input type="checkbox" checked="checked" value="" class="foxui-switch-input">
+										<span class="foxui-switch-core"></span>
+									</div>
+								</div>
+							</div>
+						</div>
+						<div class="section-main-item">
+							<div class="foxui-input-group">
+								<div class="input-label">
+									<label class="foxui-required">栏目名称：</label>
+								</div>
+								<div class="input-box">
+									<div class="foxui-input-suffix">
+										<input class="foxui-size-small" placeholder="请输入栏目名称" name="name" value="{$column.name}">
+									</div>
+								</div>
+							</div>
+						</div>
+						<div class="section-main-item">
+							<div class="foxui-input-group">
+								<div class="input-label">
+									<label>栏目别名：</label>
+								</div>
+								<div class="input-box">
+									<div class="foxui-input-suffix">
+										<input class="foxui-size-small" placeholder="请输入栏目别名" name="en_name" value="{$column.en_name}" />
+									</div>
+								</div>
+							</div>
+						</div>
+						<div class="section-main-item" style="display:{$columnLevel.is_thumb?'block':'none'}">
+							<div class="foxui-input-group foxui-align-items-start">
+								<div class="input-label">
+									<label>栏目图片：</label>
+								</div>
+								<div class="input-box">
+									<div class="foxui-images foxui-images-fluid">
+										<div class="foxui-images-card pic_ids">
+											<ul class="foxui-images-list">
+												{if $column.pic_ids != "" && $column.pic_url != ""}
+												<li class="foxui-images-item foxui-animate-fadeInDown">
+													<div class="content">
+														<img  data-id="{$column.pic_ids}" src="{$column.pic_url}" />
+														<span class="replace">替换</span>
+														<i class="foxui-icon-cuowu-f delete"></i>
+													</div>
+												</li>
+												{/if}
+												<div class="foxui-images-handle">
+													<div class="foxui-images-handle-inner">
+														<i class="foxui-icon-jiahao-o"></i>
+														<span class="text">添加图片</span>
+													</div>
+												</div>
+											</ul>
+										</div>
+									</div>
+								</div>
+							</div>
+							<p class="input-box-info">
+								图片尺寸建议根据前端网站模板的尺寸制作，请将所有幻灯片图片尺寸保持一致
+							</p>
+						</div>
+						<div class="section-main-item">
+							<div class="foxui-input-group">
+								<div class="input-label">
+									<label>文件保存目录：</label>
+								</div>
+								<div class="input-box">
+									<input class="foxui-size-small" placeholder="请输入文件保存目录"  name="dir_path" required value="{$column.dir_path}">
+								</div>
+							</div>
+						</div>
+						<div class="section-main-item">
+							<div class="foxui-input-group">
+								<div class="input-label">
+									<label class="foxui-required">内容模型：</label>
+								</div>
+								<div class="input-box">
+									<div class="foxui-select">
+										<div class="foxui-select-handle foxui-select-icon">
+											<input name="column_model" class="foxui-select-input foxui-size-small" readonly="readonly" data-id="{$column.column_model}" placeholder="请选择内容模型" value="{$column.modelTitle}">
+											<i class="foxui-icon-close-circle" style="display: none;"></i>
+										</div>
+										<div class="foxui-select-menu" x-placement="bottom-left" style="top: 6px; left: 0px; display: none;">
+											<ul class="foxui-select-slide">
+												{foreach modelRecords as $key=>$vo }
+												<li class="foxui-select-item" data-id="{$vo.id}" onclick="modelChange(event)">{$vo.title}</li>
+												{/foreach}
+											</ul>
+										</div>
+									</div>
+								</div>
+							</div>
+						</div>
+
+						<div class="section-main-item apply-form" style="display: {if $column.column_model !='formmodel'}none{/if}">
+							<div class="foxui-input-group">
+								<div class="input-label">
+									<label>应用表单：</label>
+								</div>
+								<div class="input-box" style="display: flex;">
+									<div class="foxui-select">
+										<div class="foxui-select-handle foxui-select-icon">
+											<input name="apply_form" class="foxui-select-input foxui-size-small" readonly="readonly" data-id="{$column.form_list_id}" placeholder="请选择应用表单" value="{$column.formTitle}">
+											<i class="foxui-icon-close-circle" style="display: none;"></i>
+										</div>
+										<div class="foxui-select-menu" x-placement="bottom-left" style="top: 6px; left: 0px; display: none;">
+											<ul class="foxui-select-slide">
+												{foreach $formList as $key=>$vo }
+												<li class="foxui-select-item" data-id="{$vo.id}">{$vo.name}</li>
+												{/foreach}
+											</ul>
+										</div>
+									</div>
+									<button class="foxui-text-primary foxui-size-small" style="margin-left: 5px;">
+										<a href="{$column.formUrl}"><i class="foxui-icon-jiahao-o"></i>添加</a>
+									</button>
+								</div>
+							</div>
+						</div>
+
+						<div class="section-main-item">
+							<div class="foxui-input-group">
+								<div class="input-label">
+									<label>所属栏目：</label>
+								</div>
+								<div class="input-box">
+									<div class="foxui-select">
+										<div class="foxui-select-handle foxui-select-icon">
+											<input class="foxui-select-input foxui-size-small" readonly="readonly" placeholder="请选择所属栏目" value="{$column.thiscat}" name="pid">
+											<i class="foxui-icon-close-circle"></i>
+										</div>
+										<div class="foxui-select-menu">
+											<ul class="foxui-select-slide">
+												{foreach $columns as $key=>$vo }
+												<li class="foxui-select-item" data-id="{$vo.id}">{$vo.name}</li>
+												{/foreach}
+											</ul>
+										</div>
+									</div>
+								</div>
+							</div>
+						</div>
+						<div class="section-main-item">
+							<div class="foxui-input-group">
+								<div class="input-label">
+									<label>阅读权限：</label>
+								</div>
+								<div class="input-box">
+									<div class="foxui-select">
+										<div class="foxui-select-handle foxui-select-icon">
+											<input class="foxui-select-input" readonly="readonly" name="memberlevel" placeholder="请选择" value="{$column.memberlevel}" data-id="" />
+										</div>
+										<div class="foxui-select-menu">
+											<ul class="foxui-select-slide">
+												{foreach $mList as $key=>$vo }
+												<li class="foxui-select-item" data-id="{$vo.id}">{$vo.name}</li>
+												{/foreach}
+											</ul>
+										</div>
+									</div>
+								</div>
+							</div>
+						</div>
+
+						<div class="section-main-item">
+							<div class="foxui-input-group">
+								<div class="input-label">
+									<label class="foxui-required">标识：</label>
+								</div>
+								<div class="input-box" style="display: flex;align-items: center">
+									<input class="foxui-size-small" disabled placeholder="请输入标识" name="nid" required value="{$column.nid}" style="width: 55%">
+
+<!--									<div class="foxui-dropdown" style="width: 44%">-->
+<!--										<button class="foxui-dropdown-handle foxui-dropdown-icon" style="width: 100%">对应栏目</button>-->
+<!--										<div class="foxui-dropdown-menu" style="width: 100%">-->
+<!--											<ul class="foxui-dropdown-slide" style="width: 100%">-->
+<!--												{foreach $ocList as $vo }-->
+<!--												<li class="foxui-dropdown-item" data-id="{$vo.nid}" onclick="selectNid(this)">{$vo.columnName}({$vo.nid})</li>-->
+<!--												{foreach $vo.children as $voo }-->
+<!--												<li class="foxui-dropdown-item foxui-margin-left-20" data-id="{$voo.nid}" onclick="selectNid(this)">{$voo.columnName}({$voo.nid})</li>-->
+<!--												{foreach $voo.children as $vooo }-->
+<!--												<li class="foxui-dropdown-item foxui-margin-left-40" data-id="{$vooo.nid}" onclick="selectNid(this)">{$vooo.columnName}({$vooo.nid})</li>-->
+<!--												{/foreach}-->
+<!--												{/foreach}-->
+<!--												{/foreach}-->
+<!--											</ul>-->
+<!--										</div>-->
+<!--									</div>-->
+
+								</div>
+
+							</div>
+						</div>
+
+						{if $columnCount > 0}
+						<div class="section-main-item">
+							<div class="foxui-input-group">
+								<div class="input-label">
+									<label>栏目内容展示：</label>
+								</div>
+								<div class="input-box data_limit">
+									<div class="foxui-radio-group">
+										<div class="foxui-radio {if $column.data_limit == 1}is-checked{/if}">
+											<span class="foxui-radio-input">
+												<i class="foxui-radio-icon"></i>
+												<input type="radio" value="1"/>
+											</span>
+											<span class="foxui-radio-label">仅本栏目</span>
+										</div>
+										<div class="foxui-radio {if $column.data_limit == 2}is-checked{/if}">
+											<span class="foxui-radio-input">
+												<i class="foxui-radio-icon"></i>
+												<input type="radio" value="2"/>
+											</span>
+											<span class="foxui-radio-label">本栏目及下级栏目</span>
+										</div>
+
+										<div class="foxui-radio {if $column.data_limit == 3}is-checked{/if}">
+											<span class="foxui-radio-input">
+												<i class="foxui-radio-icon"></i>
+												<input type="radio" value="3"/>
+											</span>
+											<span class="foxui-radio-label">本栏目及指定子栏目</span>
+										</div>
+									</div>
+								</div>
+							</div>
+						</div>
+						<div id="staticPage">
+							<div class="section-main-item">
+								<div class="foxui-input-group">
+									<div class="input-label">
+										<label>栏目：</label>
+									</div>
+									<div class="input-box">
+										<div class="foxui-select">
+											<div class="foxui-select-handle foxui-select-icon">
+												<input class="foxui-select-input" readonly="readonly" name="limit_column" value="{$limitColumnText}" placeholder="请选择" data-ids="{$column.limit_column}"/>
+											</div>
+											<div class="foxui-select-menu">
+												<ul class="foxui-select-slide">
+													{foreach $rColumnList as $vo }
+													{if ($vo.level == 1)}
+													<li class="foxui-select-item multiple {if in_array($vo.id, $limitColumnIdArr)} is-active {/if}" data-id="{$vo.id}">{$vo.name}</li>
+													{elseif ($vo.level == 2) /}
+													<li class="foxui-select-item multiple {if in_array($vo.id, $limitColumnIdArr)} is-active {/if} foxui-margin-left-20" data-id="{$vo.id}">{$vo.name}</li>
+													{else /}
+													<li class="foxui-select-item multiple {if in_array($vo.id, $limitColumnIdArr)} is-active {/if} foxui-margin-left-40" data-id="{$vo.id}">{$vo.name}</li>
+													{/if}
+													{/foreach}
+												</ul>
+											</div>
+										</div>
+									</div>
+								</div>
+							</div>
+						</div>
+						{/if}
+
+						<div class="section-main-item">
+							<div class="foxui-input-group">
+								<div class="input-label">
+									<label>栏目图标：</label>
+								</div>
+								<div class="inline-box">
+									<div class="foxui-iconsel foxui-size-medium">
+										<div class="foxui-iconsel-handle">
+											<div class="foxui-iconsel-show">
+												<i class="{$column.column_icon}"></i>
+											</div>
+											<i class="foxui-icon-jiahao-o"></i>
+											<input class="foxui-iconsel-input" name="column_icon" value="">
+										</div>
+									</div>
+								</div>
+							</div>
+						</div>
+
+						<!--动态标签start-->
+						<div class="field">
+							<?php echo columnFieldTag($column['id']); ?>
+						</div>
+						<!--动态标签end-->
+
+					</div>
+				</div>
+
+				<div class="foxui-tabs-pane" style="">
+					<div class="section">
+						<div class="section-main-item margin-top-0">
+							<div class="foxui-input-group">
+								<div class="input-label">
+									<label>栏目属性：</label>
+								</div>
+								<div class="input-box">
+									<div class="foxui-radio-group column_attr">
+										<div class="foxui-radio {if $column.column_attr == 0}is-checked{/if}">
+											<span class="foxui-radio-input">
+												<i class="foxui-radio-icon"></i>
+												<input type="radio" value="0" checked="checked">
+											</span>
+											<span class="foxui-radio-label">内容栏目</span>
+										</div>
+										<div class="foxui-radio {if $column.column_attr == 1}is-checked{/if}">
+										<span class="foxui-radio-input">
+											<i class="foxui-radio-icon"></i>
+											<input type="radio" value="1">
+										</span>
+											<span class="foxui-radio-label">外部链接</span>
+										</div>
+										<div class="foxui-radio {if $column.column_attr == 2}is-checked{/if}">
+										<span class="foxui-radio-input">
+											<i class="foxui-radio-icon"></i>
+											<input type="radio" value="2">
+										</span>
+											<span class="foxui-radio-label">内部链接</span>
+										</div>
+									</div>
+								</div>
+							</div>
+						</div>
+						<div class="section-main-item" id="outLink" style="display:{if $column.column_attr == 1}block {else /}none{/if}">
+							<div class="foxui-input-group">
+								<div class="input-label">
+									<label>外链地址：</label>
+								</div>
+								<div class="input-box">
+									<div class="foxui-input-prepend">
+										<div class="foxui-prepend-inner">
+											<div class="foxui-select">
+												<div class="foxui-select-handle foxui-select-icon">
+													<input class="foxui-select-input" readonly="readonly" value="{$column.out_link_head??'http://'}" name="out_link_head">
+												</div>
+												<div class="foxui-select-menu">
+													<ul class="foxui-select-slide">
+														<li class="foxui-select-item" data-id="1">http://</li>
+														<li class="foxui-select-item" data-id="2">https://</li>
+													</ul>
+												</div>
+											</div>
+										</div>
+										<input class="foxui-size-small" placeholder="请输入网站地址" required="" value="{$column.out_link}" name="out_link">
+									</div>
+								</div>
+							</div>
+						</div>
+						<div class="section-main-item" id="innerLink" style="display:{if $column.column_attr == 2}block {else /}none{/if}">
+							<div class="foxui-input-group">
+								<div class="input-label">
+									<label>内链栏目：</label>
+								</div>
+								<div class="input-box">
+									<div class="foxui-select">
+										<div class="foxui-select-handle foxui-select-icon">
+											<input class="foxui-select-input" readonly="readonly" name="inner_column" placeholder="请选择" value="{$column.innerColumnText}" data-id="{$column.inner_column}" />
+										</div>
+										<div class="foxui-select-menu">
+											<ul class="foxui-select-slide">
+												{foreach $columnListC as $vo }
+												<li class="foxui-select-item" data-id="{$vo.columnId}">{$vo.columnName}</li>
+												{foreach $vo.children as $voo }
+												<li class="foxui-select-item  foxui-margin-left-20" data-id="{$voo.columnId}">{$voo.columnName}</li>
+												{foreach $voo.children as $vooo }
+												<li class="foxui-select-item  foxui-margin-left-40" data-id="{$vooo.columnId}">{$vooo.columnName}</li>
+												{/foreach}
+												{/foreach}
+												{/foreach}
+											</ul>
+										</div>
+									</div>
+								</div>
+							</div>
+						</div>
+						<div class="section-main-item">
+							<div class="foxui-input-group">
+								<div class="input-label">
+									<label>栏目模板：</label>
+								</div>
+								<div class="input-box">
+									<div class="foxui-select">
+										<div class="foxui-select-handle foxui-select-icon">
+											<input name="column_template" class="foxui-select-input foxui-size-small" readonly="readonly" placeholder="请选择栏目模板" onclick="clikTemplate(1)" value="{$column.column_template}">
+											<i class="foxui-icon-close-circle" style="display: none;"></i>
+										</div>
+									</div>
+								</div>
+								<a class="foxui-link foxui-link-primary" href="/{$adminPath}/template_file/addFile?type=1&columnId={$cid}">新建模板</a>
+							</div>
+						</div>
+						<div class="section-main-item model-template" style="display: {if $column.column_model == 'single'}none{/if}">
+							<div class="foxui-input-group">
+								<div class="input-label">
+									<label>文章模板：</label>
+								</div>
+								<div class="input-box">
+									<div class="foxui-select">
+										<div class="foxui-select-handle foxui-select-icon">
+											<input class="foxui-select-input foxui-size-small" readonly="readonly" onclick="clikTemplate(2)" placeholder="请选择文章模板" value="{$column.model_template}" name="model_template" onclick="clikTemplate(2)">
+											<i class="foxui-icon-close-circle" style="display: none;"></i>
+										</div>
+									</div>
+								</div>
+								<a class="foxui-link foxui-link-primary" href="/{$adminPath}/template_file/addFile?type=1&columnId={$cid}">新建模板</a>
+							</div>
+						</div>
+						<div class="section-main-item">
+							<div class="foxui-input-group">
+								<div class="input-label">
+									<label class="foxui-required">SEO标题：</label>
+								</div>
+								<div class="input-box">
+									<div class="foxui-input-suffix">
+										<input class="foxui-size-small" placeholder="" value="{$column.seo_title}" name="seo_title">
+									</div>
+								</div>
+								<span class="example" id="webNameExample" style="margin-left: -12px"><i class="foxui-icon-wenti-o"></i>示例</span>
+							</div>
+						</div>
+						<div class="section-main-item">
+							<div class="foxui-input-group">
+								<div class="input-label">
+									<label>SEO关键字：</label>
+								</div>
+								<div class="input-box">
+									<input class="foxui-size-small" placeholder="" required="" value="{$column.keywords}" name="keywords">
+								</div>
+							</div>
+							<p class="input-box-info">填写多个关建词请用","分开</p>
+						</div>
+						<div class="section-main-item">
+							<div class="foxui-input-group foxui-align-items-start">
+								<div class="input-label">
+									<label>SEO描述：</label>
+								</div>
+								<div class="input-box">
+									<div class="foxui-textarea">
+										<textarea autocomplete="off" rows="4" placeholder="" name="description">{$column.description}</textarea>
+									</div>
+								</div>
+							</div>
+						</div>
+						<div class="section-main-item">
+							<div class="foxui-input-group">
+								<div class="input-label">
+									<label>继承选项：</label>
+								</div>
+								<div class="input-box inherit-option">
+									<div class="foxui-checkbox {if $column.inherit_option == 1} is-checked {/if}">
+									<span class="foxui-checkbox-input">
+										<i class="foxui-checkbox-icon"></i>
+										<input type="checkbox" value="1" checked="checked">
+									</span>
+										<span class="foxui-checkbox-label">同时更改下级栏目模板风格</span>
+									</div>
+								</div>
+							</div>
+						</div>
+					</div>
+				</div>
+			</div>
+		</div>
+	</div>
+</div>
+</div>
+
+<div class="foxcms-content-footer">
+	<button class="is-long foxui-size-small foxui-solid-primary" id="save">保存</button>
+</div>
+{include file="footed-copy"/}
+{/block}
+
+{block name="js"}
+<script>
+	foxui.confirmtip({
+		el: '#webNameExample',
+		content: `<img src="/static/images/seo.jpg"/>`,
+		trigger: 'hover',
+		placement:['top','center']
+	});
+</script>
+
+<script>
+
+	//模型切换
+	function modelChange(event){
+		let model = $(event.target).attr("data-id");
+		//改变模型文件
+		if(model == "single"){
+			$('.model-template').hide();
+		}else{
+			$('.model-template').show();
+		}
+		getModelHtml(model);
+		//特殊模型处理
+		if(model == "form"){
+			//表单模型
+			$('.apply-form').show(1000);
+		}else{
+			$('.apply-form').hide(1000);
+		}
+	}
+
+	//获取对应模型
+	function getModelHtml(model){
+		$.ajax({
+			type: "get",
+			url: ADMIN_PATH + '/BatchColumn/getModelHtml?model=' + model,
+			dataType:"json",
+			success:function(res){
+				if(res.code ==1 && res.data){
+					let data = res.data;
+					if(data.is_view == 1){
+						$('input[name="column_template"]').val(data.column_template);
+						$('input[name="model_template"]').val(data.model_template);
+						$('.model-template').show();
+					}else{
+						$('input[name="column_template"]').val(data.column_template);
+						$('.model-template').hide();
+					}
+				}else{
+					console.log("查询模型失败。。。。");
+				}
+			},error:function(res){
+				console.log("查询模型失败。。。。");
+			}
+		});
+	}
+
+	$('.column_attr .foxui-radio').click(function(){
+
+		let val = $(this).find('input').val();
+		if(val == 0){
+			$('#outLink').slideUp('fast');
+			$('#innerLink').slideUp('fast');
+			$('input[name="out_link"]').val("");
+			$('input[name="inner_column"]').val("");
+		}else if(val == 1){
+			$('#outLink').slideDown('fast');
+			$('#innerLink').slideUp('fast');
+			$('input[name="inner_column"]').val("");
+		}else if(val == 2){
+			$('#innerLink').slideDown('fast');
+			$('#outLink').slideUp('fast');
+			$('input[name="out_link"]').val("");
+		}
+
+	})
+
+	//栏目内容展示
+	let fi = $(".data_limit .foxui-radio.is-checked").find('input').val();
+	if(fi == 3){
+		$("#staticPage").show();
+	}else{
+		$("#staticPage").hide();
+	}
+	$(".data_limit .foxui-radio").on("click", function (){
+		$inputVal = $(this).find("input").val();
+		if($inputVal == 3){
+			$("#staticPage").show();
+		}else{
+			$("#staticPage").hide();
+		}
+	});
+
+</script>
+
+<script>
+
+	//选择对应栏目
+	// function selectNid(obj) {
+	// 	let nid = $(obj).attr('data-id');
+	// 	$('input[name="nid"]').val(nid);
+	// }
+
+	//点击文件
+	function clikFile(obj){
+		let path = $(obj).find('span').attr('data-path');
+		let file = $(obj).find('span').attr('data-file');
+		$('input[name="path"]').val(path);
+		let file_path = "";
+		if(path == undefined || path == ""){
+			file_path = file;
+		}else{
+			let activepath = $('input[name="activepath"]').val();
+			path = path.substr((activepath.length));
+			if(path != undefined && path != ""){
+				file_path = path + "/" + file;
+			}else{
+				file_path = file;
+			}
+		}
+		$('input[name="file"]').val(file_path);
+
+		$(obj).closest(".foxui-table-tr").siblings().css("background-color","");//移除兄弟节点样式
+		$(obj).closest(".foxui-table-tr").css("background-color","#dadae9");
+	}
+
+	//点击目录
+	function clikDir(obj){
+		$(obj).closest('.foxui-dialog__wrapper').find('.foxui-icon-guanbi-o').click();
+		let path = $(obj).find('span').attr('data-path');
+		selectTemplate(path);
+	}
+
+	//type 1:栏目模板 2：模型模板
+	function clikTemplate(tempType){
+		$('input[name="tempType"]').val(tempType);
+		selectTemplate();
+	}
+
+	function selectTemplate(path){
+
+		let contentHtml = `<div class="foxui-table foxui-table-border-bottom foxui-table-stripe foxui-table-hover">`;
+
+		contentHtml += ` <ul class="foxui-table-thead">
+                                <li class="foxui-table-tr">
+                                    <div class="foxui-table-th">文件名</div>
+                                    <div class="foxui-table-th">文件大小</div>
+                                    <div class="foxui-table-th">更新时间</div>
+                                </li>
+                            </ul>`;
+
+		contentHtml += `<ul class="foxui-table-tbody">`
+
+		let data = {activepath:path};
+		$.ajax({
+			type: "get",
+			// url: ADMIN_PATH + '/Column/temp',
+			url: "{:url('Column/temp')}",
+			dataType:"json",
+			data:data,
+			async:false,
+			success:function(res){
+				if(res.code ==1 && res.data){
+					let data = res.data;
+					if(path == undefined){
+						path = "";
+					}
+					data.forEach((item, index)=>{
+						if(item.filetype == 'dir' || item.filetype == 'dir2'){
+							if(item.filepath != ""){
+								contentHtml += `<li class="foxui-table-tr foxui-padding-bottom-8 foxui-padding-top-8" onclick="clikDir(this)" style="cursor: pointer;" >`;
+								if(item.filetype == 'dir'){
+									contentHtml += '<i class="foxui-icon-mulu-f foxui-margin-right-4 foxui-color-warning" style="font-size:18px"></i><span data-path="'+ item.filepath +'">'+item.filename+'</span>';
+								}else {
+									contentHtml += '<i class="foxui-icon-wenjianjia-f foxui-margin-right-4 foxui-color-warning" style="font-size:18px"></i><span data-path="'+ item.filepath +'">'
+											+ "返回上级" + item.intro
+											+'</span>';
+								}
+							}
+						}else{
+							contentHtml += `<li class="foxui-table-tr" onclick="clikFile(this)" style="cursor: pointer;">`;
+							if(item.filetype == 'htm' || item.filetype == 'html'){
+								contentHtml += '<div class="foxui-table-td"><i class="foxui-icon-wenzhang-f foxui-margin-right-4 foxui-color-primary" style="font-size: 18px"></i><span data-path="'+ path +'" data-file="'+ item.filename +'" >'+item.filename +'</span></div>';
+							}else{
+								contentHtml += `<div class="foxui-table-td"><i class="foxui-icon-wenzhang-f foxui-margin-right-4 foxui-color-primary" style="font-size: 18px"></i><span data-path="${path}">${item.filename}</span></div>`;
+							}
+						}
+						contentHtml += `<div class="foxui-table-td">`+ item.filesize+`</div>`;
+						contentHtml += `<div class="foxui-table-td">`+ item.filetime+`</div>`;
+						contentHtml += `</li>`;
+					})
+
+				}
+			},error:function(res){
+				console.log("查询图片失败。。。。");
+			}
+		});
+		contentHtml += `</ul>`;
+		contentHtml += `</div>`;
+
+		foxui.dialog({
+			title: '选择模板',
+			content: contentHtml,
+			cancelText: '取消',
+			confirmText: '确定',
+			buttonSize: 'small',
+			buttonAlign: 'center',
+			width: '900px',
+			buttonWidth: '300px',
+			border: true,
+			className:"column-dialog",
+			confirm: function (callback) {
+				let tempType = $('input[name="tempType"]').val();
+				if(tempType == 1){
+					let file = $('input[name="file"]').val();
+					$('input[name="column_template"]').val(file);
+				}else if(tempType == 2){
+					let file = $('input[name="file"]').val();
+					$('input[name="model_template"]').val(file);
+				}
+				callback();
+			},
+			cancel: function () {
+
+			},
+		});
+
+	}
+
+	//面包屑
+	let bcid = $("input[name='bcid']").val();
+	let datas = {"bcid": bcid};
+
+	//保存
+	$('#save').click(function (){
+		//状态
+		let status = $('.item.state .fox-radio.is-checked input').val();
+		//栏目名称
+		let name = $('input[name="name"]').val();
+		//英文别名
+		let en_name = $('input[name="en_name"]').val();
+		//栏目图片
+		let pic_ids = $('.pic_ids img').attr('data-id')||"";
+		//文件保存目录
+		let dir_path = $('input[name="dir_path"]').val();
+		//标识
+		// let nid = $('input[name="nid"]').val();
+		// if(nid == undefined || nid == ""){
+		// 	foxui.message({
+		// 		type:'warning',
+		// 		text:'栏目标识不能为空！'
+		// 	})
+		// 	return;
+		// }
+		//栏目类型
+		// let column_model = $('input[name="column_model"]').val();
+		//模型id
+		let column_model = $('input[name="column_model"]').attr('data-id');
+		//父id
+		let pid = $('input[name="pid"]').attr('data-id');
+		//栏目属性
+		let columnAttr = $(".column_attr .foxui-radio.is-checked").find('input').val();
+		//外链地址头部
+		let out_link_head = $('input[name="out_link_head"]').val();
+		//外链地址
+		let out_link = $('input[name="out_link"]').val();
+		//栏目模板
+		let column_template = $('input[name="column_template"]').val();
+		//文章模板
+		let model_template = $('input[name="model_template"]').val();
+		//SEO标题
+		let seo_title = $('input[name="seo_title"]').val();
+		//SEO关键字
+		let keywords = $('input[name="keywords"]').val();
+		//SEO描述
+		let description = $('textarea[name="description"]').val();
+		//继承选项
+		let inheritOption = $(".inherit-option").find(".foxui-checkbox.is-checked").length;
+
+		let id = $('input[name="id"]').val();//栏目id
+		let inner_column = $('input[name="inner_column"]').attr("data-id");//内部链接栏目id
+		let memberlevel = $('input[name="memberlevel"]').val();//阅读权限(即会员级别)
+		let data_limit = $(".data_limit .foxui-radio.is-checked").find('input').val();//栏目内容展示
+		let limit_column = "";
+
+		if(data_limit == 1){
+			limit_column = id;
+		}else if(data_limit == 2){
+			$("#staticPage ul>li").each(function (){
+				limit_column += $(this).attr("data-id") + ",";
+			});
+			if(limit_column.length > 0){
+				limit_column = limit_column.substr(0, limit_column.length - 1);
+			}
+		}else if(data_limit == 3){
+			limit_column = $('input[name="limit_column"]').attr("data-ids");//限制的指定子栏目
+		}
+
+		if(id == inner_column){
+			foxui.message({
+				type:'warning',
+				text:'内链栏目不能选择自身栏目！'
+			})
+			return;
+		}
+		//应用表单
+		let form_list_id = $('input[name="apply_form"]').attr("data-id");
+		//栏目图标
+		let column_icon = $('input[name="column_icon"]').val();
+
+		let datas ={status,name,en_name,name,pic_ids,dir_path,column_model,limit_column,
+			pid,"column_attr":columnAttr,out_link_head,out_link,column_template,memberlevel,data_limit,
+			model_template,seo_title,keywords,description,"inherit_option":inheritOption,id,inner_column,
+			form_list_id,column_icon
+		};
+		//拉取栏目属性
+		let feildUrl = "{:url('column/getField')}?id="+id;
+		let saveData = getField($(".field"), feildUrl);
+		let curData = Object.assign(datas, saveData);
+		foxui.dialog({
+			title: '保存',
+			content: '您确定要保存吗',
+			cancelText: '取消',
+			confirmText: '保存',
+			confirm: function (callback) {
+
+				ajaxR("{:url('Column/columnSet')}","post",curData,{},function (res) {
+					if (res.code == 1) {
+						foxui.message({
+							type:'success',
+							text:res.msg
+						})
+						window.location.href=document.referrer;//返回并且刷新
+					} else {
+						foxui.message({
+							type:'warning',
+							text:res.msg
+						})
+					}
+				}, function (res) {
+					foxui.message({
+						type:'warning',
+						text:res.msg
+					})
+				})
+				callback();
+			},
+			cancel: function () {
+				foxui.message({
+					type:'warning',
+					text:'取消操作'
+				})
+			},
+		});
+
+	})
+
+</script>
+
+{/block}
+

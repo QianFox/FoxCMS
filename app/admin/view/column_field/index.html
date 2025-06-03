@@ -1,0 +1,462 @@
+{extend name="foxcms" /}
+
+{block name="css"}
+{/block}
+
+{block name="body"}
+<input name="bcid" value="{$bcid}" type="hidden" />
+<div class="foxcms-content-inner">
+	<!-- page content -->
+	<div class="diy-form-content">
+		<div class="content-top-operation">
+			<div class="left">
+				<a href="{:url('add')}?type=1&columnId={$clickId}&bcid={$bcid}">
+					<button class="foxui-size-small foxui-solid-primary">
+						<i class="foxui-icon-jiahao-o"></i>
+						<span>添加字段</span>
+					</button>
+				</a>
+			</div>
+
+			<div class="right display-flex">
+				<div class="foxui-input-group item-input">
+					<label>字段搜索：</label>
+					<input class="foxui-size-small" placeholder="请输入字段标题 / 字段名称" value="" name="keyword">
+				</div>
+				<div class="foxui-input-group item-select">
+					<label>状态：</label>
+					<div class="foxui-select">
+						<div class="foxui-select-handle foxui-select-icon">
+							<input class="foxui-select-input foxui-size-small" readonly="readonly" placeholder="请选择状态" value="全部" name="status">
+							<i class="foxui-icon-close-circle"></i>
+						</div>
+						<div class="foxui-select-menu">
+							<ul class="foxui-select-slide">
+								<li class="foxui-select-item" data-id="1">全部</li>
+								<li class="foxui-select-item" data-id="2">启用</li>
+								<li class="foxui-select-item" data-id="3">禁用</li>
+							</ul>
+						</div>
+					</div>
+				</div>
+				<button class="foxui-solid-primary foxui-size-small search-btn">搜索</button>
+				<button class="foxui-text-primary foxui-size-small reset-btn">重置</button>
+			</div>
+
+		</div>
+		<div class="section section-panel margin-top-10">
+			<div class="foxui-table foxui-table-border-bottom foxui-table-hover foxui-checkbox-group">
+
+				<ul class="foxui-table-thead foxui-checkbox-head">
+					<li class="foxui-table-tr">
+						<div class="foxui-table-th" style="flex: initial; width: 40px">
+							<div class="foxui-checkbox foxui-checkbox-all">
+                                <span class="foxui-checkbox-input">
+                                    <i class="foxui-checkbox-icon"></i>
+                                    <input type="checkbox" value="" />
+                                </span>
+							</div>
+						</div>
+						<div class="foxui-table-th">ID</div>
+						<div class="foxui-table-th">标题</div>
+						<div class="foxui-table-th">名称</div>
+						<div class="foxui-table-th">类型</div>
+						<div class="foxui-table-th">状态</div>
+						<div class="foxui-table-th">操作</div>
+					</li>
+				</ul>
+
+				<ul class="foxui-table-tbody foxui-checkbox-list loading-container" id="loadingContainer">
+
+					<!--表格内容-->
+
+				</ul>
+
+				<div class="table-footer foxui-checkbox-head">
+					<div class="left display-flex foxui-align-items-center">
+						<div class="foxui-checkbox foxui-checkbox-all margin-right-24">
+                            <span class="foxui-checkbox-input">
+                                <i class="foxui-checkbox-icon"></i>
+                                <input type="checkbox" value="" />
+                            </span>
+						</div>
+
+						<div class="display-flex">
+							<button class="foxui-plain-info foxui-size-mini enable-btn">
+								<i class="foxui-icon-zhengque-o"></i>
+								<span>启用</span>
+							</button>
+							<button class="foxui-plain-info foxui-size-mini disabled-btn">
+								<i class="foxui-icon-jinyong-o"></i>
+								<span>禁用</span>
+							</button>
+							<button class="foxui-plain-info foxui-size-mini delete-btn">
+								<i class="foxui-icon-shanchu-o"></i>
+								<span>删除</span>
+							</button>
+						</div>
+					</div>
+				</div>
+			</div>
+			<div id="pagination"></div>
+		</div>
+	</div>
+</div>
+
+{include file="footed-copy"/}
+{/block}
+
+
+{block name="js"}
+<script>
+
+	/**
+	 * 初始化数据
+	 */
+	function init(param){
+		if(param == undefined){
+			param = new Object();
+		}
+		let keyword = $('input[name="keyword"]').val();
+		let bcid = $("input[name='bcid']").val()
+		let status = $("input[name='status']").val()
+		param.keyword = keyword;
+		param.bcid = bcid;
+		param.status = status;
+		$.ajax({
+			type: "post",
+			url: "index",
+			dataType: "json",
+			data: param,
+			success: function (res) {
+				if (res.code == 1 && res.data) {
+					let data = res.data;
+					let paginationData = {
+						pageSize: data.per_page,
+						total: data.total,
+						currentPage: data.current_page
+					};
+					initTable(paginationData, data.data);
+				}
+				$('#loadingContainer').removeClass('loading-container');
+			}, error: function (res) {
+				$('#loadingContainer').removeClass('loading-container');
+			}
+		});
+	}
+
+	/**
+	 * @description: 初始化表格
+	 * @param {*} pageSize
+	 * @param {*} total
+	 * @param {*} currentPage
+	 * @param {*} dataList
+	 * @return {*}
+	 * @Date: 2022-01-12 10:55:11
+	 */
+	function initTable({ pageSize, total, currentPage }, dataList) {
+		if (dataList == undefined){
+			dataList = [];
+		}
+		if(total == undefined){
+			total = 0;
+		}
+		// 追加表格 html
+		_appendToTable(dataList);
+		//分页
+		foxui.pagination(
+				{
+					el: '#pagination',
+					currentPage: currentPage,
+					total: total,
+					onchange: function ({ currentPage, pageSize, total }, callback) {
+						callback({ total, pageSize, currentPage });
+						let param = {pageSize, currentPage};
+						$('#loadingContainer').addClass('loading-container');
+						init(param)
+					},
+				},
+				{
+					type: 'plain',
+					size: 'mini',
+					isShowTotal: true,
+					isShowSize: true,
+					pageSize: pageSize
+				}
+
+		);
+	}
+
+	/**
+	 * @description: 追加表格 html
+	 * @param {*} dataList
+	 * @return {*}
+	 * @Date: 2022-01-12 00:18:40
+	 */
+	function _appendToTable(dataList) {
+		const html = _trsHtml(dataList);
+		$('.foxui-table-tbody').empty().append(html);
+	}
+
+	/**
+	 * @description: 表格 html
+	 * @param {*} dataList
+	 * @return {*}
+	 * @Date: 2022-01-12 00:18:52
+	 */
+	function _trsHtml(dataList) {
+		let htmlArr = [];
+		dataList.forEach(item => {
+			htmlArr.push(`
+            <li class="foxui-table-tr">
+                <div class="foxui-table-td" style="flex: initial; width: 40px">
+                    <div class="foxui-checkbox">
+                        <span class="foxui-checkbox-input">
+                            <i class="foxui-checkbox-icon"></i>
+                            <input type="checkbox" value="" />
+                        </span>
+                    </div>
+                </div>
+                <div class="foxui-table-td">${item.id}</div>
+                <div class="foxui-table-td blue-color">${item.title}</div>
+                <div class="foxui-table-td">${item.name}</div>
+                <div class="foxui-table-td">${item.dtype}</div>
+                <div class="foxui-table-td">
+					<span class="${item.status == 1?'state-enable':'state-disabled'}">${item.statustext}</span>
+                </div>
+                <div class="foxui-table-td">
+                    <button class="foxui-text-primary foxui-size-medium edit-btn"  id="${item.id}" onclick="editItem(this)">编辑</button>
+                    <button class="foxui-text-primary foxui-size-medium delete-btn" id="${item.id}" title="${item.title}"  onclick="deleteItem(this)">删除</button>
+                </div>
+            </li>
+        `);
+		});
+		return htmlArr.join('');
+	}
+
+	init();
+
+	//搜索
+	$(".search-btn").on('click', function() {
+		$('#loadingContainer').addClass('loading-container');
+		init();
+	});
+
+	//重置
+	$(".reset-btn").on('click', function() {
+		$('input[name="status"]').val("全部");
+		$('input[name="keyword"]').val("");
+	});
+
+	//编辑
+	function editItem(obj){
+		let id = $(obj).attr("id");
+		let columnId = $("input[name='columnId']").val();
+		window.location.href = `edit?type=1&columnId=${columnId}&id=${id}`;
+	}
+
+	//单向删除
+	function deleteItem(obj) {
+		let title = $(obj).attr("title");
+		let id = $(obj).attr("id");
+		foxui.dialog({
+			title: '删除',
+			content: '您确定要删除【' + title + '】吗',
+			cancelText: '取消',
+			confirmText: '删除',
+            buttonType: 'danger',
+			confirm: function(callback) {
+				let idList = [id];
+				ajaxR('deletes','post',{"idList": JSON.stringify(idList)},{},function(res) {
+							if (res.code == 1) {
+								foxui.message({
+									text: res.msg,
+									type: 'success',
+								});
+								init();
+							}else{
+								foxui.message({
+									text: res.msg,
+									type: 'warning',
+								});
+							}
+						},
+						function(res) {
+							foxui.message({
+								text: res.msg,
+								type: 'warning'
+							});
+						})
+				callback();
+			},
+			cancel: function() {
+				foxui.message({
+					text: '取消删除',
+					type: 'info'
+				});
+			},
+		});
+
+	}
+
+	// 多选删除
+	$('.table-footer .delete-btn').click(function () {
+		let $isChecked = $('.foxui-table-td .foxui-checkbox.is-checked'),
+				$checkedTr = $isChecked.closest('.foxui-table-tr'),
+				len = $isChecked.length,
+				idList = [];
+
+		if (len < 1) {
+			foxui.message({
+				text: '请先选译要删除的数据！',
+				type: 'danger',
+			});
+		} else {
+			foxui.dialog({
+				title: '确认',
+				content: '您确定要删除选中的所有数据吗？',
+				confirmText: '删除',
+				cancelText: '取消',
+				buttonType: 'danger',
+				buttonSize: 'small',
+				confirm: function (callback) {
+					// 异步删除数据
+					$checkedTr.each(function () {
+						let id = $(this).find('.foxui-table-td:nth-child(2)').text();
+						idList.push(id);
+					});
+					ajaxR('deletes','post',{"idList": JSON.stringify(idList)},{},function(res) {
+								if (res.code == 1) {
+									foxui.message({
+										text: res.msg,
+										type: 'success',
+									});
+
+									init();
+								}else{
+									foxui.message({
+										text: res.msg,
+										type: 'warning',
+									});
+								}
+							},
+							function(res) {
+								foxui.message({
+									text: res.msg,
+									type: 'warning',
+								});
+							})
+					callback();
+				},
+			});
+		}
+	});
+
+	//启用所有
+	$('.table-footer .enable-btn').click(function () {
+		let $isChecked = $('.foxui-table-td .foxui-checkbox.is-checked'),
+				$checkedTr = $isChecked.closest('.foxui-table-tr'),
+				len = $isChecked.length,
+				idList = [];
+
+		if (len < 1) {
+			foxui.message({
+				text: '请先选译要启用的数据！',
+				type: 'danger',
+			});
+		} else {
+			foxui.dialog({
+				title: '确认',
+				content: '您确定要启用选中的所有数据吗？',
+				confirmText: '启用',
+				cancelText: '取消',
+				buttonType: 'danger',
+				buttonSize: 'small',
+				confirm: function (callback) {
+					// 异步删除数据
+					$checkedTr.each(function () {
+						let id = $(this).find('.foxui-table-td:nth-child(2)').text();
+						idList.push(id);
+					});
+					ajaxR('updateStatus','post',{"idList": JSON.stringify(idList),"status":1},{},function(res) {
+								if (res.code == 1) {
+									foxui.message({
+										text: res.msg,
+										type: 'success',
+									});
+
+									init();
+								}else{
+									foxui.message({
+										text: res.msg,
+										type: 'warning',
+									});
+								}
+							},
+							function(res) {
+						foxui.message({
+							text: '操作失败',
+							type: 'warning',
+						});
+					})
+					callback();
+				},
+			});
+		}
+	});
+
+	//禁用
+	$('.table-footer .disabled-btn').click(function () {
+		let $isChecked = $('.foxui-table-td .foxui-checkbox.is-checked'),
+				$checkedTr = $isChecked.closest('.foxui-table-tr'),
+				len = $isChecked.length,
+				idList = [];
+
+		if (len < 1) {
+			foxui.message({
+				text: '请先选译要禁用的数据！',
+				type: 'danger',
+			});
+		} else {
+			foxui.dialog({
+				title: '确认',
+				content: '您确定要禁用选中的所有数据吗？',
+				confirmText: '禁用',
+				cancelText: '取消',
+				buttonType: 'danger',
+				buttonSize: 'small',
+				confirm: function (callback) {
+					// 异步删除数据
+					$checkedTr.each(function () {
+						let id = $(this).find('.foxui-table-td:nth-child(2)').text();
+						idList.push(id);
+					});
+					ajaxR('updateStatus','post',{"idList": JSON.stringify(idList),"status":0},{},function(res) {
+								if (res.code == 1) {
+									foxui.message({
+										text: res.msg,
+										type: 'success',
+									});
+
+									init();
+								}else{
+									foxui.message({
+										text: res.msg,
+										type: 'warning',
+									});
+								}
+							},
+							function(res) {
+								foxui.message({
+									text: '操作失败',
+									type: 'warning',
+								});
+							})
+					callback();
+				},
+			});
+		}
+	});
+</script>
+
+{/block}

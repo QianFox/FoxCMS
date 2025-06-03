@@ -14,7 +14,7 @@ FOXCMS黔狐内容管理系统 PHP开源版
 
 ---
 ### 💎系统介绍
-FoxCMS是一套可免费商用且开源的网站管理系统，采用PHP+MySQL架构。内置企业网站常用的单页、文章、产品、图集、视频、反馈、下载等内容模型，自研FoxUI高颜值UI界面设计，简洁大气；拥有丰富的模板标签以及强大的SEO和伪静态优化机制，只需懂HTML就可快速开发企业网站。系统支持多语言、表单设计、访客统计、消息通知、云存储服务等，更多应用插件持续上架中，欢迎大家提出宝贵意见和建议。
+FoxCMS是一套可免费商用开源的内容管理系统，采用PHP+MySQL架构。内置企业常用的内容模型，如单页、文章、产品、图集、视频、反馈、下载等，并配备丰富的模板标签及强大的SEO和伪静态优化机制。无需复杂编程技能，仅需掌握HTML即可快速构建出多元化的应用场景，实现内容的高效管理。系统支持多语言、表单设计、访客统计、消息通知、云存储服务等，更多应用插件持续上架中，欢迎大家提出宝贵意见和建议。
 
 ---
 
@@ -48,7 +48,7 @@ FoxCMS是一套可免费商用且开源的网站管理系统，采用PHP+MySQL�
 
 
 <div align="center" >
-    <img src="https://oss.foxcms.cn/images/foxcms_install.apng">
+    <img src="//oss.foxcms.cn/images/foxcms_install.apng">
 </div>
 
 ---
@@ -84,7 +84,7 @@ FoxCMS是一套可免费商用且开源的网站管理系统，采用PHP+MySQL�
 
 ###  🗳️后台UI界面
 <div align="center" >
-    <img src="https://oss.foxcms.cn/images/admin_ui.jpg">
+    <img src="//oss.foxcms.cn/images/admin_ui.jpg">
 </div>
 
 ---
@@ -153,7 +153,7 @@ foxui01
 
 #### 默认前端模板
 <div align="center" >
-    <img src="https://oss.foxcms.cn/images/web_ui.jpg">
+    <img src="//oss.foxcms.cn/images/web_ui.jpg">
 </div>
 
 
@@ -180,4 +180,4 @@ GPL-3.0 是一种宽松的开源许可：
 - FoxCMS/FoxUI商标和著作权所有者为贵州黔狐科技股份有限公司。
 
 
- **[🔝返回顶部 ](https://github.com/qianfox/foxcms#%F0%9F%92%8E%E7%B3%BB%E7%BB%9F%E4%BB%8B%E7%BB%8D)** 
+ **[🔝返回顶部 ](https://gitee.com/qianfox/foxcms#%F0%9F%92%8E%E7%B3%BB%E7%BB%9F%E4%BB%8B%E7%BB%8D)** 

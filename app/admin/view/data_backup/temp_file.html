@@ -1,0 +1,392 @@
+{extend name="foxcms" /}
+
+{block name="css"}
+{/block}
+
+{block name="body"}
+<input name="bcid" value="{$bcid}" type="hidden" />
+<input name="columnId" value="{$cid}" type="hidden" />
+<input name="pid" value="{$pid}" type="hidden" />
+<div class="foxcms-content-inner">
+
+	<!-- page content -->
+	<div class="diy-form-content" id="return_content">
+		<div class="section section-panel margin-top-10">
+			<div class="foxui-table foxui-table-border-bottom foxui-table-hover foxui-checkbox-group">
+
+				<ul class="foxui-table-thead foxui-checkbox-head loading-container" id="loadingContainer">
+					<li class="foxui-table-tr">
+						<div class="foxui-table-th" style="flex: initial; width: 40px">
+							<div class="foxui-checkbox foxui-checkbox-all">
+								<span class="foxui-checkbox-input">
+									<i class="foxui-checkbox-icon"></i>
+									<input type="checkbox" value="" />
+								</span>
+							</div>
+						</div>
+						<div class="foxui-table-th">文件</div>
+						<div class="foxui-table-th">大小</div>
+						<div class="foxui-table-th">时间</div>
+						<div class="foxui-table-th">操作</div>
+					</li>
+				</ul>
+
+				<ul class="foxui-table-tbody foxui-checkbox-list" id="return_table">
+					<!--表格内容-->
+				</ul>
+
+				<div class="table-footer foxui-checkbox-head">
+					<div class="left display-flex foxui-align-items-center">
+						<div class="foxui-checkbox foxui-checkbox-all margin-right-24">
+							<span class="foxui-checkbox-input">
+								<i class="foxui-checkbox-icon"></i>
+								<input type="checkbox" value="" />
+							</span>
+						</div>
+
+						<div class="display-flex">
+							<button class="foxui-solid-primary foxui-size-mini enable-btn">
+								<i class="foxui-icon-zhengque-o"></i>
+								<span>恢复</span>
+							</button>
+							<button class="foxui-plain-info foxui-size-mini delete-btn">
+								<i class="foxui-icon-shanchu-o"></i>
+								<span>删除</span>
+							</button>
+						</div>
+					</div>
+				</div>
+			</div>
+
+		</div>
+	</div>
+
+</div>
+
+{include file="footed-copy"/}
+{/block}
+
+
+{block name="js"}
+
+<script>
+
+	/**
+	 * 初始化数据
+	 */
+	function init1(){
+		let bcid = $("input[name='bcid']").val();
+		let pid = $("input[name='pid']").val();
+		let searchData = {
+			"bcid": bcid,
+			pid
+		};
+
+		$.ajax({
+			type: "post",
+			url: "tempFile",
+			dataType: "json",
+			data: searchData,
+			async:false,
+			success: function (res) {
+				if (res.code == 1 && res.data) {
+					let data = res.data;
+					initTable1(data);
+				}
+				$('#loadingContainer').removeClass('loading-container');
+			}, error: function (res) {
+				$('#loadingContainer').removeClass('loading-container');
+			}
+		});
+	}
+
+	/**
+	 * @description: 初始化表格
+	 * @param {*} pageSize
+	 * @param {*} total
+	 * @param {*} currentPage
+	 * @param {*} dataList
+	 * @return {*}
+	 * @Date: 2022-01-12 10:55:11
+	 */
+	function initTable1(dataList) {
+		// 追加表格 html
+		_appendToTable1(dataList);
+	}
+
+	/**
+	 * @description: 追加表格 html
+	 * @param {*} dataList
+	 * @return {*}
+	 * @Date: 2022-01-12 00:18:40
+	 */
+	function _appendToTable1(dataList) {
+		const html = _trsHtml1(dataList);
+		$('#return_table').empty().append(html);
+	}
+
+	/**
+	 * @description: 表格 html
+	 * @param {*} dataList
+	 * @return {*}
+	 * @Date: 2022-01-12 00:18:52
+	 */
+	function _trsHtml1(dataList) {
+		let htmlArr = [];
+		dataList.forEach(item => {
+			htmlArr.push(`
+            <li class="foxui-table-tr">
+                <div class="foxui-table-td" style="flex: initial; width: 40px">
+                    <div class="foxui-checkbox">
+                        <span class="foxui-checkbox-input">
+                            <i class="foxui-checkbox-icon"></i>
+                            <input type="checkbox" value="" />
+                        </span>
+                    </div>
+                </div>
+                <div class="foxui-table-td">
+                	<i class="foxui-icon-ziti-o"></i><span class="margin-left-8">${item.backup_file}</span>
+				</div>
+				<div class="foxui-table-td">${item.filesize}</div>
+                <div class="foxui-table-td">${item.create_time}</div>
+                <div class="foxui-table-td">
+                    <button class="foxui-text-primary foxui-size-medium restore-btn" id="${item.id}" onclick="restoreItem(this)">恢复</button>
+                    <button class="foxui-text-primary foxui-size-medium delete-btn" id="${item.id}" title="${item.backup_file}" onclick="delRestoreFile(this)">删除</button>
+                </div>
+            </li>
+        `);
+		});
+		return htmlArr.join('');
+	}
+
+	init1();
+
+	//恢复
+	function restoreItem(obj) {
+		let title = "恢复";
+		let id = $(obj).attr("id");
+		foxui.dialog({
+			title: title,
+			content: '您确定要' + title + '吗',
+			cancelText: '取消',
+			confirmText: title,
+			buttonType: 'danger',
+			confirm: function(callback) {
+				foxui.loading({text:"恢复中"});
+				$.ajax({
+					type: "post",
+					url: 'restore',
+					dataType: "json",
+					data:{
+						'id':id
+					},
+					success: function(res) {
+						foxui.closeLoading();
+						if (res.code == 1) {
+							foxui.message({
+								text: res.msg,
+								type: 'success',
+							});
+							init1();
+						} else {
+							foxui.message({
+								text: res.msg,
+								type: 'warning',
+							});
+						}
+					},
+					error: function(res) {
+						foxui.message({
+							text: res.msg,
+							type: 'info',
+						});
+						foxui.closeLoading();
+					}
+				});
+
+				callback();
+			},
+			cancel: function() {
+				foxui.message({
+					text: '取消'+ title,
+					type: 'info'
+				});
+			},
+		});
+
+	}
+
+	//单向删除
+	function delRestoreFile(obj) {
+		let title = $(obj).attr("title");
+		let id = $(obj).attr("id");
+		foxui.dialog({
+			title: '删除',
+			content: '您确定要删除【' + title + '】吗',
+			cancelText: '取消',
+			confirmText: '删除',
+			buttonType: 'danger',
+			confirm: function(callback) {
+				$.ajax({
+					type: "get",
+					url: 'delRestoreFile?id=' + id,
+					dataType: "json",
+					success: function(res) {
+						if (res.code == 1) {
+							foxui.message({
+								text: res.msg,
+								type: 'success',
+							});
+							init1();
+						} else {
+							foxui.message({
+								text: res.msg,
+								type: 'warning',
+							});
+						}
+					},
+					error: function(res) {
+						foxui.message({
+							text: res.msg,
+							type: 'info',
+						});
+					}
+				});
+
+				callback();
+			},
+			cancel: function() {
+				foxui.message({
+					text: '取消删除',
+					type: 'info'
+				});
+			},
+		});
+
+	}
+
+	// 多选删除
+	$('#return_content .table-footer .delete-btn').click(function () {
+		let $isChecked = $('#return_table .foxui-table-td .foxui-checkbox.is-checked'),
+				$checkedTr = $isChecked.closest('.foxui-table-tr'),
+				len = $isChecked.length,
+				idList = [];
+
+		if (len < 1) {
+			foxui.message({
+				text: '请先选译要删除的数据！',
+				type: 'danger',
+			});
+		} else {
+			foxui.dialog({
+				title: '确认',
+				content: '您确定要删除选中的所有数据吗？',
+				confirmText: '删除',
+				cancelText: '取消',
+				buttonType: 'danger',
+				buttonSize: 'small',
+				confirm: function (callback) {
+					// 异步删除数据
+					$checkedTr.each(function () {
+						let id = $(this).find('.foxui-table-td:nth-child(2)').text();
+						idList.push(id);
+					});
+					$.ajax({
+						type: "post",
+						url: 'delRestoreFiles',
+						dataType: "json",
+						data: {
+							"idList": JSON.stringify(idList)
+						},
+						success: function(res) {
+							if (res.code == 1) {
+								foxui.message({
+									text: res.msg,
+									type: 'success',
+								});
+
+								init1();
+							}else{
+								foxui.message({
+									text: res.msg,
+									type: 'warning',
+								});
+							}
+						},
+						error: function(res) {
+							foxui.message({
+								text: res.msg,
+								type: 'warning',
+							});
+						}
+					});
+					callback();
+				},
+			});
+		}
+	});
+
+	//恢复所有
+	$('#return_content .table-footer .enable-btn').click(function () {
+		let $isChecked = $('#return_table .foxui-table-td .foxui-checkbox.is-checked'),
+				$checkedTr = $isChecked.closest('.foxui-table-tr'),
+				len = $isChecked.length,
+				idList = [];
+
+		if (len < 1) {
+			foxui.message({
+				text: '请先选译要恢复的数据！',
+				type: 'danger',
+			});
+		} else {
+			foxui.dialog({
+				title: '确认',
+				content: '您确定要恢复选中的所有数据吗？',
+				confirmText: '恢复',
+				cancelText: '取消',
+				buttonType: 'danger',
+				buttonSize: 'small',
+				confirm: function (callback) {
+					// 异步删除数据
+					$checkedTr.each(function () {
+						let id = $(this).find('button.restore-btn').attr('id');
+						idList.push(id);
+					});
+					$.ajax({
+						type: "post",
+						url: 'restores',
+						dataType: "json",
+						data: {
+							"idList": JSON.stringify(idList)
+						},
+						success: function(res) {
+							if (res.code == 1) {
+								foxui.message({
+									text: res.msg,
+									type: 'success',
+								});
+
+								init1();
+							}else{
+								foxui.message({
+									text: res.msg,
+									type: 'warning',
+								});
+							}
+						},
+						error: function(res) {
+							foxui.message({
+								text: '操作失败',
+								type: 'warning',
+							});
+						}
+					});
+					callback();
+				},
+			});
+		}
+	});
+
+</script>
+
+{/block}

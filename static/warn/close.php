@@ -1,16 +1,10 @@
 <?php
-/**
- * @Notes:
- * @author: ZhangShaoLiang
- * @Date: 2022/9/30   9:48
- */
-$status_desc = $_COOKIE["status_desc"]??"网站已关闭";
-$version = $_COOKIE['version'];
-if(empty($version)){
-    $version = "未知版本";
-}else{
-    $version = V."{$version}";
-}
+$base = require __DIR__ . '/../../config/cfg/base.php';
+$vinfo = require __DIR__ . '/../../data/update/version/info.php';
+
+// 读取变量
+$status_desc = $base['status_desc'] ?? "网站已关闭";
+$version = $vinfo['version'] ?? "未知版本";
 
 $html = <<<EOF
 <!DOCTYPE html>
@@ -35,7 +29,7 @@ $html = <<<EOF
             </ul>
         </div>
         <div class="panel-footer">
-            <p>Powered by FoxCMS {$version}</p>
+            <p>Powered by FoxCMS V{$version}</p>
         </div>
     </div>
 </div>

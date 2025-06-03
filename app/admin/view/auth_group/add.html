@@ -1,0 +1,207 @@
+{extend name="foxcms" /}
+
+{block name="css"}
+{/block}
+
+{block name="body"}
+<div class="foxcms-content-inner">
+    <!-- page content -->
+    <div class="role-management-add-content">
+        <div class="section section-panel">
+            <div class="section-title">添加角色</div>
+            <div class="section-main">
+                <div class="section-main-item">
+                    <div class="foxui-input-group">
+                        <div class="input-label">
+                            <label class="foxui-required">角色：</label>
+                        </div>
+                        <div class="input-box">
+                            <div class="foxui-input-suffix">
+                                <input class="foxui-size-small" maxlength="10" placeholder="请输入角色" value="" name="title"/>
+                                <i class="foxui-suffix-icon foxui-suffix-count">0/10</i>
+                            </div>
+                        </div>
+                    </div>
+                </div>
+                <div class="section-main-item status">
+                    <div class="foxui-input-group">
+                        <div class="input-label">
+                            <label>状态：</label>
+                        </div>
+                        <div class="input-box">
+                            <div class="foxui-radio-group">
+                                <div class="foxui-radio is-checked">
+                                    <span class="foxui-radio-input">
+                                        <i class="foxui-radio-icon"></i>
+                                        <input type="radio" value="1" name="status" checked="checked" />
+                                    </span>
+                                    <span class="foxui-radio-label">启用</span>
+                                </div>
+                                <div class="foxui-radio">
+                                    <span class="foxui-radio-input">
+                                        <i class="foxui-radio-icon"></i>
+                                        <input type="radio" value="0" name="status" />
+                                    </span>
+                                    <span class="foxui-radio-label">禁用</span>
+                                </div>
+                            </div>
+                        </div>
+                    </div>
+                </div>
+                <div class="section-main-item">
+                    <div class="foxui-input-group foxui-align-items-start">
+                        <div class="input-label">
+                            <label>可用权限：</label>
+                        </div>
+                        <div class="block-box">
+                            <div class="foxui-checkbox-group">
+                                <div class="foxui-checkbox-head margin-bottom-10">
+                                    <div class="foxui-checkbox foxui-checkbox-all">
+                                        <span class="foxui-checkbox-input">
+                                            <i class="foxui-checkbox-icon"></i>
+                                            <input type="checkbox" value="" />
+                                        </span>
+                                        <span class="foxui-checkbox-label">全部选择</span>
+                                    </div>
+                                </div>
+                                <div class="foxui-checkbox-list foxui-collapse" id="permissionMainSelect">
+                                    {foreach $rule_data as $key=>$vo}
+                                    <!--栏目内容-->
+                                    <div class="foxui-checkbox-group foxui-collapse-item">
+                                        <div class="foxui-checkbox-head display-flex table-head foxui-align-items-center">
+                                            <div class="foxui-collapse-head">
+                                                <i class="foxui-collapse-handle foxui-icon-kaishi-f foxui-collapse-icon"></i>
+                                            </div>
+                                            <div class="foxui-checkbox foxui-checkbox-all">
+                                                <span class="foxui-checkbox-input">
+                                                    <i class="foxui-checkbox-icon"></i>
+                                                    <input type="checkbox" value="{$vo.id}" />
+                                                </span>
+                                                <span class="foxui-checkbox-label">{$vo.title}</span>
+                                            </div>
+                                        </div>
+                                        <div class="foxui-collapse-content">
+                                            {foreach $vo["_data"] as $voo}
+                                            <div class="foxui-checkbox-list foxui-border-bottom foxui-border-left foxui-border-right">
+                                                <div class="foxui-checkbox-group display-flex">
+                                                    <div class="foxui-checkbox-head">
+                                                        <div class="foxui-checkbox foxui-checkbox-all">
+                                                            <span class="foxui-checkbox-input">
+                                                                <i class="foxui-checkbox-icon"></i>
+                                                                <input type="checkbox" value="{$voo.id}" />
+                                                            </span>
+                                                            <span class="foxui-checkbox-label">{$voo.title}</span>
+                                                        </div>
+                                                    </div>
+                                                    <div class="foxui-checkbox-list padding-left-32">
+
+                                                        {foreach $voo['_data'] as $vooo}
+                                                        <div class="foxui-checkbox">
+                                                            <span class="foxui-checkbox-input">
+                                                                <i class="foxui-checkbox-icon"></i>
+                                                                <input type="checkbox" value="{$vooo.id}" />
+                                                            </span>
+                                                            <span class="foxui-checkbox-label">{$vooo.title}</span>
+                                                        </div>
+                                                        {/foreach}
+                                                    </div>
+                                                </div>
+                                            </div>
+                                            {/foreach}
+                                        </div>
+                                    </div>
+                                    {/foreach}
+                                </div>
+                            </div>
+                        </div>
+                    </div>
+                </div>
+            </div>
+        </div>
+    </div>
+</div>
+<div class="foxcms-content-footer">
+    <button class="is-long foxui-size-small foxui-solid-primary" id="save">保存</button>
+</div>
+{include file="footed-copy"/}
+{/block}
+
+{block name="js"}
+<script>
+
+    //保存
+    $('#save').click(function (){
+
+
+        let title = $('input[name="title"]').val();
+        if(title == "" || !title){
+            foxui.message({
+                type:'info',
+                text:'请输入角色'
+            })
+            return;
+        }
+
+        let checkboxs = $('#permissionMainSelect').find('.foxui-checkbox.is-checked');
+        let ids = "";
+        for (let i = 0; i < checkboxs.length; i++) {
+            let id = $(checkboxs[i]).find('input').val();
+            ids += id + ",";
+        }
+        if(ids.length == 0){
+            foxui.message({
+                type:'info',
+                text:'请分配权限'
+            })
+            return;
+        }
+        ids = ids.substr(0, (ids.length-1));
+        let status = $('.status .foxui-radio.is-checked input').val();
+        let datas ={"rules": ids, "title":title, "status":status};
+
+        foxui.dialog({
+            title: '保存',
+            content: '您确定要保存吗',
+            cancelText: '取消',
+            confirmText: '保存',
+            confirm: function (callback) {
+                $.ajax({
+                    type: "post",
+                    url: 'add',
+                    dataType: "json",
+                    data: datas,
+                    success: function (res) {
+                        if (res.code == 1) {
+                            foxui.message({
+                                type:'success',
+                                text:res.msg
+                            })
+                            window.location.href=document.referrer;//返回并且刷新
+                        } else {
+                            foxui.message({
+                                type:'danger',
+                                text:res.msg
+                            })
+                        }
+                    }, error: function (res) {
+                        foxui.message({
+                            type:'danger',
+                            text:res.msg
+                        })
+                    }
+                });
+                callback();
+            },
+            cancel: function () {
+                foxui.message({
+                    type:'warning',
+                    text:res.msg
+                })
+            },
+        });
+
+    })
+
+
+</script>
+{/block}

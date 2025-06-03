@@ -1,0 +1,499 @@
+{extend name="foxcms" /}
+
+{block name="css"}
+<link rel="stylesheet" href="{$staticPath}css/app.min.css" />
+{/block}
+
+{block name="body"}
+<div class="foxcms-content-inner">
+	<!-- page content -->
+	<div class="apply-content">
+		<div class="content-top-operation">
+			<div class="left">
+				<h1>应用中心</h1>
+				<p>应用插件持续上架中，满足您的各类数字化场景</p>
+			</div>
+			<div class="right">
+				<div class="foxui-input-group">
+					<label>应用名称：</label>
+					<input class="foxui-size-small" placeholder="应用名称" value="" name="name"/>
+				</div>
+				<div class="btn-box">
+					<button class="foxui-solid-primary foxui-size-small" name="search">搜索</button>
+					<button class="foxui-text-primary foxui-size-small reset-btn" name="reset">重置</button>
+				</div>
+			</div>
+		</div>
+		<div class="section">
+			<div class="foxui-tabs foxui-type-card">
+				<div class="foxui-tabs-header">
+					<div class="foxui-tabs-item is-active">我的应用</div>
+					<div class="foxui-tabs-item ">云上应用</div>
+					<div class="foxui-tabs-item">扩展应用</div>
+					<div class="foxui-tabs-item">已停用应用</div>
+				</div>
+				<div class="foxui-tabs-content foxui-margin-top-40">
+					<div class="foxui-tabs-pane">
+						<div class="foxui-row foxui-gutter-7 my-apply loading-container">
+
+						</div>
+					</div>
+					<div class="foxui-tabs-pane">
+						<div class="foxui-row foxui-gutter-7 cloud-apply">
+
+
+						</div>
+					</div>
+					<div class="foxui-tabs-pane">
+						<div class="foxui-row foxui-gutter-7 extend-apply">
+
+
+						</div>
+					</div>
+					<div class="foxui-tabs-pane">
+						<div class="foxui-row foxui-gutter-7 stop-apply">
+
+						</div>
+					</div>
+				</div>
+			</div>
+		</div>
+	</div>
+</div>
+
+{include file="footed-copy"/}
+{/block}
+
+
+{block name="js"}
+<script>
+	//搜索
+	$("button[name='search']").on('click', function() {
+		let datas = {
+			'name': $("input[name='name']").val()
+		};
+		initData(datas);
+	});
+	//重置
+	$("button[name='reset']").on('click', function() {
+		$('input[name="name"]').val("");
+	});
+
+	//运行初始化
+	let bcid = $("input[name='bcid']").val();
+	let datas = {
+	};
+	initData(datas);
+	function initData(datas){
+		$.ajax({
+			type: "post",
+			url: 'index',
+			dataType: "json",
+			data: datas,
+			success: function(res) {
+				if (res.code == 1 && res.data) {
+					let myApply = ``;
+					let dataList = res.data;
+					dataList.forEach(row => {
+						let statusHtml = ``;
+						let operateHtml = ``;
+						let detailHtml = ``;
+						let typeHtml = `<div class="mark blue-linear">${row.type_desc}</div>`;
+						if(row.operate_status == 0){
+							//免费
+							statusHtml = `<span class="foxui-size-mini foxui-text-primary" onclick="installPlugin(event, ${row.id})">安装</span>`;
+						}else if(row.operate_status == 2){
+							//付费
+							statusHtml = `<span class="foxui-size-mini foxui-text-primary" onclick="buyPlugin(event, ${row.id})">购买</span>`;
+						}else if(row.operate_status == 1){
+							//已安装
+							statusHtml = `<span class="<span class="foxui-color-success">已安装</span>`;
+							if(row.type == 0){
+								typeHtml = "";
+								detailHtml = `<span class="foxui-color-secondary">系统内置</span>`;
+							}else {
+								operateHtml = `<a href="javascript:void(0)" onclick="updateStatus(event, ${row.id})">停用</a>`;
+								detailHtml = `<a href="">查看详情</a>`;
+							}
+						}
+
+						myApply += `
+							<div class="foxui-col-xs-6 foxui-col-sm-6">
+								<a href="${row.path}">
+									<div class="app-item foxui-padding-12 foxui-bg-white">
+										<div class="app-body">
+											<div class="foxui-display-flex foxui-align-items-center">
+												<div class="app-pic">
+													${row.iconHtml}
+												</div>
+												<div class="app-text">
+													<h4 class="foxui-ellipsis-1">
+														<strong class="foxui-color-primary">${row.name}</strong>
+														<span class="foxui-color-secondary">V${row.version}</span>
+													</h4>
+													<p class="foxui-color-secondary foxui-ellipsis-1">${row.describe}</p>
+												</div>
+											</div>
+											${typeHtml}
+										</div>
+										<div class="app-foot foxui-display-flex foxui-justify-content-between">
+											<div class="foxui-display-flex foxui-align-items-center">
+												<i class="foxui-icon-zhengque-f foxui-color-success foxui-margin-right-4"></i>
+												${statusHtml}
+											</div>
+											<div class="foxui-display-flex foxui-align-items-center">
+												${operateHtml}
+												${detailHtml}
+											</div>
+										</div>
+									</div>
+								</a>
+							</div>
+
+						`;
+					});
+					$(".my-apply").empty().html(myApply);
+				}
+				$('.my-apply').removeClass('loading-container');
+			},
+			error: function(res) {
+				$('.my-apply').removeClass('loading-container');
+			}
+		});
+	}
+
+	function uninstallIndex(event, id) {
+		event.preventDefault();
+		window.location.href = "uninstallIndex?id="+id;
+	}
+</script>
+
+<script>
+	// 云插件库
+	function pluginData(datas){
+		$.ajax({
+			type: "post",
+			url: 'pluginIndex',
+			dataType: "json",
+			data: datas,
+			success: function(res) {
+				if (res.code == 1 && res.data) {
+					let applyContent = ``;
+					let dataList = res.data.data;
+					let total = res.data.total;
+					$('.cloud-count').text(total);
+					dataList.forEach(row => {
+						let statusHtml = ``;
+						let operateHtml = ``;
+						let detailHtml = ``;
+						let typeHtml = `<div class="mark blue-linear">${row.type_desc}</div>`;
+						if(row.operate_status == 0){
+							//免费
+							statusHtml = `<i class="foxui-icon-tishi-o foxui-color-warning foxui-margin-right-4"></i>
+										  <span class="foxui-size-mini foxui-text-primary" onclick="installIndex(event, ${row.id})">待安装</span>`;
+							detailHtml = `<a href="${row.link}" target="_blank">查看详情</a>`;
+						}else if(row.operate_status == 2){
+							//付费
+							statusHtml = `<i class="foxui-icon-cuowu-f foxui-color-danger foxui-margin-right-4"></i>
+										<span class="foxui-size-mini foxui-text-primary" onclick="buyPlugin(event, ${row.id})">未购买</span>`;
+						}else if(row.operate_status == 1){
+							//已安装
+							statusHtml = `<i class="foxui-icon-zhengque-f foxui-color-success foxui-margin-right-4"></i>
+										<span class="<span class="foxui-color-success">已安装</span>`;
+							if(row.type == 0){
+								typeHtml = "";
+								detailHtml = `<span class="foxui-color-secondary">系统内置</span>`;
+							}else {
+                                detailHtml = `<a href="${row.link}" target="_blank">查看详情</a>`;
+							}
+						}else if(row.operate_status == 3){
+							row.path = "javascript:void(0)";
+							statusHtml = `<i class="foxui-icon-zhengque-f foxui-color-placeholder foxui-margin-right-4"></i>
+									<span class="foxui-color-placeholder">已停用</span>`;
+						}
+						applyContent += `
+							<div class="foxui-col-xs-6 foxui-col-sm-6">
+								<a href="${row.path}">
+									<div class="app-item foxui-padding-12 foxui-bg-white">
+										<div class="app-body">
+											<div class="foxui-display-flex foxui-align-items-center">
+												<div class="app-pic">
+													${row.iconHtml}
+												</div>
+												<div class="app-text">
+													<h4 class="foxui-ellipsis-1">
+														<strong class="foxui-color-primary">${row.name}</strong>
+														<span class="foxui-color-secondary">V${row.version}</span>
+													</h4>
+													<p class="foxui-color-secondary foxui-ellipsis-1">${row.describe}</p>
+												</div>
+											</div>
+											${typeHtml}
+										</div>
+										<div class="app-foot foxui-display-flex foxui-justify-content-between">
+											<div class="foxui-display-flex foxui-align-items-center">
+												${statusHtml}
+											</div>
+											<div class="foxui-display-flex foxui-align-items-center">
+												${operateHtml}
+												${detailHtml}
+											</div>
+										</div>
+									</div>
+								</a>
+							</div>
+
+						`;
+					});
+					$(".cloud-apply").empty().html(applyContent);
+				}
+				$('.cloud-apply').removeClass('loading-container');
+			},
+			error: function(res) {
+				$('.cloud-apply').removeClass('loading-container');
+			}
+		});
+	}
+
+	function updateStatus(event, id) {
+		event.preventDefault();
+		$.ajax({
+			type: "post",
+			url: 'updateStatus',
+			dataType: "json",
+			data: {id},
+			success: function(res) {
+				if (res.code == 1) {
+					foxui.message({
+						type: 'success',
+						text: res.msg
+					})
+					initData({});
+					stopPlugin({});
+				} else {
+					foxui.message({
+						type: 'warning',
+						text: res.msg
+					})
+				}
+			},
+			error: function(res) {
+				foxui.message({
+					text: res.responseJSON.msg,
+					type: 'info',
+				});
+			}
+		});
+	}
+
+	function buyPlugin(event, id) {
+		let content = "未获得该应用插件的安装权限，如需使用请联系客服！";
+		foxui.dialog({
+			title: '购买',
+			content: content,
+			cancelText: '取消',
+			type: 'danger',
+			confirm: function (callback) {
+				callback();
+			},
+			cancel: function () {
+			},
+		});
+	}
+
+	function installIndex(event, id) {
+		event.preventDefault();
+		window.location.href = `installIndex?id=${id}`;
+	}
+
+	function installPlugin(event, id){
+		event.preventDefault();
+		foxui.dialog({
+			title: '安装',
+			content: "确定安装插件吗？",
+			cancelText: '取消',
+			confirmText: '安装',
+			type: 'danger',
+			confirm: function (callback) {
+				let status = $('.publish').find('input[name="status"]').val();
+				let price = $('.publish').find('input[name="price"]').val();
+				let data = {id,status,price};
+				$.ajax({
+					type: "post",
+					url: 'installPlugin',
+					dataType: "json",
+					data: data,
+					success: function(res) {
+						if (res.code == 1) {
+							foxui.message({
+								type: 'success',
+								text: res.msg
+							})
+							let obj = $(event.target);
+							$(obj).text("已安装");
+							initData(datas);//调用本地初始化数据
+						} else {
+
+							foxui.message({
+								type: 'warning',
+								text: res.msg
+							})
+						}
+					},
+					error: function(res) {
+						foxui.message({
+							text: res.responseJSON.msg,
+							type: 'info',
+						});
+					}
+				});
+				callback();
+			},
+			cancel: function () {
+				foxui.message({
+					text: '取消发布',
+				});
+			},
+		});
+	}
+</script>
+
+<script>
+	function stopPlugin(datas){
+		$.ajax({
+			type: "post",
+			url: 'stopPlugin',
+			dataType: "json",
+			data: datas,
+			success: function(res) {
+				if (res.code == 1 && res.data) {
+					let myApply = ``;
+					let dataList = res.data;
+					dataList.forEach(row => {
+						let typeHtml = `<div class="mark disable-linear">${row.type_desc}</div>`;
+
+						myApply += `
+							<div class="foxui-col-xs-6 foxui-col-sm-6">
+								<a href="javascript:void(0)">
+									<div class="app-item foxui-padding-12 foxui-bg-white">
+										<div class="app-body">
+											<div class="foxui-display-flex foxui-align-items-center">
+												<div class="app-pic">
+													${row.iconHtml}
+												</div>
+												<div class="app-text">
+													<h4 class="foxui-ellipsis-1">
+														<strong class="foxui-color-dark" >${row.name}</strong>
+														<span class="foxui-color-secondary">V${row.version}</span>
+													</h4>
+													<p class="foxui-color-secondary foxui-ellipsis-1">${row.describe}</p>
+												</div>
+											</div>
+											${typeHtml}
+										</div>
+										<div class="app-foot foxui-display-flex foxui-justify-content-between">
+											<div class="foxui-display-flex foxui-align-items-center">
+												<i class="foxui-icon-zhengque-f foxui-color-placeholder foxui-margin-right-4"></i>
+												<span class="foxui-color-placeholder">已停用</span>
+											</div>
+											<div class="foxui-display-flex foxui-align-items-center">
+												<a href="javascript:void(0)" onclick="uninstallIndex(event, ${row.id})">卸载</a>
+                                                <a href="javascript:void(0)" onclick="updateStatus(event, ${row.id})">恢复</a>
+											</div>
+										</div>
+									</div>
+								</a>
+							</div>
+
+						`;
+					});
+					$(".stop-apply").empty().html(myApply);
+				}
+				$('.stop-apply').removeClass('loading-container');
+			},
+			error: function(res) {
+				$('.stop-apply').removeClass('loading-container');
+			}
+		});
+	}
+
+	function extendPlugin() {
+
+		$.ajax({
+			type: "post",
+			url: 'extendPlugin',
+			dataType: "json",
+			data: datas,
+			success: function(res) {
+				if (res.code == 1 && res.data) {
+					let myApply = ``;
+					let dataList = res.data;
+					dataList.forEach(row => {
+						myApply += `
+							<div class="foxui-col-xs-6 foxui-col-sm-6">
+								<div class="app-item foxui-padding-12 foxui-bg-white">
+									<div class="app-body">
+											<div class="foxui-display-flex foxui-align-items-center">
+												<div class="app-pic">
+													${row.iconHtml}
+												</div>
+												<div class="app-text">
+													<h4 class="foxui-ellipsis-1">
+														<strong class="foxui-color-primary">${row.name}</strong>
+														<span class="foxui-color-secondary">V${row.version}</span>
+													</h4>
+													<p class="foxui-color-secondary foxui-ellipsis-1">${row.describe}</p>
+												</div>
+											</div>
+										<div class="mark dark-linear">${row.type_desc}</div>
+									</div>
+								<div class="app-foot foxui-display-flex foxui-justify-content-between">
+								<div class="foxui-display-flex foxui-align-items-center">
+									<span class="price foxui-color-danger">￥${row.price}</span>
+								</div>
+								<div class="foxui-display-flex foxui-align-items-center">
+									<a href="${row.link}" target="_blank">查看详情</a>
+								</div>
+							</div>
+							</div>
+						</div>
+
+						`;
+					});
+					$(".extend-apply").empty().html(myApply);
+				}
+				$('.extend-apply').removeClass('loading-container');
+			},
+			error: function(res) {
+				$('.extend-apply').removeClass('loading-container');
+			}
+		});
+	}
+</script>
+
+<script>
+    foxui.tabs.$off();
+    foxui.tabs.$on(getTabsIndex);
+    function getTabsIndex({ index, id }) {
+    	if(index == 0){
+			$('.my-apply').addClass('loading-container');
+			let datas = {
+			};
+			initData(datas);
+		}else if(index == 1){
+			$('.cloud-apply').addClass('loading-container');
+			let datas = {
+            };
+            pluginData(datas);
+        }else if(index == 2){
+			$('.extend-apply').addClass('loading-container');
+            let datas = {
+            };
+			extendPlugin();
+        }else if(index == 3){
+			$('.stop-apply').addClass('loading-container');
+			stopPlugin({});
+		}
+    }
+</script>
+{/block}

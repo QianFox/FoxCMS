@@ -1,0 +1,182 @@
+{extend name="foxcms" /}
+
+{block name="css"}
+<link rel="stylesheet" href="{$staticPath}css/app.min.css" />
+<style>
+	.retry-btn button{
+		display: none;
+	}
+</style>
+{/block}
+
+{block name="body"}
+<input type="hidden" value="{$apply_pack_id}" name="apply_pack_id"/>
+<div class="foxcms-content-inner">
+	<!-- page content -->
+	<div class="apply-install-content">
+		<div class="foxui-bg-white foxui-padding-24">
+			<div class="foxui-display-flex foxui-align-items-center foxui-justify-content-between">
+				<div class="foxui-display-flex foxui-align-items-center">
+					<div class="app-pic">
+						<img src="{$version.ask}" alt="" />
+					</div>
+					<div class="app-text">
+						<h4 class="foxui-ellipsis-1">
+							<strong class="foxui-color-primary">{$version.name}</strong>
+							<span class="foxui-color-secondary">V{$version.desc}</span>
+						</h4>
+						<p class="foxui-color-secondary foxui-ellipsis-1">{$version.remark}</p>
+					</div>
+				</div>
+				<div>
+					<a class="primary-btn" href="">查看详情</a>
+				</div>
+			</div>
+			<div class="install-progress">
+				<div id="installProgress"></div>
+				<div class="dots">
+					<div class="dot active">安装准备</div>
+					<div class="dot">安装应用</div>
+					<div class="dot">安装成功</div>
+				</div>
+			</div>
+			<div class="download-progress foxui-border">
+				<div id="downloadProgress"></div>
+				 <button class="foxui-solid-primary foxui-size-small is-long download-btn" onclick="download()">下载</button>
+			</div>
+			<div class="retry-btn">
+				<button class="foxui-plain-primary foxui-size-mini" onclick="download()">点击重试</button>
+			</div>
+			<div class="check-box">
+				<div class="info foxui-display-flex foxui-align-items-center foxui-justify-content-between">
+					<h4>服务器环境检测</h4>
+					<p>服务器环境要求必须满足下列所有条件，否则本应用或部份功能将无法使用</p>
+				</div>
+				<div class="foxui-table foxui-table-border-bottom">
+					<ul class="foxui-table-thead">
+						<li class="foxui-table-tr">
+							<div class="foxui-table-th">选项</div>
+							<div class="foxui-table-th">要求</div>
+							<div class="foxui-table-th">状态</div>
+							<div class="foxui-table-th">说明及帮助</div>
+						</li>
+					</ul>
+					<ul class="foxui-table-tbody">
+
+						{foreach $envCheckList as $key=>$vo }
+						<li class="foxui-table-tr">
+							<div class="foxui-table-td">{$vo.name}</div>
+							<div class="foxui-table-td">{$vo.ask}</div>
+							<div class="foxui-table-td">
+								{if $vo.status}
+								<i class="foxui-icon-zhengque-f foxui-color-success"></i>
+								{else/}
+								<i class="foxui-icon-cuowu-f foxui-color-danger"></i>
+								{/if}
+							</div>
+							<div class="foxui-table-td">{$vo.remark}</div>
+						</li>
+						{/foreach}
+
+					</ul>
+				</div>
+			</div>
+		</div>
+	</div>
+</div>
+<div class="foxcms-content-footer foxui-justify-content-center" style="padding-left: 0">
+	<button class="is-long foxui-size-small foxui-solid-primary is-disabled" id="nextInstallBtn" style="font-size: 14px; margin-left: -154px">
+		<span>继续安装</span>
+		<i class="foxui-icon-xiangyou-o"></i>
+	</button>
+</div>
+{/block}
+
+{block name="js"}
+<script>
+
+
+	foxui.progress({
+		el: '#installProgress',
+		percent: 0,
+		strokeWidth: 12,
+		showText: false,
+		striped: true,
+		animated: true,
+	});
+
+	//下载提示
+	let progress = foxui.progress({
+		el: '#downloadProgress',
+		percent: 0,
+		strokeWidth: 12,
+	});
+
+
+	$('#nextInstallBtn').click(function () {
+		if($(this).hasClass("is-disabled")){
+			return;
+		}
+		let apply_pack_id = $('input[name="apply_pack_id"]').val();
+		if(apply_pack_id != undefined && apply_pack_id != ''){
+			window.location.href = 'nextInstallIndex?step=1&apply_pack_id='+ apply_pack_id;
+		}else{
+			foxui.message({
+				text: '缺少继续安装参数',
+				type: 'warning',
+			});
+		}
+	});
+	let timer = null;
+	function download() {
+
+		let apply_pack_id = $('input[name="apply_pack_id"]').val();
+		if(apply_pack_id == undefined || apply_pack_id == ""){
+			foxui.message({
+				text: '缺少下载数据',
+				type: 'warning',
+			});
+		}
+		$(".download-btn").css({'display':'none'});
+
+		$.ajax({
+			type: "post",
+			url: 'download',
+			dataType: "json",
+			data: {apply_pack_id},
+			beforeSend:function(){
+				$('.download-progress').find("p").empty();
+				$('.download-progress').append('<p class="info foxui-color-primary">安装包下载中</p>');
+				let count = 0;
+				timer = setInterval(function() {
+					count++;
+					if(count > 96){
+						clearInterval(timer);
+					}else{
+						progress.update(count);
+					}
+				}, 1000);
+			},
+			success: function(res) {
+				clearInterval(timer);
+				if (res.code == 1) {
+					progress.update(100);
+					$('.download-progress').find("p").empty();
+					$('.download-progress').append('<p class="info foxui-color-success" id="download_pack">安装包下载完成</p>');
+					$('#nextInstallBtn').removeClass("is-disabled");
+				} else {
+					$('.download-progress').find("p").empty();
+					$('.download-progress').append('<p class="info foxui-color-danger">安装包下载失败</p>');
+					$('.retry-btn button').css({"display":"block"});
+				}
+			},
+			error: function(res) {
+				clearInterval(timer);
+				$('.download-progress').find("p").empty();
+				$('.download-progress').append('<p class="info foxui-color-danger">安装包下载失败</p>');
+			}
+		});
+	}
+</script>
+
+{/block}

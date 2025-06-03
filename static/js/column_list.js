@@ -3,7 +3,7 @@
  * @Author       : liuzhifang
  * @Date         : 2022-06-09 14:23:33
  * @LastEditors  : QianFox Team
- * @LastEditTime : 2024-08-21 22:29:28
+ * @LastEditTime : 2025-01-11 14:13:51
  */
 
 let selectList =  window.parent.getColumModels();
@@ -46,14 +46,14 @@ $('#addFirstColumnBtn').click(function () {
 
 // 添加二级栏目
 $(document).on('click', '.column-head-level-1 .add-btn', function () {
-
-
     let $this = $(this),
         $container = $this.closest('.foxui-collapse-item').children('.foxui-collapse-content').children('.foxui-collapse'),
         $handle = $this.closest('.foxui-collapse-head').find('.foxui-collapse-handle'),
-        isActive = $handle.is('.is-active');
+        isActive = $handle.is('.is-active'),
+        $modelInput = $this.closest('.foxui-collapse-head').find('.foxui-select.model input'),
+        modelData = {title: $modelInput.val(), id: $modelInput.attr('data-id')};
     if (!isActive) $handle.click();
-    $container.append(_itemHtml({ level: 2, selectList }));
+    $container.append(_itemHtml({ level: 2, selectList, modelData }));
     $container.children('.foxui-collapse-item:last-child').slideDown('fast');
 });
 
@@ -62,9 +62,24 @@ $(document).on('click', '.column-head-level-2 .add-btn', function () {
     let $this = $(this),
         $container = $this.closest('.foxui-collapse-item').children('.foxui-collapse-content').children('.foxui-collapse'),
         $handle = $this.closest('.foxui-collapse-head').find('.foxui-collapse-handle'),
-        isActive = $handle.is('.is-active');
+        isActive = $handle.is('.is-active'),
+        $modelInput = $this.closest('.foxui-collapse-head').find('.foxui-select.model input'),
+        modelData = {title: $modelInput.val(), id: $modelInput.attr('data-id')};
     if (!isActive) $handle.click();
-    $container.append(_itemHtml({ level: 3, selectList }));
+    $container.append(_itemHtml({ level: 3, selectList, modelData }));
+    $container.children('.foxui-collapse-item:last-child').slideDown('fast');
+});
+
+// 添加四级栏目
+$(document).on('click', '.column-head-level-3 .add-btn', function() {
+    let $this = $(this),
+        $container = $this.closest('.foxui-collapse-item').children('.foxui-collapse-content').children('.foxui-collapse'),
+        $handle = $this.closest('.foxui-collapse-head').find('.foxui-collapse-handle'),
+        isActive = $handle.is('.is-active'),
+        $modelInput = $this.closest('.foxui-collapse-head').find('.foxui-select.model input'),
+        modelData = {title: $modelInput.val(), id: $modelInput.attr('data-id')};
+    if (!isActive) $handle.click();
+    $container.append(_itemHtml({ level: 4, selectList, modelData }));
     $container.children('.foxui-collapse-item:last-child').slideDown('fast');
 });
 
@@ -90,11 +105,11 @@ $(document).on('click', '.foxui-collapse .set-btn', function () {
     // window.location.href = `column_set.html?columnId=${id}`;
 });
 
-function _itemHtml({ id, level, selectList }) {
-    let classList = ['column-item-level-1', 'column-item-level-2', 'column-item-level-3'];
+function _itemHtml({ id, level, selectList, modelData }) {
+    let classList = ['column-item-level-1', 'column-item-level-2', 'column-item-level-3', 'column-item-level-4'];
     return [
         `<li class="foxui-collapse-item foxui-drag-item ${classList[level - 1]}" style="display:none">`,
-        `${_headHtml({ id, level, selectList })}`,
+        `${_headHtml({ id, level, selectList, modelData })}`,
         '<div class="foxui-collapse-content">',
         '<ul class="foxui-collapse foxui-drag-container"></ul>',
         '</div>',
@@ -102,7 +117,7 @@ function _itemHtml({ id, level, selectList }) {
     ].join('');
 }
 
-function _headHtml({ id, level, selectList }) {
+function _headHtml({ id, level, selectList, modelData }) {
     let is_thumb = $('input[name="is_thumb"]').val();
     if(is_thumb == 1){
         return [
@@ -114,7 +129,7 @@ function _headHtml({ id, level, selectList }) {
             `${_collapseHandleHtml(level)}`,
             `${_columnHtml(level)}`,
             `${_picHtml()}`,
-            `${_modelHtml(selectList)}`,
+            `${_modelHtml(selectList, modelData)}`,
             `${_stateHtml()}`,
             `<div class="model foxui-align-center column-sid">-</div>`,
             `${_handleHtml()}`,
@@ -129,7 +144,7 @@ function _headHtml({ id, level, selectList }) {
             `<div class="column-id">${id || ''}</div>`,
             `${_collapseHandleHtml(level)}`,
             `${_columnHtml(level)}`,
-            `${_modelHtml(selectList)}`,
+            `${_modelHtml(selectList, modelData)}`,
             `${_stateHtml()}`,
             `<div class="model foxui-align-center column-sid">-</div>>`,
             `${_handleHtml()}`,
@@ -140,17 +155,18 @@ function _headHtml({ id, level, selectList }) {
 
 function _collapseHandleHtml(level) {
     let html = '';
-    if (level < 3) {
+    if (level < 4) {
         html = ['<div>', '<i class="foxui-collapse-handle foxui-icon-kaishi-f foxui-collapse-icon"></i>', '</div>'].join('');
     }
     return html;
 }
 
 function _columnHtml(level) {
-    let levelArr = ['一级', '二级', '三级'],
+    let levelArr = ['一级', '二级', '三级', '四级'],
         html = '';
     let nowLevel = $('input[name="level"]').val();
-    if (level < 3 && nowLevel > level) {
+
+    if (level < 4 && nowLevel > level) {
         html = [
             '<div class="column">',
             `<div class="level">${levelArr[level - 1]}</div>`,
@@ -162,7 +178,7 @@ function _columnHtml(level) {
 
             '<button class="foxui-text-primary add-btn">',
             '<i class="foxui-icon-jiahao-o"></i>',
-            `<span>添加${levelArr[level]}栏目</span>`,
+            `<span>${levelArr[level]}栏目</span>`,
             '</button>',
 
             '</div>',
@@ -202,11 +218,13 @@ function _picHtml(imgList) {
     ].join('');
 }
 
-function _modelHtml(selectList) {
+function _modelHtml(selectList, modelData) {
     let htmlArr = [];
-    let firstItem = {"id":"", "title":"","sid":""};
-    if(selectList.length > 0){
-        firstItem = selectList[0];
+    let curModel = {"id":"", "title":"","sid":""};
+    if(modelData){
+        curModel = modelData;
+    }else if(selectList.length > 0){
+        curModel = selectList[0];
     }
     selectList.forEach(item => {
         htmlArr.push(`<li class="foxui-select-item async" data-id="${item.id}">${item.title}</li>`);
@@ -214,7 +232,7 @@ function _modelHtml(selectList) {
     return [
         '<div class="foxui-select model">',
         '<div class="foxui-select-handle foxui-select-icon">',
-        '<input class="foxui-select-input foxui-size-mini" readonly="readonly" placeholder="选择模型" value="'+firstItem.title+'" data-id="'+firstItem.id+'"/>',
+        '<input class="foxui-select-input foxui-size-mini" readonly="readonly" placeholder="选择模型" value="'+curModel.title+'" data-id="'+curModel.id+'"/>',
         '<i class="foxui-icon-close-circle"></i>',
         '</div>',
         '<div class="foxui-select-menu">',

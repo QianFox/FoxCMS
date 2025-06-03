@@ -1,0 +1,320 @@
+{extend name="foxcms" /}
+
+{block name="css"}
+{/block}
+
+{block name="body"}
+<input name="bcid" value="{$bcid}" type="hidden" />
+<input name="columnId" value="{$cid}" type="hidden" />
+
+<div class="foxcms-content-inner">
+	<!-- page content -->
+	<div class="local-template-content">
+		<div class="foxui-tabs foxui-type-line">
+			<div class="foxui-tabs-header">
+				<div class="foxui-tabs-item is-active">已安装模板</div>
+				<div class="foxui-tabs-item">
+					<div class="foxui-badge foxui-badge-danger">
+						<span>未安装模板</span>
+						<sup class="foxui-badge-core" id="unCount">0</sup>
+					</div>
+				</div>
+			</div>
+			<div class="foxui-tabs-content">
+				<div class="foxui-tabs-pane">
+					<div class="section">
+						<div class="content-top-operation padding-0">
+							<div class="left">
+								<a href="javascript:void(0)" onclick="templateImport()">
+									<button class="foxui-size-small foxui-solid-primary">
+										<i class="foxui-icon-jiahao-o"></i>
+										<span>模板导入</span>
+									</button>
+								</a>
+							</div>
+							<div class="right display-flex">
+								<div class="foxui-input-group tabs-search-input">
+									<div class="foxui-input-append">
+										<input class="foxui-size-small" placeholder="请输入模板名称或者编号" required value="" name="keyword"/>
+										<div class="foxui-append-inner foxui-input-button foxui-solid-primary search">搜索</div>
+									</div>
+								</div>
+							</div>
+						</div>
+						<div class="foxui-row installed foxui-gutter-6 margin-top-24 margin-bottom-24">
+							<!--已安装模板-->
+						</div>
+						<div id="installedPagination"></div>
+					</div>
+				</div>
+				<div class="foxui-tabs-pane">
+					<div class="section">
+						<div class="content-top-operation padding-0">
+							<div class="left">
+								<a href="import_template.html">
+									<button class="foxui-size-small foxui-solid-primary">
+										<i class="foxui-icon-jiahao-o"></i>
+										<span>模板导入</span>
+									</button>
+								</a>
+							</div>
+							<div class="right display-flex">
+								<div class="foxui-input-group tabs-search-input">
+									<div class="foxui-input-append">
+										<input class="foxui-size-small" placeholder="请输入模板名称或者编号" required value="" />
+										<div class="foxui-append-inner foxui-input-button foxui-solid-primary search">搜索</div>
+									</div>
+								</div>
+							</div>
+						</div>
+						<div class="foxui-row uninstalled foxui-gutter-6 margin-top-24 margin-bottom-24">
+							<!--未安装模板-->
+						</div>
+						<div id="uninstalledPagination"></div>
+					</div>
+				</div>
+			</div>
+		</div>
+	</div>
+</div>
+
+{include file="footed-copy"/}
+{/block}
+
+
+{block name="js"}
+<script src="{$staticPath}js/local_template.js?v=1.6"></script>
+
+<script>
+
+	//调转模板导入
+	function templateImport(){
+
+		let tabContent = $(".template-index .fox-tabs-item.is-active").html();
+		let runStatus = 2;
+		if(tabContent.indexOf("已安装模板") != -1){
+			runStatus = 1;
+		}
+		let columnId =$('input[name="columnId"]').val();
+		let bcid =$('input[name="bcid"]').val();
+		window.location.href =  ADMIN_PATH + '/local_template/importTemplate?type=1&bcid=' + bcid + '&columnId=' + columnId + '&runStatus=' + runStatus;
+	}
+
+
+	//运行表格初始化
+	let bcid = $("input[name='bcid']").val();
+	initTemplateList({}, 1);//已安装
+	initTemplateList({},2);//未安装
+
+
+	//搜索
+	$(".search").on('click', function() {
+		templateInit();
+	});
+
+
+	//状态操作
+	function operation(status) {
+		const checkboxs = $('#tableRole').find('.fox-checkbox.is-checked').not('.fox-checkbox-all');
+		let idList = [];
+		for (let i = 0; i < checkboxs.length; i++) {
+			let id = $(checkboxs[i]).find('input').val();
+			let obj = {
+				'id': id,
+				'status': status
+			};
+			idList.push(obj)
+		}
+		let content = '启用';
+		if (status == 0) {
+			content = '禁用';
+		}
+		if (idList.length == 0) {
+			foxui.message({
+				text: '请选择操作项',
+				type: 'warning', // warning, danger, success, info
+			});
+			return;
+		}
+
+		foxui.dialog({
+			title: content,
+			content: '您确定要' + content + '吗',
+			cancelText: '取消',
+			confirmText: content,
+			confirm: function() {
+				$.ajax({
+					type: "post",
+					url: "{:url('updateStatus')}",
+					dataType: "json",
+					data: {
+						"updateDatas": JSON.stringify(idList)
+					},
+					success: function(res) {
+						if (res.code == 1) {
+							foxui.message({
+								text: '操作成功',
+								type: 'success', // warning, danger, success, info
+							});
+							//运行表格初始化
+							let datas = {
+								"bcid": $("input[name='bcid']").val()
+							};
+							init(datas);
+						} else {
+							foxui.message({
+								text: '操作失败',
+								type: 'warning', // warning, danger, success, info
+							});
+						}
+					},
+					error: function(res) {
+						foxui.message({
+							text: '操作失败',
+							type: 'warning', // warning, danger, success, info
+						});
+					}
+				});
+			},
+			cancel: function() {
+				foxui.message({
+					text: '取消操作',
+					type: 'warning', // warning, danger, success, info
+				});
+			},
+		});
+	}
+
+	//批量删除
+	function handleDelete() {
+		const checkboxs = $('#tableRole').find('.fox-checkbox.is-checked').not('.fox-checkbox-all');
+		let idList = [];
+		for (let i = 0; i < checkboxs.length; i++) {
+			let id = $(checkboxs[i]).find('input').val();
+			idList.push(id);
+		}
+		if (idList.length == 0) {
+			foxui.message({
+				text: '请选择操作项',
+				type: 'info',
+			});
+			return;
+		}
+
+		foxui.dialog({
+			title: '删除',
+			content: '您确定要删除吗',
+			cancelText: '取消',
+			confirmText: '删除',
+			type: 'danger',
+			confirm: function() {
+				let loadingEl = foxui.loading({
+					el: 'body', // 要覆盖的节点(如是 body 可不传)
+					text: '删除中...', // 加载图标下的文字
+					background: 'rgba(255, 255, 255, 0.9)', // 加载层的背景色
+				});
+
+				$.ajax({
+					type: "post",
+					url: "{:url('deletes')}",
+					dataType: "json",
+					data: {
+						"idList": JSON.stringify(idList)
+					},
+					success: function(res) {
+						foxui.closeLoading(loadingEl); // 传入要删除的loading(可在调用 foxui.loading 是获取到)
+						if (res.code == 1) {
+							foxui.message({
+								text: '删除成功',
+								type: 'success',
+							});
+							//运行表格初始化
+							let datas = {
+								"bcid": $("input[name='bcid']").val()
+							};
+							init(datas);
+						} else {
+							foxui.message({
+								text: '删除失败',
+								type: 'info',
+							});
+						}
+					},
+					error: function(res) {
+						foxui.closeLoading(loadingEl); // 传入要删除的loading(可在调用 foxui.loading 是获取到)
+						foxui.message({
+							text: '删除失败',
+							type: 'info',
+						});
+					}
+				});
+			},
+			cancel: function() {
+				foxui.message({
+					text: '取消删除',
+					type: 'info'
+				});
+			},
+		});
+	}
+
+	//单向删除
+	function deleteItem(obj) {
+		let title = $(obj).attr("title");
+		let id = $(obj).attr("id");
+		foxui.dialog({
+			title: '删除',
+			content: '您确定要删除【' + title + '】吗',
+			cancelText: '取消',
+			confirmText: '删除',
+			type: 'danger',
+			confirm: function() {
+				let loadingEl = foxui.loading({
+					el: 'body', // 要覆盖的节点(如是 body 可不传)
+					text: '删除中...', // 加载图标下的文字
+					background: 'rgba(255, 255, 255, 0.9)', // 加载层的背景色
+				});
+				$.ajax({
+					type: "get",
+					url: 'delete?id=' + id,
+					dataType: "json",
+					success: function(res) {
+						foxui.closeLoading(loadingEl); // 传入要删除的loading(可在调用 foxui.loading 是获取到)
+						if (res.code == 1) {
+							foxui.message({
+								text: '删除成功',
+								type: 'success',
+							});
+							//运行表格初始化
+							let datas = {
+								"bcid": $("input[name='bcid']").val()
+							};
+							init(datas);
+						} else {
+							foxui.message({
+								type:'danger',
+								text:res.msg
+							})
+						}
+					},
+					error: function(res) {
+						foxui.closeLoading(loadingEl); // 传入要删除的loading(可在调用 foxui.loading 是获取到)
+						foxui.message({
+							text: '删除失败',
+							type: 'info',
+						});
+					}
+				});
+			},
+			cancel: function() {
+				foxui.message({
+					text: '取消删除',
+					type: 'info'
+				});
+			},
+		});
+
+	}
+</script>
+
+{/block}

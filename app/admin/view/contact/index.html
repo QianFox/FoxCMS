@@ -1,0 +1,452 @@
+{extend name="foxcms" /}
+
+{block name="css"}
+
+{/block}
+
+{block name="body"}
+
+<div class="foxcms-content-inner">
+	<input name="bcid" value="{$bcid}" type="hidden" />
+	<input name="id" value="{$contact.id}" type="hidden" />
+	<!-- page content -->
+	<div class="contact-way-content">
+		<div class="section section-panel">
+			<div class="section-title">联系方式</div>
+			<div class="section-main">
+				<div class="section-main-item">
+					<div class="foxui-input-group">
+						<div class="input-label">
+							<label class="foxui-required">百度地图AK：</label>
+						</div>
+						<div class="input-box">
+							<input class="foxui-size-small" placeholder="请输入百度地图应用AK" required value="{$contact.map_ak}" name="map_ak" />
+						</div>
+					</div>
+					<p class="input-box-info">
+						<span>注册百度地图帐号并访问百度开放平台，申请应用类别为浏览器端的AK</span>
+						<a href="https://lbsyun.baidu.com/apiconsole/key/create#/home" target="_blank" class="foxui-link foxui-link-primary">立即申请</a>
+						<span class="example" id="AKExample" style="margin-left: -12px;"><i class="foxui-icon-wenti-o"></i>示例</span>
+					</p>
+					<div class="call-field">
+						<span class="foxui-tag foxui-light-info">{$contact.map_ak_call}</span>
+					</div>
+				</div>
+				<div class="section-main-item">
+					<div class="foxui-input-group">
+						<div class="input-label">
+							<label>公司名称：</label>
+						</div>
+						<div class="input-box">
+							<div class="foxui-input-suffix">
+								<input class="foxui-size-small" maxlength="15" placeholder="请输入您的企业名称" value="{$contact.company}" name="company" />
+								<i class="foxui-suffix-icon foxui-suffix-count">0/15</i>
+							</div>
+						</div>
+					</div>
+					<div class="call-field">
+						<span class="foxui-tag foxui-light-info">{$contact.company_call}</span>
+					</div>
+				</div>
+				<div class="section-main-item">
+					<div class="foxui-input-group">
+						<div class="input-label">
+							<label>公司电话：</label>
+						</div>
+						<div class="input-box">
+							<input class="foxui-size-small" placeholder="请输入公司电话" required value="{$contact.company_tel}" name="company_tel" onkeyup="this.value=this.value.replace(/[^0-9-]/g,'');"/>
+						</div>
+					</div>
+					<div class="call-field">
+						<span class="foxui-tag foxui-light-info">{$contact.company_tel_call}</span>
+					</div>
+				</div>
+				<div class="section-main-item">
+					<div class="foxui-input-group">
+						<div class="input-label">
+							<label>电子邮箱：</label>
+						</div>
+						<div class="input-box">
+							<input class="foxui-size-small" placeholder="请输入电子邮箱" required value="{$contact.email}" name="email"/>
+						</div>
+					</div>
+					<div class="call-field">
+						<span class="foxui-tag foxui-light-info">{$contact.email_call}</span>
+					</div>
+				</div>
+				<div class="section-main-item">
+					<div class="foxui-input-group">
+						<div class="input-label">
+							<label>联系人：</label>
+						</div>
+						<div class="input-box">
+							<input class="foxui-size-small" placeholder="请输入联系人" required value="{$contact.linkman}" name="linkman"/>
+						</div>
+					</div>
+					<div class="call-field">
+						<span class="foxui-tag foxui-light-info">{$contact.linkman_call}</span>
+					</div>
+				</div>
+				<div class="section-main-item">
+					<div class="foxui-input-group">
+						<div class="input-label">
+							<label>手机号码：</label>
+						</div>
+						<div class="input-box">
+							<input class="foxui-size-small" placeholder="请输入您的手机号码" required value="{$contact.phone}" onkeyup="this.value=this.value.replace(/[^0-9]/g,'');" name="phone"/>
+						</div>
+					</div>
+					<div class="call-field">
+						<span class="foxui-tag foxui-light-info">{$contact.phone_call}</span>
+					</div>
+				</div>
+				<div class="section-main-item">
+					<div class="foxui-input-group">
+						<div class="input-label">
+							<label>QQ：</label>
+						</div>
+						<div class="input-box">
+							<input class="foxui-size-small" placeholder="请输入QQ号码" required value="{$contact.qq}" name="qq"/>
+						</div>
+					</div>
+					<div class="call-field">
+						<span class="foxui-tag foxui-light-info">{$contact.qq_call}</span>
+					</div>
+				</div>
+				<div class="section-main-item">
+					<div class="foxui-input-group">
+						<div class="input-label">
+							<label>客服链接：</label>
+						</div>
+						<div class="input-box">
+							<input class="foxui-size-small" placeholder="第三方微客服链接地址，如：百度商桥" required value="{$contact.customer_url}" name="customer_url"/>
+						</div>
+					</div>
+					<div class="call-field">
+						<span class="foxui-tag foxui-light-info">{$contact.customer_url_call}</span>
+					</div>
+				</div>
+				<div class="section-main-item">
+					<div class="foxui-input-group foxui-align-items-start">
+						<div class="input-label">
+							<label>二维码1：</label>
+						</div>
+						<div class="input-box">
+							<div class="foxui-images">
+								<div class="foxui-images-card qr_code1">
+									<ul class="foxui-images-list">
+										{if $contact.qr_code1 != ""}
+										<li class="foxui-images-item foxui-animate-fadeInDown">
+											<div class="content">
+												<img src="{$contact.qr_code1}" />
+												<span class="replace">替换</span>
+												<i class="foxui-icon-cuowu-f delete"></i>
+											</div>
+										</li>
+										{/if}
+										<div class="foxui-images-handle">
+											<div class="foxui-images-handle-inner">
+												<i class="foxui-icon-jiahao-o"></i>
+												<span class="text">添加图片</span>
+											</div>
+										</div>
+									</ul>
+								</div>
+							</div>
+						</div>
+					</div>
+					<p class="input-box-info">
+						尺寸比例建议为 1:1 的正方形图片，避免造成错位或变形
+					</p>
+					<div class="call-field">
+						<span class="foxui-tag foxui-light-info">{$contact.qr_code1_call}</span>
+					</div>
+				</div>
+				<div class="section-main-item">
+					<div class="foxui-input-group foxui-align-items-start">
+						<div class="input-label">
+							<label>二维码2：</label>
+						</div>
+						<div class="input-box">
+							<div class="foxui-images">
+								<div class="foxui-images-card qr_code2">
+									<ul class="foxui-images-list">
+										{if $contact.qr_code2 != ""}
+										<li class="foxui-images-item foxui-animate-fadeInDown">
+											<div class="content">
+												<img src="{$contact.qr_code2}" />
+												<span class="replace">替换</span>
+												<i class="foxui-icon-cuowu-f delete"></i>
+											</div>
+										</li>
+										{/if}
+										<div class="foxui-images-handle">
+											<div class="foxui-images-handle-inner">
+												<i class="foxui-icon-jiahao-o"></i>
+												<span class="text">添加图片</span>
+											</div>
+										</div>
+									</ul>
+								</div>
+							</div>
+						</div>
+					</div>
+					<p class="input-box-info">
+						尺寸比例建议为 1:1 的正方形图片，避免造成错位或变形
+					</p>
+					<div class="call-field">
+						<span class="foxui-tag foxui-light-info">{$contact.qr_code2_call}</span>
+					</div>
+				</div>
+				<div class="section-main-item">
+					<div class="foxui-input-group">
+						<div class="input-label">
+							<label>联系地址：</label>
+						</div>
+						<div class="input-box">
+							<input class="foxui-size-small" placeholder="请输入联系地址" required value="{$contact.contact_address}" name="contact_address" />
+						</div>
+					</div>
+					<div class="call-field">
+						<span class="foxui-tag foxui-light-info">{$contact.contact_address_call}</span>
+					</div>
+				</div>
+				<div class="section-main-item">
+					<div class="foxui-input-group">
+						<div class="input-label">
+							<label>地理位置：</label>
+						</div>
+						<div class="input-box">
+							<div class="foxui-input-append">
+								<input class="foxui-size-small" id="positionInput" placeholder="经度、纬度" required value="{$contact.geolocation}" name="geolocation"/>
+								<div class="foxui-append-inner foxui-input-button foxui-solid" id="positionBtn">搜索</div>
+							</div>
+						</div>
+					</div>
+					<div class="call-field">
+						<span class="foxui-tag foxui-light-info">{$contact.geolocation_call}</span>
+					</div>
+				</div>
+
+				<!--动态标签start-->
+				<div class="field">
+					<?php echo variateFieldTag("contact", $id); ?>
+				</div>
+				<!--动态标签end-->
+
+			</div>
+		</div>
+	</div>
+</div>
+
+{include file="footed-copy"/}
+<div class="foxcms-content-footer">
+	<button class="is-long foxui-size-small foxui-solid-primary" id="save">保存</button>
+</div>
+{/block}
+
+
+{block name="js"}
+<script>
+	foxui.confirmtip({
+		el: '#AKExample',
+		content: `<img src="/static/images/baiduak.jpg"/>`,
+		trigger: 'hover',
+		placement:['top','center']
+	});
+</script>
+
+<script src="{$staticPath}js/bmap.js"></script>
+
+<script>
+	// 搜索地理位置
+	$('#positionBtn').click(function () {
+		foxui.dialog({
+			title: '请选择地理位置',
+			content: _positionHtml(),
+			confirmText: '确定',
+			cancelText: '取消',
+			width: '50%',
+			buttonSize: 'small',
+			buttonAlign: 'center',
+			longButton: true,
+			confirm: function (callback) {
+				const curPoint = bmap.getData();
+				if (curPoint.lng && curPoint.lat) {
+					$('#positionInput').val(curPoint.lng + ',' + curPoint.lat);
+					callback();
+				} else {
+					foxui.message({
+						text: '请选搜索地图或移动地图坐标点！',
+						type: 'danger',
+					});
+				}
+			},
+		});
+		let geolocation = $('input[name="geolocation"]').val();
+		let lng = "109.2306360207705";
+		let lat = "27.80021027339264";
+		if(geolocation != null){
+			let geolocationArr = geolocation.split(",");
+			if(geolocationArr.length == 2){
+				lng = geolocationArr[0];
+				lat = geolocationArr[1];
+			}
+		}
+		bmap.drawMap({ lng: lng, lat: lat, zoom: 15 });
+	});
+</script>
+
+<script>
+
+	// 百度地图初始化
+	let init_map_ak = $('input[name="map_ak"]').val();
+	bmap.init(init_map_ak);
+
+	// 百度地图弹框 html
+	function _positionHtml() {
+		return [
+			'<div style="padding:0 20px">',
+			'<div class="foxui-input-append">',
+			'<input class="foxui-size-small" id="keywordInput" placeholder="请输入地址" required value="" />',
+			'<div class="foxui-append-inner foxui-input-button foxui-solid" id="keywordBtn">搜索</div>',
+			'</div>',
+			'<div id="mapForPosition" style="height: 440px;border: #dcdfe6 solid 1px;margin-top: 20px;"></div>',
+			'</div>',
+		].join('');
+	}
+
+	// 点击弹框搜索按钮（通过地址查询经纬度）
+	$(document).on('click', '#keywordBtn', function () {
+		_searchPositionByMap();
+	});
+
+	// 按下回车查询经纬度
+	$(document).on('keydown', '#keywordInput', function (event) {
+		if (event.keyCode == '13') {
+			_searchPositionByMap();
+		}
+	});
+
+	// 通过地址查询经纬度
+	function _searchPositionByMap() {
+		var keyword = $('#keywordInput').val();
+		if (keyword) {
+			bmap.searchPosition(keyword);
+		} else {
+			foxui.message({
+				text: '请先输入地址！',
+				type: 'danger',
+			});
+		}
+	}
+
+</script>
+
+<script>
+
+
+	//面包屑
+	let bcid = $("input[name='bcid']").val();
+	let datas = {
+		"bcid": bcid
+	};
+
+
+	//保存
+	$('#save').click(function() {
+
+		//地图AK
+		let map_ak = $('input[name="map_ak"]').val();
+
+		if(map_ak == '' || map_ak == undefined || map_ak == "null" || map_ak == null) {
+			foxui.message({
+				text:"百度地图ak不能为空",
+				type:"warning"
+			});
+			return;
+		}
+
+		//公司名称
+		let company = $('input[name="company"]').val();
+		//公司电话
+		let company_tel = $('input[name="company_tel"]').val();
+		//电子邮箱
+		let email = $('input[name="email"]').val();
+		//联系人
+		let linkman = $('input[name="linkman"]').val();
+		//手机号码
+		let phone = $('input[name="phone"]').val();
+		//qq
+		let qq = $('input[name="qq"]').val();
+		//客服链接
+		let customer_url = $('input[name="customer_url"]').val();
+		//二维码1
+		let qr_code1 = $('.qr_code1 img').attr('src');
+		//二维码2
+		let qr_code2 = $('.qr_code2 img').attr('src');
+		//联系地址
+		let contact_address = $('input[name="contact_address"]').val();
+		//地理位置
+		let geolocation = $('input[name="geolocation"]').val();
+		let id = $('input[name="id"]').val();
+
+		let datas = {
+			'map_ak': map_ak,
+			"company": company,
+			"company_tel": company_tel,
+			"email": email,
+			"linkman": linkman,
+			"phone": phone,
+			"qq": qq,
+			"customer_url": customer_url,
+			"qr_code1": qr_code1||"",
+			"qr_code2": qr_code2||"",
+			"contact_address": contact_address,
+			"geolocation": geolocation,
+			"id": id
+		};
+
+		//拉取会员属性
+		let feildUrl = "{:url('Variate/getField')}?group=contact";
+		let saveData = getField($(".field"), feildUrl);
+		let curData = Object.assign(datas, saveData);
+		foxui.dialog({
+			title: '保存',
+			content: '您确定要保存吗',
+			cancelText: '取消',
+			confirmText: '保存',
+			confirm: function(callback) {
+				ajaxR('{:url("Contact/save")}', 'post', curData, {}, function (res) {
+					if (res.code == 1) {
+						foxui.message({
+							type:'success',
+							text:res.msg
+						})
+						setTimeout('myrefresh()', 1000); //指定10秒刷新一次
+					} else {
+						foxui.message({
+							type:'warning',
+							text:res.msg
+						})
+					}
+				}, function (res) {
+					foxui.message({
+						type:'warning',
+						text:res.msg
+					})
+				})
+				callback();
+			},
+			cancel: function() {
+				foxui.message({
+					type: 'warning',
+					text: '取消操作'
+				})
+			},
+		});
+
+	})
+</script>
+
+{/block}

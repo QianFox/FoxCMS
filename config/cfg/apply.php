@@ -7,5 +7,6 @@ return [
     'email',
     'plus',
     'auth',
+    'wxshare',
     'lang'
 ];

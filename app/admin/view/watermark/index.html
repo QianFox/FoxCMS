@@ -1,0 +1,357 @@
+{extend name="foxcms" /}
+
+{block name="css"}
+{/block}
+
+{block name="body"}
+<div class="foxcms-content-inner">
+    <!-- page content -->
+    <div class="basic-set-content">
+        <div class="section section-panel">
+            <input name="id" value="{$watermark.id}" type="hidden"/>
+            <div class="section-title">图片水印</div>
+            <div class="section-main">
+                <div class="section-main-item">
+                    <div class="foxui-input-group">
+                        <div class="input-label">
+                            <label>水印功能：</label>
+                        </div>
+                        <div class="input-box display-flex foxui-align-items-center" style="width: 200px;">
+                            <p class="switch-label">是否开启水印</p>
+                            <div class="status foxui-switch {if $watermark.status == 1}is-checked {/if}">
+                                <input type="checkbox" checked="checked" name="status" value="{$watermark.status}" class="foxui-switch-input" />
+                                <span class="foxui-switch-core"></span>
+                            </div>
+                        </div>
+                        <i class="foxui-icon-wenti-o" id="statusTip"></i>
+                    </div>
+                </div>
+
+                <div class="section-main-item">
+                    <div class="foxui-input-group">
+                        <div class="input-label">
+                            <label class="foxui-required">水印类型：</label>
+                        </div>
+                        <div class="input-box type">
+                            <div class="foxui-radio-group">
+                                <div class="foxui-radio {if ($watermark.type) == 1} is-checked {/if}" onclick="changType(1)">
+                                    <span class="foxui-radio-input">
+                                        <i class="foxui-radio-icon"></i>
+                                        <input type="radio" value="1"/>
+                                    </span>
+                                    <span class="foxui-radio-label">文字</span>
+                                </div>
+                                <div class="foxui-radio {if ($watermark.type) == 2} is-checked {/if}" onclick="changType(2)">
+                                    <span class="foxui-radio-input">
+                                        <i class="foxui-radio-icon"></i>
+                                        <input type="radio" value="2"/>
+                                    </span>
+                                    <span class="foxui-radio-label">图片</span>
+                                </div>
+                            </div>
+                        </div>
+                    </div>
+                </div>
+
+                <div class="section-main-item">
+                    <div class="foxui-input-group">
+                        <div class="input-label">
+                            <label>水印条件：</label>
+                        </div>
+                        <div class="input-box" style="width: 260px;">
+                            <div class="foxui-input-append">
+                                <input class="foxui-size-small" placeholder="请输入宽度" required
+                                       value="{$watermark.width}" name="width" oninput="if(!/^[0-9]+$/.test(value)) value=value.replace(/\D/g,'');if(value<0)value=0"/>
+                                <div class="foxui-append-inner is-grey">px</div>
+                            </div>
+                            <div class="foxui-input-append foxui-margin-top-4">
+                                <input class="foxui-size-small" placeholder="请输入高度" required
+                                       value="{$watermark.height}" name="height" oninput="if(!/^[0-9]+$/.test(value)) value=value.replace(/\D/g,'');if(value<0)value=0"/>
+                                <div class="foxui-append-inner is-grey">px</div>
+                            </div>
+                        </div>
+                    </div>
+                    <p class="input-box-info">提示：图片宽度和高度至少要达到以上像素才能添加水印（设置为0为不限）</p>
+                </div>
+
+                <!--文字-->
+                <div class="font" style="display: {if $watermark.type == 1}block{else/}none{/if};">
+                    <div class="section-main-item">
+                        <div class="foxui-input-group">
+                            <div class="input-label">
+                                <label>水印文字：</label>
+                            </div>
+                            <div class="input-box">
+                                <input class="foxui-size-small" placeholder="" required name="water_font" value="{$watermark.water_font}" />
+                            </div>
+                        </div>
+                    </div>
+                    <div class="section-main-item">
+                        <div class="foxui-input-group">
+                            <div class="input-label">
+                                <label>字体大小：</label>
+                            </div>
+                            <div class="input-box">
+                                <input class="foxui-size-small" placeholder="" required name="font_size" value="{$watermark.font_size}" oninput="if(!/^[0-9]+$/.test(value)) value=value.replace(/\D/g,'');if(value<0)value=0"/>
+                            </div>
+                        </div>
+                    </div>
+                    <div class="section-main-item foxui-margin-top-24">
+                        <div class="foxui-input-group">
+                            <div class="input-label">
+                                <label>文字颜色：</label>
+                            </div>
+                            <div class="input-box">
+                                <div class="foxui-color">
+                                    <div class="foxui-color-handle is-alpha">
+                                        <span class="foxui-color-show" style="background-color: {$watermark.font_color}"></span>
+                                        <i class="foxui-icon-close"></i>
+                                        <span class="foxui-color-background"></span>
+                                        <input class="foxui-color-input" value="{$watermark.font_color}" name="font_color">
+                                    </div>
+                                </div>
+                            </div>
+                        </div>
+                    </div>
+                    <div class="section-main-item foxui-margin-top-24">
+                        <div class="foxui-input-group">
+                            <div class="input-label">
+                                <label>文字阴影颜色：</label>
+                            </div>
+                            <div class="input-box">
+                                <div class="foxui-color">
+                                    <div class="foxui-color-handle is-alpha">
+                                        <span class="foxui-color-show" style="background-color: {$watermark.shadow_color}"></span>
+                                        <i class="foxui-icon-close"></i>
+                                        <span class="foxui-color-background"></span>
+                                        <input class="foxui-color-input" value="{$watermark.shadow_color}" name="shadow_color">
+                                    </div>
+                                </div>
+                            </div>
+                        </div>
+                    </div>
+                </div>
+                <!--图片-->
+                <div class="picture" style="display: {if $watermark.type == 2}block{else/}none{/if}">
+                    <div class="section-main-item">
+                        <div class="foxui-input-group foxui-align-items-start">
+                            <div class="input-label">
+                                <label>水印图片：</label>
+                            </div>
+                            <div class="input-box">
+                                <div class="foxui-images">
+                                    <div class="foxui-images-card image">
+                                        <ul class="foxui-images-list">
+                                            {if $watermark.image != ""}
+                                            <li class="foxui-images-item foxui-animate-fadeInDown">
+                                                <div class="content">
+                                                    <img src="{$watermark.image}" />
+                                                    <span class="replace">替换</span>
+                                                    <i class="foxui-icon-cuowu-f delete"></i>
+                                                </div>
+                                            </li>
+                                            {/if}
+                                            <div class="foxui-images-handle">
+                                                <div class="foxui-images-handle-inner">
+                                                    <i class="foxui-icon-jiahao-o"></i>
+                                                    <span class="text">添加图片</span>
+                                                </div>
+                                            </div>
+                                        </ul>
+                                    </div>
+                                </div>
+                            </div>
+                        </div>
+                    </div>
+                </div>
+
+                <div class="section-main-item">
+                    <div class="foxui-input-group">
+                        <div class="input-label">
+                            <label>水印透明度：</label>
+                        </div>
+                        <div class="input-box">
+                            <input class="foxui-size-small"
+                                   value="{$watermark.opacity}"
+                                   onkeyup="if(!/^[0-9]+$/.test(value)) value=value.replace(/\D/g,'');if(value>100)value=100;if(value<0)value=0" name="opacity">
+                        </div>
+                    </div>
+                    <p class="input-box-info">提示：0表示完全透明，100代表不透明</p>
+                </div>
+                <div class="section-main-item">
+                    <div class="foxui-input-group foxui-align-items-start">
+                        <div class="input-label">
+                            <label>水印位置：</label>
+                        </div>
+                        <div class="input-box">
+                            <div class="foxui-radio-group foxui-row radio-box-gapless foxui-gutter-2 position">
+                                <div class="foxui-radio foxui-radio foxui-col-xs-8 foxui-col-sm-8 foxui-padding-top-8 {if $watermark.position == 1}is-checked{/if}">
+                                    <span class="foxui-radio-input">
+                                        <i class="foxui-radio-icon"></i>
+                                        <input type="radio" value="1" checked="checked">
+                                    </span>
+                                    <span class="foxui-radio-label">顶部居左</span>
+                                </div>
+                                <div class="foxui-radio foxui-radio foxui-col-xs-8 foxui-col-sm-8 foxui-padding-top-8 {if $watermark.position == 2}is-checked{/if}">
+                                    <span class="foxui-radio-input">
+                                        <i class="foxui-radio-icon"></i>
+                                        <input type="radio" value="2" checked="checked">
+                                    </span>
+                                    <span class="foxui-radio-label">顶部居中</span>
+                                </div>
+                                <div class="foxui-radio foxui-radio foxui-col-xs-8 foxui-col-sm-8 foxui-padding-top-8 {if $watermark.position == 3}is-checked{/if}">
+                                    <span class="foxui-radio-input">
+                                        <i class="foxui-radio-icon"></i>
+                                        <input type="radio" value="3" checked="checked">
+                                    </span>
+                                    <span class="foxui-radio-label">顶部居右</span>
+                                </div>
+                                <div class="foxui-radio foxui-radio foxui-col-xs-8 foxui-col-sm-8 foxui-padding-top-8 {if $watermark.position == 4}is-checked{/if}">
+                                <span class="foxui-radio-input">
+                                    <i class="foxui-radio-icon"></i>
+                                    <input type="radio" value="4" checked="checked">
+                                </span>
+                                    <span class="foxui-radio-label">中部居左</span>
+                                </div>
+                                <div class="foxui-radio foxui-radio foxui-col-xs-8 foxui-col-sm-8 foxui-padding-top-8 {if $watermark.position == 5}is-checked{/if}">
+                                <span class="foxui-radio-input">
+                                    <i class="foxui-radio-icon"></i>
+                                    <input type="radio" value="5" checked="checked">
+                                </span>
+                                    <span class="foxui-radio-label">中部居中</span>
+                                </div>
+                                <div class="foxui-radio foxui-radio foxui-col-xs-8 foxui-col-sm-8 foxui-padding-top-8 {if $watermark.position == 6}is-checked{/if}">
+                                <span class="foxui-radio-input">
+                                    <i class="foxui-radio-icon"></i>
+                                    <input type="radio" value="6" checked="checked">
+                                </span>
+                                    <span class="foxui-radio-label">中部居右</span>
+                                </div>
+                                <div class="foxui-radio foxui-radio foxui-col-xs-8 foxui-col-sm-8 foxui-padding-top-8 {if $watermark.position == 7}is-checked{/if}">
+                                <span class="foxui-radio-input">
+                                    <i class="foxui-radio-icon"></i>
+                                    <input type="radio" value="7" checked="checked">
+                                </span>
+                                    <span class="foxui-radio-label">底部居左</span>
+                                </div>
+                                <div class="foxui-radio foxui-radio foxui-col-xs-8 foxui-col-sm-8 foxui-padding-top-8 {if $watermark.position == 8}is-checked{/if}">
+                                <span class="foxui-radio-input">
+                                    <i class="foxui-radio-icon"></i>
+                                    <input type="radio" value="8" checked="checked">
+                                </span>
+                                    <span class="foxui-radio-label">底部居中</span>
+                                </div>
+                                <div class="foxui-radio foxui-radio foxui-col-xs-8 foxui-col-sm-8 foxui-padding-top-8 foxui-padding-top-8 {if $watermark.position == 9}is-checked{/if}">
+                                <span class="foxui-radio-input">
+                                    <i class="foxui-radio-icon"></i>
+                                    <input type="radio" value="9" checked="checked">
+                                </span>
+                                    <span class="foxui-radio-label">底部居右</span>
+                                </div>
+                            </div>
+                        </div>
+                    </div>
+                </div>
+            </div>
+        </div>
+    </div>
+    <div class="foxcms-content-footer">
+        <button class="is-long foxui-size-small foxui-solid-primary" id="save">保存</button>
+    </div>
+</div>
+{include file="footed-copy"/}
+{/block}
+
+{block name="js"}
+<script>
+    foxui.tooltip({
+        el: '#statusTip',
+        content: '<span style="font-size: 12px;">全站图片是否添加水印</span>',
+        placement: ['right', 'center'],
+    });
+    function changType(val) {
+        if(val == 1){
+            //文字
+            $('div.font').show();
+            $('div.picture').hide();
+        }else{
+            //图片
+            $('div.picture').show();
+            $('div.font').hide();
+        }
+    }
+</script>
+<script>
+    //保存
+    $('#save').click(function () {
+        //水印id
+        let id = $('input[name="id"]').val();
+        //状态
+        let status = ($('.status.is-checked').length > 0)?1:0;
+        //水印类型 1:文字；2:图片
+        let type = $('.type').find('.foxui-radio.is-checked input').val();
+        //宽度 单位像素(px)
+        let width = $('input[name="width"]').val();
+        //高度 单位像素(px)
+        let height = $('input[name="height"]').val();
+        //水印文字
+        let water_font = $('input[name="water_font"]').val();
+        //文字大小
+        let font_size = $('input[name="font_size"]').val();
+        //文字颜色
+        let font_color = $('input[name="font_color"]').val();
+        //文字阴影颜色
+        let shadow_color = $('input[name="shadow_color"]').val();
+        //水印透明度
+        let opacity = $('input[name="opacity"]').val();
+        //JPEG 水印质量
+        let jpeg_quality = $('input[name="jpeg_quality"]').val();
+        //水印位置
+        let position =$('div.position').find('.is-checked').find('input').val();
+        //水印图片
+        let image = $('div.picture').find('img').attr('src');
+        if(image == undefined){
+            image="";
+        }
+        let datas = {
+            id,status,type,width,height,water_font,font_size,font_color,shadow_color,opacity,jpeg_quality,position,image
+        };
+
+        foxui.dialog({
+            title: '保存',
+            content: '您确定要保存吗',
+            cancelText: '取消',
+            confirmText: '保存',
+            confirm: function (callback) {
+                ajaxR('save','post',datas,{},function (res) {
+                    if (res.code == 1) {
+                        foxui.message({
+                            type: 'success',
+                            text: res.msg
+                        })
+                        setTimeout('myrefresh()', 1000); //指定10秒刷新一次
+                    } else {
+                        foxui.message({
+                            type: 'warning',
+                            text: res.msg
+                        })
+                    }
+                }, function (res) {
+                    foxui.message({
+                        type: 'warning',
+                        text: res.responseJSON.msg
+                    })
+                })
+
+                callback();
+            },
+            cancel: function () {
+                foxui.message({
+                    type: 'warning',
+                    text: '取消操作'
+                })
+            },
+        });
+    })
+</script>
+{/block}

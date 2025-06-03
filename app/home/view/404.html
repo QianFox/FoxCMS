@@ -1,0 +1,163 @@
+<!--
+ * @Descripttion : FOXCMS是一款高效的PHP多端跨平台内容管理系统
+ * @Author       : FoxCMS Team
+ * @Date         : 2023-03-28 13:47:37
+ * @version      : V1.08
+ * @copyright    : ©2021-现在 贵州黔狐科技股份有限公司 版权所有
+ * @LastEditTime : 2024-08-24 12:26:08
+-->
+<!DOCTYPE html>
+<html lang="cn">
+<head>
+    <meta charset="UTF-8" />
+    <meta http-equiv="X-UA-Compatible" content="IE=edge" />
+    <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+    <title>[$basic.title]</title>
+    <meta name="keywords" content="[$basic.keyword]" />
+    <meta name="description" content="[$basic.description]" />
+    <link rel="stylesheet" href="/static/css/foxui-1.32.min.css" />
+    <link rel="stylesheet" href="/static/404/css/404.min.css" />
+</head>
+<body>
+<!-- 顶部 -->
+<header class="foxui-bg-white">
+    <div class="foxcms-header-pc foxcms-container foxui-hidden-sm foxui-hidden-xs">
+        <div class="foxcms-logo">
+            <img src="[$basic.logo]" alt="" />
+        </div>
+        <div class="foxui-nav">
+            <ul class="nav">
+                {foreach $navs as $key=>$vo}
+                {if $key == 0}
+                <li>
+                    <a class="foxui-link" href="">首页</a>
+                </li>
+                {else/}
+                <li>
+                    <a class="foxui-link" href="[$vo.link]">[$vo.name]</a>
+                </li>
+                {/if}
+                {/foreach}
+            </ul>
+            <div class="phone foxui-hidden-sm foxui-hidden-xs">
+                <div class="phone-inner">
+                    <i class="foxui-icon-dianhua-o foxui-margin-right-4 foxui-hidden-lg foxui-hidden-md"></i>
+                    <h3 class="foxui-hidden-lg foxui-hidden-md">[$contact.company_tel]</h3>
+                </div>
+            </div>
+        </div>
+    </div>
+    <div class="foxcms-header-h5 foxui-visible-sm foxui-visible-xs">
+        <div class="nav-mask"></div>
+        <div class="nav-content">
+            <div class="nav-head foxui-border-bottom">
+                <i class="foxui-icon-liebiao-o"></i>
+                <a href="" class="foxcms-logo">
+                    <img src="[$basic.logo]" alt="" />
+                </a>
+            </div>
+            <div class="nav-menu">
+                <div class="nav-menu-inner">
+                    <ul>
+                        {foreach $navs as $key=>$vo}
+                        <li>
+                            <a class="foxui-link" href="[$vo.link]">[$vo.name]</a>
+                        </li>
+                        {/foreach}
+                    </ul>
+                </div>
+            </div>
+        </div>
+    </div>
+</header>
+<!-- 主体内容 -->
+<main class="err">
+    <div class="foxcms-container">
+        <div class="foxui-row foxui-gutter-12">
+            <div class="foxui-col-md-12">
+                <div class="item pic">
+                    <img src="/static/404/images/404.svg" alt="" />
+                </div>
+            </div>
+            <div class="foxui-col-md-12">
+                <div class="item text text-404">
+                    <h1>404</h1>
+                    <h2>此页面不存在</h2>
+                    <p>
+                        <span>将于</span>
+                        <strong class="foxui-color-primary">5</strong>
+                        <span>秒后自动跳转至网站首页</span>
+                    </p>
+                    <div class="btn-list">
+                        <button class="foxui-solid-primary foxui-shape-round foxui-size-medium" name="backIndex">
+                            <i class="foxui-icon-shouye-o"></i>
+                            <span>返回首页</span>
+                        </button>
+                        <button class="foxui-shape-round foxui-size-medium" name="refresh">
+                            <i class="foxui-icon-gengxin-o"></i>
+                            <span>刷新页面</span>
+                        </button>
+                    </div>
+                </div>
+            </div>
+        </div>
+    </div>
+</main>
+<!-- 底部 -->
+<footer>
+    <div class="footer foxui-border-top">
+        <p>
+            <a href="https://www.foxcms.cn" class="foxui-link foxui-link-info" target="_blank">本站基于 FoxCMS 搭建，</a>
+            <span>一款高效的多端跨平台内容管理系统</span>
+        </p>
+        <p>
+            <a href="https://www.qianfox.com" class="foxui-link foxui-link-info" target="_blank">Powered by 黔狐科技</a>
+        </p>
+    </div>
+</footer>
+</body>
+<script src="/static/js/jquery-3.6.0.min.js"></script>
+<script src="/static/js/foxui-1.32.min.js"></script>
+<script>
+    //返回首页
+    $(document).on('click', 'button[name="backIndex"]', function () {
+        window.location.href = "/";
+    });
+    //刷新页面
+    $(document).on('click', 'button[name="refresh"]', function () {
+        window.location.reload();
+    });
+
+    $(document).on('click', '.foxcms-header-h5 .foxui-icon-liebiao-o', function () {
+        let $this = $(this),
+            $container = $this.closest('.foxcms-header-h5');
+        $this.removeClass('foxui-icon-liebiao-o').addClass('foxui-icon-guanbi-o');
+        $container.find('.nav-mask').fadeIn(300);
+        $container.find('.nav-menu').slideDown(300);
+        $('body').css('overflow', 'hidden');
+    });
+    $(document).on('click', '.foxcms-header-h5 .foxui-icon-guanbi-o', function () {
+        let $this = $(this),
+            $container = $this.closest('.foxcms-header-h5');
+        $this.removeClass('foxui-icon-guanbi-o').addClass('foxui-icon-liebiao-o');
+        $container.find('.nav-mask').fadeOut(300);
+        $container.find('.nav-menu').slideUp(300);
+        $('body').css('overflow', 'auto');
+    });
+    $(document).on('click', '.foxcms-header-h5 .nav-mask', function () {
+        $('.foxcms-header-h5 .foxui-icon-guanbi-o').click();
+    });
+
+    let time = 5;
+    let timer = setInterval(() => {
+        if (time > 0) {
+            time--;
+            $('main .text strong').text(time);
+        } else {
+            clearInterval(timer);
+            timer = null;
+            location.href = '/';
+        }
+    }, 1000);
+</script>
+</html>

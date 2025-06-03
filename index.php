@@ -1,17 +1,16 @@
 <?php
-
 // [ 应用入口文件 ]
 namespace think;
 
-if(version_compare(PHP_VERSION,'7.1','<') || version_compare(PHP_VERSION,'8.0','>=')) {
+if (version_compare(PHP_VERSION, '7.1', '<') || version_compare(PHP_VERSION, '8.0', '>=')) {
     $vinfo = require_once('./data/update/version/info.php');
     $pve = require_once('./static/warn/php_version_error.html');
     echo $pve;
     exit();
 }
 
-define('INSTALL_PATH', str_replace('\\', '/', dirname(__FILE__)));//安装路径
-if (file_exists(INSTALL_PATH."/install/") && !is_file(INSTALL_PATH . '/install/install.lock')) {//没有安装
+define('INSTALL_PATH', str_replace('\\', '/', dirname(__FILE__))); //安装路径
+if (file_exists(INSTALL_PATH . "/install/") && !is_file(INSTALL_PATH . '/install/install.lock')) { //没有安装
     header('Location:/install/index.php');
     exit();
 }
@@ -21,19 +20,29 @@ $base = require('./config/cfg/base.php');
 try {
     require __DIR__ . '/vendor/autoload.php';
 } catch (\Throwable $e) {
-    if($base['frame_exception'] == '0'){
+    if ($base['frame_exception'] == '0') {
         $pve = require_once('./static/warn/php_version_error.html');
         echo $pve;
         exit();
     }
 }
+// 引入验证文件
+require_once __DIR__ . '/app/validate/BaseValidate.php';
+
+// 实例化 BaseValidate 类
+$validator = new \app\validate\BaseValidate();
+
+// 全局参数验证
+$validator->validateGetParams();
+$validator->validateCookieParams();
+$validator->validatePostData();
 
 //检查
 $seo = require('./config/cfg/seo.php');
-if($seo['pseudo_status'] == 1){
+if ($seo['pseudo_status'] == 1) {
     $serverSoftware = strtolower($_SERVER['SERVER_SOFTWARE']);
     if (strpos($serverSoftware, 'apache') !== false) {
-        $wFile = __DIR__."/.htaccess";
+        $wFile = __DIR__ . "/.htaccess";
         $contet = '<IfModule mod_rewrite.c> 
     Options +FollowSymlinks -Multiviews 
     RewriteEngine on 
@@ -44,13 +53,13 @@ if($seo['pseudo_status'] == 1){
         config($contet, $wFile);
     } elseif (strpos($serverSoftware, 'nginx') !== false) {
     } elseif (strpos($serverSoftware, 'iis') !== false) {
-        $wFile = __DIR__."/web.config";
+        $wFile = __DIR__ . "/web.config";
         $contet = '<?xml version="1.0" encoding="UTF-8"?>  
 <configuration>  
   <system.webServer>  
     <rewrite>  
       <rules>  
-        <rule name="WPurls" enabled="true" stopProcessing="true">  
+        <rule name="FoxPage" enabled="true" stopProcessing="true">  
           <match url=".*" />  
           <conditions logicalGrouping="MatchAll">  
             <add input="{REQUEST_FILENAME}" matchType="IsFile" negate="true" />  
@@ -66,15 +75,14 @@ if($seo['pseudo_status'] == 1){
     }
 }
 
-if($_SERVER['REQUEST_URI'] == "/"){
-    if($_SERVER["SERVER_PORT"] == 80){
+if ($_SERVER['REQUEST_URI'] == "/") {
+    if ($_SERVER["SERVER_PORT"] == 80) {
         $domain = $_SERVER["SERVER_NAME"];
-    }else{
+    } else {
         $domain = $_SERVER["SERVER_NAME"] . ":" . $_SERVER["SERVER_PORT"];
     }
     $prefixURL = 'http';
-    if ($_SERVER["HTTPS"] == "on")
-    {
+    if ($_SERVER["HTTPS"] == "on") {
         $prefixURL .= "s";
     }
     $url = "{$prefixURL}://{$domain}/plus/Access/check";
@@ -98,16 +106,12 @@ if($_SERVER['REQUEST_URI'] == "/"){
 
 // 执行HTTP应用并响应
 $http = (new App())->http;
-
 define("RUNTIME", __DIR__);
 
-if(isApply()){
+if (isApply()) {
     $response = $http->run();
-}else{
-    if($base["status"] == 0){
-        $vinfo = require_once('./data/update/version/info.php');
-        setcookie("status_desc", $base["status_desc"]);
-        setcookie("version", $vinfo['version']);
+} else {
+    if ($base["status"] == 0) {
         require_once('./static/warn/close.php');
         exit();
     }
@@ -120,23 +124,24 @@ $http->end($response);
  * 判断应用
  * @return bool
  */
-function isApply(){
+function isApply()
+{
     $uri = $_SERVER["REQUEST_URI"];
     $adminconfig = require('./config/adminconfig.php');
     $applys = require('./config/cfg/apply.php');
     $isApply = false;
     $uriArr = explode("/", $uri);
-    if(str_starts_with($uri, "/index.php")){
+    if (str_starts_with($uri, "/index.php")) {
         $app_name = $uriArr[2];
-    }else{
+    } else {
         $app_name = $uriArr[1];
     }
-    if($adminconfig["admin_path"] == $app_name){
+    if ($adminconfig["admin_path"] == $app_name) {
         $isApply = true;
     }
-    if(!$isApply){
-        foreach ($applys as $apply){
-            if($apply == $app_name){
+    if (!$isApply) {
+        foreach ($applys as $apply) {
+            if ($apply == $app_name) {
                 $isApply = true;
                 break;
             }
@@ -148,13 +153,14 @@ function isApply(){
 /**
  * 配置伪静态
  */
-function config($content, $file){
-    if(file_exists($file)){
+function config($content, $file)
+{
+    if (file_exists($file)) {
         $dh = file_get_contents($file);
-        if (empty($dh)){
-            file_put_contents($file,$content);
+        if (empty($dh)) {
+            file_put_contents($file, $content);
         }
-    }else{
-        file_put_contents($file,$content);
+    } else {
+        file_put_contents($file, $content);
     }
 }

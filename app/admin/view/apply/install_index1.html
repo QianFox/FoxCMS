@@ -1,0 +1,124 @@
+{extend name="foxcms" /}
+
+{block name="css"}
+<link rel="stylesheet" href="{$staticPath}css/app.min.css" />
+{/block}
+
+{block name="body"}
+<input type="hidden" value="{$apply_pack_id}" name="apply_pack_id"/>
+<div class="foxcms-content-inner">
+	<!-- page content -->
+	<div class="apply-install-content">
+		<div class="foxui-bg-white foxui-padding-24">
+			<div class="foxui-display-flex foxui-align-items-center foxui-justify-content-between">
+				<div class="foxui-display-flex foxui-align-items-center">
+					<div class="app-pic">
+						<img src="{$version.ask}" alt="" />
+					</div>
+					<div class="app-text">
+						<h4 class="foxui-ellipsis-1">
+							<strong class="foxui-color-primary">{$version.name}</strong>
+							<span class="foxui-color-secondary">V{$version.desc}</span>
+						</h4>
+						<p class="foxui-color-secondary foxui-ellipsis-1">{$version.remark}</p>
+					</div>
+				</div>
+				<div>
+					<a class="primary-btn" href="">查看详情</a>
+				</div>
+			</div>
+			<div class="install-progress">
+				<div id="installProgress"></div>
+				<div class="dots">
+					<div class="dot active">安装准备</div>
+					<div class="dot">安装应用</div>
+					<div class="dot">安装成功</div>
+				</div>
+			</div>
+			<div class="install-loading-progress foxui-border foxui-display-flex foxui-align-items-center foxui-justify-content-center">
+				<div class="install-loading-block">
+					<div class="icon" id="loadingIcon"></div>
+					<p class="foxui-color-primary">正在执行安装</p>
+					<p class="foxui-color-primary" id="calTime">
+						请稍后
+						<span></span>
+					</p>
+				</div>
+				<!-- <div class="install-loading-block">
+                    <div class="icon">
+                        <i class="foxui-icon-cuowu-f foxui-color-danger"></i>
+                    </div>
+                    <p class="foxui-color-danger">安装失败</p>
+                    <button class="foxui-plain-primary foxui-size-mini foxui-margin-top-8">返回重试</button>
+                </div> -->
+			</div>
+		</div>
+	</div>
+</div>
+{/block}
+
+{block name="js"}
+<script>
+	foxui.progress({
+		el: '#installProgress',
+		percent: 50,
+		strokeWidth: 12,
+		showText: false,
+		striped: true,
+		animated: true,
+	});
+
+	$('#loadingIcon').append(foxui.loadingIcon({ size: '36px', color: '#2879FE', type: 'spinner' }));
+
+    install();
+    function install() {
+        let apply_pack_id = $('input[name="apply_pack_id"]').val();
+        if(apply_pack_id == undefined || apply_pack_id == ""){
+            foxui.message({
+                text: '缺少下载数据',
+                type: 'warning',
+            });
+        }
+        $.ajax({
+            type: "post",
+            url: 'install',
+            dataType: "json",
+            data: {apply_pack_id},
+            success: function(res) {
+                if (res.code == 1) {
+                    window.location.href = 'nextInstallIndex?step=2&apply_pack_id='+apply_pack_id;
+                } else {
+
+					foxui.message({
+						text: res.msg,
+						type: 'warning',
+					});
+
+                    $('.install-loading-progress').empty().append(`
+                    <div class="install-loading-block">
+                        <div class="icon">
+                            <i class="foxui-icon-cuowu-f foxui-color-danger"></i>
+                        </div>
+                        <p class="foxui-color-danger">安装失败</p>
+                        <button class="foxui-plain-primary foxui-size-mini foxui-margin-top-8" onclick="install()">返回重试</button>
+                    </div>
+                    `);
+                }
+            },
+            error: function(res) {
+                $('.install-loading-progress').empty().append(`
+                    <div class="install-loading-block">
+                        <div class="icon">
+                            <i class="foxui-icon-cuowu-f foxui-color-danger"></i>
+                        </div>
+                        <p class="foxui-color-danger">安装失败</p>
+                        <button class="foxui-plain-primary foxui-size-mini foxui-margin-top-8" onclick="install()">返回重试</button>
+                    </div>
+                    `);
+            }
+        });
+    }
+
+</script>
+
+{/block}

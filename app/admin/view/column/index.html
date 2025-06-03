@@ -1,0 +1,670 @@
+{extend name="foxcms" /}
+
+{block name="css"}
+{/block}
+
+{block name="body"}
+<input name="bcid" value="{$bcid}" type="hidden" />
+<input name="id" value="{$cid}" type="hidden" />
+<input name="is_thumb" value="{$columnLevel.is_thumb}" type="hidden" />
+<input name="level" value="{$columnLevel.level}" type="hidden" />
+<div class="foxcms-content-inner">
+	<!-- page content -->
+	<div class="column-list-content">
+		<div class="content-top-operation foxui-justify-content-start">
+			<button class="foxui-solid-primary foxui-size-small" id="addFirstColumnBtn">
+				<i class="foxui-icon-jiahao-o"></i>
+				<span>添加一级栏目</span>
+			</button>
+			<button class="foxui-size-small color-primary" onclick="tierSet()">
+				<span>设置栏目层级</span>
+			</button>
+			<button class="foxui-size-small color-primary" id="allCollapseBtn">
+				<i class="foxui-icon-xiangxia-o"></i>
+				<span>全部折叠</span>
+			</button>
+			{if sizeof($langs) > 1}
+			<div class="foxui-select foxui-margin-left-12" style="width: 140px;">
+				<div class="foxui-select-handle foxui-select-icon">
+					<input class="foxui-select-input copy-lang" readonly="readonly" placeholder="选择复制语言" value="" style="height: 32px"/>
+				</div>
+				<div class="foxui-select-menu">
+					<ul class="foxui-select-slide">
+						{foreach $langs as $key=>$vo}
+						{if $vo.lang != $curlang.lang}
+						<li class="foxui-select-item" data-id="{$vo.lang}" onclick="copyLangColumn(this)">{$vo.name}</li>
+						{/if}
+						{/foreach}
+					</ul>
+				</div>
+			</div>
+			{/if}
+		</div>
+		<div class="section section-panel margin-top-10">
+			<div class="collapse-header">
+				<div class="sort">排序</div>
+				<div class="column-id">ID</div>
+				<div class="column">栏目名称</div>
+				{if $columnLevel.is_thumb == 1}
+				<div class="pic">栏目图片</div>
+				{/if}
+				<div class="model">所属模型</div>
+				<div class="state">显示</div>
+				<div class="model foxui-align-center">标识(SID)</div>
+				<div class="handle">
+					<span>操作</span>
+				</div>
+			</div>
+
+			<ul class="foxui-collapse foxui-drag foxui-drag-container loading-container" id="collapseContainer">
+				{foreach $columnList as $key=>$vo}
+				<li class="foxui-collapse-item foxui-drag-item" data-id="{$vo.columnId}">
+					<div class="foxui-collapse-head foxui-drag-content column-head-level-1">
+
+						<div class="drag-handle">
+							<i class="foxui-drag-handle foxui-icon-liebiao-o"></i>
+						</div>
+						<div class="column-id">{$vo.columnId}</div>
+						<div>
+							<i class="foxui-collapse-handle foxui-icon-kaishi-f foxui-collapse-icon"></i>
+						</div>
+						<div class="column">
+							<div class="level">一级</div>
+							<div class="foxui-input-group column-title">
+								<div class="foxui-input-suffix">
+									<input class="foxui-size-mini" placeholder="请输入栏目名称" value="{$vo.columnName}" />
+								</div>
+							</div>
+							{if $columnLevel.level > 1}
+							<button class="foxui-text-primary add-btn">
+								<i class="foxui-icon-jiahao-o"></i>
+								<span>二级栏目</span>
+							</button>
+							{/if}
+						</div>
+						{if $columnLevel.is_thumb == 1}
+						<div class="pic">
+							<div class="foxui-images foxui-images-small">
+								<div class="foxui-images-card">
+									<ul class="foxui-images-list ">
+										{if $vo.pic_ids != "" &&  $vo.pic_url != ""}
+										<li class="foxui-images-item foxui-animate-fadeInDown">
+											<div class="content">
+												<img data-id="{$vo.pic_ids}" src="{$vo.pic_url}">
+												<span class="replace">替换</span>
+												<i class="foxui-icon-cuowu-f delete"></i>
+											</div>
+										</li>
+										{/if}
+										<div class="foxui-images-handle">
+											<div class="foxui-images-handle-inner">
+												<i class="foxui-icon-jiahao-o"></i>
+												<span class="text">添加图片</span>
+											</div>
+										</div>
+									</ul>
+								</div>
+							</div>
+						</div>
+						{/if}
+						<div class="foxui-select model">
+							<div class="foxui-select-handle foxui-select-icon">
+								<input class="foxui-select-input foxui-size-mini" readonly="readonly" placeholder="选择模型" value="{$vo.modelTitle}" data-id="{$vo.model}" data-oldmodel="{$vo.model}}"/>
+								<i class="foxui-icon-close-circle"></i>
+							</div>
+							<div class="foxui-select-menu">
+								<ul class="foxui-select-slide">
+									{foreach $modelRecords as $modelRecord }
+									<li class="foxui-select-item async" data-id="{$modelRecord.id}" data-rm="{$modelRecord.reference_model}">{$modelRecord.title}</li>
+									{/foreach}
+								</ul>
+							</div>
+						</div>
+
+						<div class="state">
+							<div class="foxui-switch {if $vo.isShow == 1} is-checked {/if}">
+								<input type="checkbox" checked="checked" value="" class="foxui-switch-input" />
+								<span class="foxui-switch-core"></span>
+							</div>
+						</div>
+
+						<div class="model foxui-align-center">{$vo.nid}</div>
+
+						<div class="handle display-flex">
+							<button class="foxui-size-mini color-primary set-btn font-size-14" onclick="handleClickSet({$vo.columnId})">
+								<i class="foxui-icon-shezhi-o"></i>
+								<span>设置</span>
+							</button>
+							<button class="foxui-size-mini color-primary delete-btn font-size-14" onclick="deleteCollapseItem(event, {$vo.columnId})">
+								<i class="foxui-icon-shanchu-o"></i>
+								<span>删除</span>
+							</button>
+							<button class="foxui-size-mini color-primary content-btn font-size-14" onclick="look({$vo.columnId}, 1)" target="_blank">
+								<i class="foxui-icon-shuji-o"></i>
+								<span>内容</span>
+							</button>
+							<button class="foxui-size-mini color-primary view-btn font-size-14" onclick="look({$vo.columnId}, 2)">
+								<i class="foxui-icon-kejian-o"></i>
+								<span>浏览</span>
+							</button>
+						</div>
+
+					</div>
+
+					{if sizeof($vo.children) > 0}
+					<div class="foxui-collapse-content">
+						<ul class="foxui-collapse foxui-drag-container">
+							{foreach $vo.children as $voo}
+							<li class="foxui-collapse-item foxui-drag-item column-item-level-2" data-id="{$voo.columnId}">
+								<div class="foxui-collapse-head foxui-drag-content column-head-level-2">
+
+									<div class="drag-handle">
+										<i class="foxui-drag-handle foxui-icon-liebiao-o"></i>
+									</div>
+									<div class="column-id">{$voo.columnId}</div>
+									<div>
+										<i class="foxui-collapse-handle foxui-icon-kaishi-f foxui-collapse-icon"></i>
+									</div>
+									<div class="column">
+										<div class="level">二级</div>
+										<div class="foxui-input-group column-title">
+											<div class="foxui-input-suffix">
+												<input class="foxui-size-mini" placeholder="请输入栏目名称" value="{$voo.columnName}" />
+											</div>
+										</div>
+										{if $columnLevel.level > 2}
+										<button class="foxui-text-primary add-btn">
+											<i class="foxui-icon-jiahao-o"></i>
+											<span>三级栏目</span>
+										</button>
+										{/if}
+									</div>
+									{if $columnLevel.is_thumb == 1}
+									<div class="pic">
+										<div class="foxui-images foxui-images-small">
+											<div class="foxui-images-card">
+												<ul class="foxui-images-list">
+													{if $voo.pic_ids != "" &&  $voo.pic_url != ""}
+													<li class="foxui-images-item foxui-animate-fadeInDown">
+														<div class="content">
+															<img data-id="{$voo.pic_ids}" src="{$voo.pic_url}">
+															<span class="replace">替换</span>
+															<i class="foxui-icon-cuowu-f delete"></i>
+														</div>
+													</li>
+													{/if}
+													<div class="foxui-images-handle">
+														<div class="foxui-images-handle-inner">
+															<i class="foxui-icon-jiahao-o"></i>
+															<span class="text">添加图片</span>
+														</div>
+													</div>
+												</ul>
+											</div>
+										</div>
+									</div>
+									{/if}
+
+									<div class="foxui-select model">
+										<div class="foxui-select-handle foxui-select-icon">
+											<input class="foxui-select-input foxui-size-mini" readonly="readonly" placeholder="选择模型" value="{$voo.modelTitle}" data-id="{$voo.model}" data-oldmodel="{$voo.model}}"/>
+											<i class="foxui-icon-close-circle"></i>
+										</div>
+										<div class="foxui-select-menu">
+											<ul class="foxui-select-slide">
+												{foreach $modelRecords as $modelRecord }
+												<li class="foxui-select-item async" data-id="{$modelRecord.id}">{$modelRecord.title}</li>
+												{/foreach}
+											</ul>
+										</div>
+									</div>
+									<div class="state">
+										<div class="foxui-switch {if $voo.isShow == 1} is-checked {/if}">
+											<input type="checkbox" checked="checked" value="" class="foxui-switch-input" />
+											<span class="foxui-switch-core"></span>
+										</div>
+									</div>
+
+									<div class="model foxui-align-center">{$voo.nid}</div>
+
+									<div class="handle display-flex">
+										<button class="foxui-size-mini color-primary set-btn font-size-14" onclick="handleClickSet({$voo.columnId})">
+											<i class="foxui-icon-shezhi-o"></i>
+											<span>设置</span>
+										</button>
+										<button class="foxui-size-mini color-primary delete-btn font-size-14" onclick="deleteCollapseItem(event, {$voo.columnId})">
+											<i class="foxui-icon-shanchu-o"></i>
+											<span>删除</span>
+										</button>
+										<button class="foxui-size-mini color-primary content-btn font-size-14" onclick="look({$voo.columnId}, 1)">
+											<i class="foxui-icon-shuji-o"></i>
+											<span>内容</span>
+										</button>
+										<button class="foxui-size-mini color-primary view-btn font-size-14" onclick="look({$voo.columnId}, 2)">
+											<i class="foxui-icon-kejian-o"></i>
+											<span>浏览</span>
+										</button>
+									</div>
+
+								</div>
+
+								{if sizeof($voo.children) > 0}
+								<div class="foxui-collapse-content">
+									<ul class="foxui-collapse foxui-drag-container">
+
+										{foreach $voo.children as $vooo}
+										<li class="foxui-collapse-item foxui-drag-item column-item-level-3" data-id="{$vooo.columnId}">
+											<div class="foxui-collapse-head foxui-drag-content column-head-level-3">
+												<div class="drag-handle">
+													<i class="foxui-drag-handle foxui-icon-liebiao-o"></i>
+												</div>
+												<div class="column-id">{$vooo.columnId}</div>
+												<div class="column">
+													<div class="level">三级</div>
+													<div class="foxui-input-group column-title">
+														<div class="foxui-input-suffix">
+															<input class="foxui-size-mini" placeholder="请输入栏目名称" value="{$vooo.columnName}" />
+														</div>
+													</div>
+												</div>
+												{if $columnLevel.is_thumb == 1}
+												<div class="pic">
+													<div class="foxui-images foxui-images-small">
+														<div class="foxui-images-card">
+															<ul class="foxui-images-list ">
+																{if $vooo.pic_ids != "" &&  $vooo.pic_url != ""}
+																<li class="foxui-images-item foxui-animate-fadeInDown">
+																	<div class="content">
+																		<img data-id="{$vooo.pic_ids}" src="{$vooo.pic_url}">
+																		<span class="replace">替换</span>
+																		<i class="foxui-icon-cuowu-f delete"></i>
+																	</div>
+																</li>
+																{/if}
+																<div class="foxui-images-handle">
+																	<div class="foxui-images-handle-inner">
+																		<i class="foxui-icon-jiahao-o"></i>
+																		<span class="text">添加图片</span>
+																	</div>
+																</div>
+															</ul>
+														</div>
+													</div>
+												</div>
+												{/if}
+
+												<div class="foxui-select model">
+													<div class="foxui-select-handle foxui-select-icon">
+														<input class="foxui-select-input foxui-size-mini" readonly="readonly" placeholder="选择模型" value="{$vooo.modelTitle}" data-id="{$vooo.model}" data-oldmodel="{$vooo.model}}"/>
+														<i class="foxui-icon-close-circle"></i>
+													</div>
+													<div class="foxui-select-menu">
+														<ul class="foxui-select-slide">
+															{foreach $modelRecords as $modelRecord }
+															<li class="foxui-select-item async" data-id="{$modelRecord.id}">{$modelRecord.title}</li>
+															{/foreach}
+														</ul>
+													</div>
+												</div>
+												<div class="state">
+													<div class="foxui-switch {if $vooo.isShow == 1} is-checked {/if}">
+														<input type="checkbox" checked="checked" value="" class="foxui-switch-input" />
+														<span class="foxui-switch-core"></span>
+													</div>
+												</div>
+
+												<div class="model foxui-align-center">{$vooo.nid}</div>
+
+												<div class="handle display-flex">
+													<button class="foxui-size-mini color-primary set-btn font-size-14" onclick="handleClickSet({$vooo.columnId})">
+														<i class="foxui-icon-shezhi-o"></i>
+														<span>设置</span>
+													</button>
+													<button class="foxui-size-mini color-primary delete-btn font-size-14" onclick="deleteCollapseItem(event, {$vooo.columnId})">
+														<i class="foxui-icon-shanchu-o"></i>
+														<span>删除</span>
+													</button>
+													<button class="foxui-size-mini color-primary content-btn font-size-14" onclick="look({$vooo.columnId}, 1)">
+														<i class="foxui-icon-shuji-o"></i>
+														<span>内容</span>
+													</button>
+													<button class="foxui-size-mini color-primary view-btn font-size-14" onclick="look({$vooo.columnId}, 2)">
+														<i class="foxui-icon-kejian-o"></i>
+														<span>浏览</span>
+													</button>
+												</div>
+											</div>
+										</li>
+										{/foreach}
+									</ul>
+								</div>
+								{else /}
+								<div class="foxui-collapse-content">
+									<ul class="foxui-collapse foxui-drag-container">
+									</ul>
+								</div>
+								{/if}
+							</li>
+							{/foreach}
+						</ul>
+					</div>
+					{else /}
+					<div class="foxui-collapse-content">
+						<ul class="foxui-collapse foxui-drag-container">
+						</ul>
+					</div>
+					{/if}
+				</li>
+				{/foreach}
+			</ul>
+		</div>
+	</div>
+</div>
+
+<div class="foxcms-content-footer">
+	<button class="is-long foxui-size-small foxui-solid-primary" id="save">保存</button>
+</div>
+{include file="footed-copy"/}
+{/block}
+
+
+{block name="js"}
+<script src="{$staticPath}js/column_list.js"></script>
+
+<script>
+	/**
+	 * @description: 跳转至设置
+	 */
+	function handleClickSet(id) {
+		let columnId = $('input[name="id"]').val();
+		let bcid = $('input[name="bcid"]').val();
+		window.location.href = "{:url('columnSet')}?columnId="+columnId+"&type=1&id="+id+"&bcid=" + bcid;
+	}
+
+	/**
+	 * @description: 删除 collapseItem
+	 */
+	function deleteCollapseItem(event, id) {
+		if(id == undefined || id == ""){
+			const currentTarget = event.currentTarget;
+			$(currentTarget).closest('.foxui-collapse-item').slideUp('fast', function () {
+				$(this).remove();
+			});
+		}else{
+			foxui.dialog({
+				title: '删除',
+				content: '您确定要删除当前及同级语言栏目吗',
+				cancelText: '取消',
+				confirmText: '删除',
+				buttonType: 'danger',
+				confirm: function (callback) {
+					ajaxR("{:url('Column/deleteColumn')}","post",{id},{},function(res){
+						if(res.code ==1){
+							foxui.message({
+								type:'success',
+								text: res.msg
+							})
+							setTimeout('myrefresh()', 100); //指定10秒刷新一次
+						}else{
+							foxui.message({
+								type:'warning',
+								text: res.msg
+							})
+						}
+					},function(res){
+						foxui.message({
+							type:'warning',
+							text: res.responseJSON.msg
+						})
+					})
+					callback();
+				},
+				cancel: function () {
+					foxui.message({
+						text: '取消删除',
+					});
+				},
+			});
+		}
+	}
+
+	/**
+	 *查看内容
+	 * @param columnId
+	 * @param lookNum
+	 */
+	function look(columnId, lookNum){
+		let url = "{:url('Column/look')}?columnId="+columnId+"&lookNum=" + lookNum;
+		if(lookNum == 1) {
+			//内容
+			window.location.href = url;
+		}else if(lookNum == 2){
+			//浏览
+			window.open(url);
+		}
+	}
+
+	/**
+	 * 模型切换
+	 * @param obj
+	 */
+	function modelSwitch(obj) {
+		let {model,data_rm, column_id, old_model, $this} = {...obj};
+		let columnList = [];
+		$.ajax({
+			type: "post",
+			url: "checkData",
+			dataType: "json",
+			data: {column_id, data_rm, model, old_model},
+			async: false,
+			success: function (res) {
+				if (res.code == 1) {
+					columnList = res.data;
+				}
+			}
+		});
+		if(columnList.length > 0){
+			let indexV = 0;
+			columnList.forEach(item=>{
+				$.ajax({
+					type: "post",
+					url: "modelSwitch",
+					dataType: "json",
+					data: {...item},
+					async: false,
+					success: function (res) {
+						if (res.code == 1) {
+							indexV++;
+						}
+					}
+				});
+			});
+			if(columnList.length == indexV){
+                if($this) $this.closest('.foxui-select').find('.foxui-select-input').attr('data-id', model).attr('data-oldmodel', old_model).val($this.text().trim());
+				foxui.message({
+					type:'success',
+					text:"操作成功"
+				})
+			}else{
+				foxui.message({
+					type:'warning',
+					text:'操作失败'
+				})
+			}
+		}
+	}
+</script>
+
+<script>
+	$('#collapseContainer').removeClass('loading-container');
+	//栏目设置
+	function tierSet(){
+		let columnId = $('input[name="id"]').val();
+		window.location.href = "{:url('TierSet/index')}?type=1&ts=1&columnId=" + columnId;
+	}
+	/**
+	 * 获取栏目数据
+	 * @param li 栏目项对象
+	 * @returns {{column: (*|Window.jQuery|string), objArr: *[]}}
+	 */
+	function getColumn(li){
+		let headBox =$(li).children(".foxui-drag-content");
+
+		let name = $(headBox).children(".column").find("input").val();
+		let pic_id = $(headBox).children(".pic").find("img").attr("data-id");
+		let column_model = $(headBox).children(".model").find("input").attr('data-id');
+		let status = $(headBox).children(".state").find(".foxui-switch.is-checked").length;
+
+		let colunms = [];
+		let id = $(li).attr("data-id");
+		let sort = $(li).attr("data-sort");
+		$(li).children(".foxui-collapse-content").children("ul").children("li").each( (index, item)=>{
+			colunms.push(getColumn(item))
+		})
+		let colunm = {'colunms': colunms, 'name': name, 'column_model':column_model, 'pic_ids':pic_id, 'status': status, 'id':id, 'sort':sort};
+		return colunm;
+	}
+
+	//保存
+	$('#save').click(function() {
+		let dataArr = [];
+		$("#collapseContainer>li").each(function (index, item){
+			dataArr.push(getColumn(item));
+		});
+
+        if(recursiveCheck(dataArr)){
+            let data = {'columns': JSON.stringify(dataArr)};
+            foxui.dialog({
+                title: '保存',
+                content: '您确定要保存吗',
+                cancelText: '取消',
+                confirmText: '保存',
+                confirm: function(callback) {
+                    $('#collapseContainer').addClass('loading-container');
+                    ajaxR("{:url('save')}","post",data,{},function (res) {
+                        if (res.code == 1) {
+                            setTimeout('myrefresh()', 100); //指定10秒刷新一次
+                        } else {
+                            foxui.message({
+                                type:'warning',
+                                text:res.msg
+                            })
+                            $('#collapseContainer').removeClass('loading-container');
+                        }
+                    }, function (res) {
+                        foxui.message({
+                            type:'warning',
+                            text: res.responseJSON.msg
+                        })
+                        $('#collapseContainer').removeClass('loading-container');
+                    })
+                    callback();
+                },
+                cancel: function() {
+                    foxui.closeLoading();
+                },
+            });
+        }else{
+            foxui.message({
+                type:'danger',
+                text:'栏目名称不能为空'
+            })
+        }
+	})
+</script>
+
+<script>
+	function copyLangColumn(obj) {
+		let lang = $(obj).attr('data-id');
+		let langtext = $(obj).text();
+		foxui.dialog({
+			title: '确认',
+			content: '您确定要复制'+langtext+'的栏目吗',
+			confirmText: '确定',
+			cancelText: '取消',
+			confirm: function (callback) {
+				$('#collapseContainer').addClass('loading-container');
+                ajaxR('copyLangColumn','post',{lang},{},function (res) {
+                        if (res.code == 1) {
+                            setTimeout('myrefresh()', 100); //指定10秒刷新一次
+                        } else {
+                            foxui.message({
+                                type:'warning',
+                                text:res.msg
+                            })
+                            $('#collapseContainer').removeClass('loading-container');
+                        }
+                    },
+                    function (res) {
+                        foxui.message({
+                            type:'warning',
+                            text: res.responseJSON.msg
+                        })
+                        $('#collapseContainer').removeClass('loading-container');
+                    })
+				callback();
+			},
+		});
+	}
+
+	$(document).on('click', '.foxui-select.model ul.foxui-select-slide li', function () {
+        let $this = $(this);
+		let model = $(this).attr('data-id');
+        let model_title = $(this).text().trim();
+		let data_rm = $(this).attr('data-rm');
+		let column_id = $(this).closest("li.foxui-collapse-item").attr('data-id');
+		let old_model = $(this).closest('div.foxui-select.model').find('input').attr("data-oldmodel");
+		if(model == old_model){
+			return;
+		}
+		
+        if(column_id){
+            foxui.dialog({
+                title: '栏目模型更换',
+                content: '模型间存在功能差异可能导致当前栏目中的数据丢失，您确定要更换模型吗?',
+                confirmText: '确定',
+                cancelText: '取消',
+                buttonType: 'danger',
+                confirm: function (callback) {
+                    modelSwitch({model,data_rm, column_id, old_model, $this})
+                    callback();
+                },
+            });
+        }else{
+            $this.closest('.foxui-select').find('.foxui-select-handle input').val(model_title).attr("data-id", model);
+            $this.closest('.foxui-select').find('.foxui-select-handle').removeClass('is-active');
+            $this.closest('.foxui-select-menu').slideUp(300);
+        }
+
+        return false;
+	})
+
+    function recursiveCheck(data) {
+        if (data !== null && typeof data === 'object') {
+            if (Array.isArray(data)) {
+                for (let item of data) {
+                    if (!recursiveCheck(item)) {
+                        return false;
+                    }
+                }
+            } else {
+                for (let key in data) {
+                    if (data.hasOwnProperty(key)) {
+                        if (key === 'name' && !isNameValid(data[key])) {
+                            return false;
+                        }
+                        if (!recursiveCheck(data[key])) {
+                            return false;
+                        }
+                    }
+                }
+            }
+        }
+        return true;
+    }
+
+    function isNameValid(nameValue) {
+        return typeof nameValue === 'string' && nameValue.trim() !== '';
+    }
+</script>
+{/block}

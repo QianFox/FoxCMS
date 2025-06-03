@@ -1,0 +1,404 @@
+{extend name="foxcms" /}
+
+{block name="css"}
+<style>
+    .foxui-dialog__wrapper .foxui-dialog__body{
+        max-height: 520px;
+        overflow-y: auto;
+        padding-top: 10px !important;
+        padding-bottom: 10px !important;
+    }
+</style>
+{/block}
+
+{block name="body"}
+
+<div class="foxcms-content-inner">
+    <!-- page content -->
+    <div class="basic-set-content">
+        <div class="section section-panel">
+            <input name="bcid" value="{$bcid}" type="hidden"/>
+            <div class="section-title">SEO设置</div>
+            <div class="section-main">
+                <div class="section-main-item">
+                    <div class="foxui-input-group">
+                        <div class="input-label">
+                            <label class="foxui-required">URL模式：</label>
+                        </div>
+                        <div class="input-box">
+                            <div class="foxui-radio-group" data-name="url_model">
+
+                                <div class="foxui-radio {if $url_model == 1} is-checked {/if}">
+                                    <span class="foxui-radio-input">
+                                        <i class="foxui-radio-icon"></i>
+                                        <input type="radio" value="1" name="status"/>
+                                    </span>
+                                    <span class="foxui-radio-label">动态URL</span>
+                                </div>
+                                <div class="foxui-radio {if $url_model == 2} is-checked {/if}">
+                                    <span class="foxui-radio-input">
+                                        <i class="foxui-radio-icon"></i>
+                                        <input type="radio" value="2"/>
+                                    </span>
+                                    <span class="foxui-radio-label" name="status">伪静态化</span>
+                                </div>
+
+                                <div class="foxui-radio {if $url_model == 3} is-checked {/if}">
+                                    <span class="foxui-radio-input">
+                                        <i class="foxui-radio-icon"></i>
+                                        <input type="radio" value="3"/>
+                                    </span>
+                                    <span class="foxui-radio-label" name="status">静态化页面</span>
+                                </div>
+
+                            </div>
+                        </div>
+                    </div>
+                </div>
+
+                <div id="pseudoPage" style="{if $url_model != 2 }display: none{/if}">
+                    <div class="section-main-item">
+                        <div class="foxui-input-group foxui-align-items-start">
+                            <label class="input-label">生成伪静态配置：</label>
+                            <div class="foxui-switch {if $pseudo_status == 1}is-checked{/if}" data-name="pseudo_status">
+                                <input type="checkbox" value="" class="foxui-switch-input"/>
+                                <span class="foxui-switch-core"></span>
+                            </div>
+                            <span style="color: #909399;" class="margin-left-24">部分服务器主机需要手动设置伪静态规则文件</span>
+                        </div>
+                        <p class="input-box-info {if $webServer != 'apache'}display-none{/if}" style="margin-bottom: 0px;">
+                            {if $webServer == "apache"}
+                            <i class="foxui-icon-zhengque-f" style="font-size: 18px;color: #5ad35a;"></i>
+                            {else/}
+                            <i class="foxui-icon-tishi-f" style="font-size: 18px;"></i>
+                            {/if}
+                            <span style="font-size: 14px; {if $webServer == 'apache'}color: #5ad35a;{/if}">该主机为Apache环境，支持生成配置文件，</span><span style="font-size: 14px;">如开启后访问异常可进行手动配置</span>
+                            <a style="font-size: 12px; cursor: pointer;" onclick="guide(1)"<i class="foxui-icon-wenti-o"></i>操作指南</a>
+                        </p>
+                        <p class="input-box-info {if $webServer != 'nginx'}display-none{/if}" style="font-size: 22px;margin-bottom: 0px;">
+
+                            {if $webServer == "nginx"}
+                            <i class="foxui-icon-zhengque-f" style="font-size: 18px;color: #5ad35a;"></i>
+                            {else/}
+                            <i class="foxui-icon-tishi-f" style="font-size: 18px;"></i>
+                            {/if}
+                            <span style="font-size: 14px; {if $webServer == 'nginx'}color: #5ad35a;{/if}">该主机为Nginx环境，需要<a href="javascript:void(0)" style="font-size: 14px;" onclick="guide(5)">查看伪静态规则</a>进行手动配置</span>
+                            <a style="font-size: 12px;cursor: pointer;" onclick="guide(2)"><i class="foxui-icon-wenti-o"></i>操作指南</a>
+                        </p>
+                        <p class="input-box-info {if $webServer != 'iis'}display-none{/if}" style="margin-bottom: 0px;">
+                            {if $webServer == "iis"}
+                            <i class="foxui-icon-zhengque-f" style="font-size: 18px;color: #5ad35a;"></i>
+                            {else/}
+                            <i class="foxui-icon-tishi-f" style="font-size: 18px;"></i>
+                            {/if}
+                            <span style="font-size: 14px;{if $webServer == 'iis'}color: #5ad35a;{/if}">该主机为Microsoft-IIS环境，支持生成配置文件，</span><span style="font-size: 14px;">如开启后访问异常可进行手动配置</span>
+                            <a style="font-size: 12px;cursor: pointer;" onclick="guide(3)"><i class="foxui-icon-wenti-o"></i>操作指南</a>
+                        </p>
+                        <p class="input-box-info {if $webServer != 'other'}display-none{/if}" style="font-size: 22px;margin-bottom: 0px;">
+                            {if $webServer == "other"}
+                            <i class="foxui-icon-zhengque-f" style="font-size: 18px;color: #5ad35a;"></i>
+                            {else/}
+                            <i class="foxui-icon-tishi-f" style="font-size: 18px;"></i>
+                            {/if}
+                            <span style="font-size: 14px;{if $webServer == 'other'}color: #5ad35a;{/if}">该主机服务器环境，需进行手动配置</span>
+                            <a style="font-size: 12px;cursor: pointer;" onclick="guide(4)"><i class="foxui-icon-wenti-o"></i>操作指南</a>
+                        </p>
+                    </div>
+                </div>
+
+                <div id="staticPage" style="{if $url_model != 3 }display: none{/if}">
+
+                    <div class="section-main-item">
+                        <div class="foxui-input-group">
+                            <div class="input-label">
+                                <label>整站页面：</label>
+                            </div>
+                            <div class="input-box">
+                                <button class="foxui-plain-primary a-key" data-id="key1">一键生成</button>
+                            </div>
+                        </div>
+                    </div>
+
+                    <div class="section-main-item">
+                        <div class="foxui-input-group">
+                            <div class="input-label">
+                                <label>首页：</label>
+                            </div>
+                            <div class="input-box">
+                                <button class="foxui-plain-primary a-key" data-id="key2">一键生成</button>
+                            </div>
+                        </div>
+                    </div>
+
+                    <div class="section-main-item">
+                        <div class="foxui-input-group">
+                            <div class="input-label">
+                                <label class="foxui-required">栏目页：</label>
+                            </div>
+                            <div class="input-box">
+                                <div class="foxui-select">
+                                    <div class="foxui-select-handle foxui-select-icon">
+                                        <input class="foxui-select-input" readonly="readonly" name="column" placeholder="请选择" value="{$columnList[0]['columnName']}" data-id="{$columnList[0]['columnId']}" />
+                                    </div>
+                                    <div class="foxui-select-menu">
+                                        <ul class="foxui-select-slide">
+                                            {foreach $columnList as $vo }
+                                            <li class="foxui-select-item" data-id="{$vo.columnId}">{$vo.columnName}</li>
+                                            {foreach $vo.children as $voo }
+                                            <li class="foxui-select-item  foxui-margin-left-20" data-id="{$voo.columnId}">{$voo.columnName}</li>
+                                            {foreach $voo.children as $vooo }
+                                            <li class="foxui-select-item  foxui-margin-left-40" data-id="{$vooo.columnId}">{$vooo.columnName}</li>
+                                            {/foreach}
+                                            {/foreach}
+                                            {/foreach}
+                                        </ul>
+                                    </div>
+                                </div>
+                            </div>
+                            <button class="foxui-plain-primary a-key" data-id="key3">一键生成</button>
+                        </div>
+                    </div>
+
+                    <div class="section-main-item" data-name="column_page">
+                        <div class="foxui-input-group foxui-align-items-start">
+                            <div class="input-label">
+                                <label>栏目页面名称：</label>
+                            </div>
+                            <div class="block-box foxui-radio-group foxui-display-flex foxui-flex-column">
+
+                                <div class="foxui-radio foxui-margin-left-0 foxui-margin-bottom-12 {if $column_page == 1} is-checked {/if}">
+                                    <span class="foxui-radio-input">
+                                        <i class="foxui-radio-icon"></i>
+                                        <input type="radio" value="1" name="column_page"/>
+                                    </span>
+                                    <span class="foxui-radio-label">顶级目录名称/list_ID.html (<a onclick="checkExample(event)">查看例子</a><span style="display: none">：{$domain}{$html_save_path}/article/lists_1.html</span>)</span>
+                                </div>
+                                <div class="foxui-radio foxui-margin-left-0 foxui-margin-bottom-12 {if $column_page == 2} is-checked {/if}">
+                                    <span class="foxui-radio-input">
+                                        <i class="foxui-radio-icon"></i>
+                                        <input type="radio" value="2"/>
+                                    </span>
+                                    <span class="foxui-radio-label" name="column_page">父级目录名称/子目录名称/ (<a onclick="checkExample(event)">查看例子</a><span style="display: none">：{$domain}{$html_save_path}/article/lol/</span>)</span>
+                                </div>
+
+                                <div class="foxui-radio foxui-margin-left-0 foxui-margin-bottom-12 {if $column_page == 3} is-checked {/if}">
+                                    <span class="foxui-radio-input">
+                                        <i class="foxui-radio-icon"></i>
+                                        <input type="radio" value="3"/>
+                                    </span>
+                                    <span class="foxui-radio-label" name="column_page">自定义 (<a onclick="checkExample(event)">查看例子</a><span style="display: none">：在【栏目列表】设置栏目可以自定义文件保存目录</span>)</span>
+                                </div>
+
+                            </div>
+                        </div>
+                    </div>
+
+                    <div class="section-main-item" data-name="document_page">
+                        <div class="foxui-input-group foxui-align-items-start">
+                            <div class="input-label">
+                                <label>文档页面名称：</label>
+                            </div>
+                            <div class="block-box foxui-radio-group foxui-display-flex foxui-flex-column">
+
+                                <div class="foxui-radio foxui-margin-left-0 foxui-margin-bottom-12 {if $document_page == 1} is-checked {/if}">
+                                    <span class="foxui-radio-input">
+                                        <i class="foxui-radio-icon"></i>
+                                        <input type="radio" value="1" name="document_page"/>
+                                    </span>
+                                    <span class="foxui-radio-label">父级目录名称/子目录名称/年月日/ID.html (<a onclick="checkExample(event)">查看例子</a><span style="display: none">：{$domain}{$html_save_path}/article/lol/20220816/1.html</span>)</span>
+                                </div>
+                                <div class="foxui-radio foxui-margin-left-0 foxui-margin-bottom-12 {if $document_page == 2} is-checked {/if}">
+                                    <span class="foxui-radio-input">
+                                        <i class="foxui-radio-icon"></i>
+                                        <input type="radio" value="2"/>
+                                    </span>
+                                    <span class="foxui-radio-label" name="document_page">父级目录名称/子目录名称/ID.html (<a onclick="checkExample(event)">查看例子</a><span style="display: none">：{$domain}{$html_save_path}/article/lol/1.html</span>)</span>
+                                </div>
+
+                                <div class="foxui-radio foxui-margin-left-0 foxui-margin-bottom-12 {if $document_page == 3} is-checked {/if}">
+                                    <span class="foxui-radio-input">
+                                        <i class="foxui-radio-icon"></i>
+                                        <input type="radio" value="3"/>
+                                    </span>
+                                    <span class="foxui-radio-label" name="document_page">自定义 (<a onclick="checkExample(event)">查看例子</a><span style="display: none">：在【栏目列表】设置栏目可以自定义文件保存目录</span>)</span>
+                                </div>
+
+                            </div>
+                        </div>
+                    </div>
+
+                </div>
+            </div>
+        </div>
+    </div>
+</div>
+
+
+<div class="foxcms-content-footer">
+    <button class="is-long foxui-size-small foxui-solid-primary" id="save">保存</button>
+</div>
+
+{include file="footed-copy"/}
+{/block}
+
+
+{block name="js"}
+
+<script>
+    $('div[data-name="pseudo_status"]').click(function () {
+        let pseudo_status = 0;
+        if(!($(this).hasClass("is-checked"))){
+            pseudo_status = 1;
+        }
+        $.ajax({
+            type: "post",
+            url: '{:url("pseudoUpdate")}',
+            dataType: "json",
+            data: {pseudo_status},
+            success: function (res) {
+                if (res.code == 1) {
+                    if (res.data == "") {
+                        foxui.message({
+                            type: 'success',
+                            text: res.msg
+                        })
+                    } else {
+                        foxui.message({
+                            type: 'warning',
+                            text: res.msg
+                        })
+                    }
+                } else {
+                    foxui.message({
+                        type: 'warning',
+                        text: res.msg
+                    })
+                }
+            }, error: function (res) {
+                foxui.message({
+                    type: 'warning',
+                    text: '操作失败'
+                })
+            }
+        });
+    });
+    function guide(type) {
+        window.open("//www.foxcms.cn/help/manual/faq/11.html");
+    }
+    function checkExample(event) {
+        let curObj = event.target;
+        let nextObj = $(curObj).next();
+        let showVal = $(nextObj).css('display');
+        if(showVal == "" || showVal == "none"){
+            $(nextObj).css({"display": "inline-block"});
+        }else{
+            $(nextObj).css({"display": "none"});
+        }
+    }
+</script>
+
+<script>
+    //一键生成
+    $(".a-key").on("click", function (){
+        let dataId = $(this).attr("data-id");
+        let columnId = $('input[name="column"]').attr("data-id");//栏目id
+
+        //状态
+        let url_model = $('div[data-name="url_model"]').find('.foxui-radio.is-checked input').val();
+        let column_page = $('div[data-name="column_page"]').find('.foxui-radio.is-checked input').val();
+        let document_page = $('div[data-name="document_page"]').find('.foxui-radio.is-checked input').val();
+        let pseudo_status = $('div[data-name="pseudo_status"]').hasClass("is-checked")?1:0
+
+        let params = {"oneId":dataId, "columnId": columnId, "first":1, url_model, column_page, document_page,pseudo_status};
+        allSite(params);
+    });
+
+    //url模式项
+    let fi = $('div[data-name="url_model"]').find(".foxui-radio.is-checked input").val();
+    if(fi == 3){
+        $("#staticPage").show();
+        $("#pseudoPage").hide();
+    }else if(fi == 2){
+        $("#pseudoPage").show();
+        $("#staticPage").hide();
+    }else{
+        $("#staticPage").hide();
+        $("#pseudoPage").hide();
+    }
+    $('div[data-name="url_model"] .foxui-radio').on("click", function (){
+        $inputVal = $(this).find("input").val();
+        if($inputVal == 3){
+            $("#staticPage").show();
+            $("#pseudoPage").hide();
+        }else if($inputVal == 2){
+            $("#pseudoPage").show();
+            $("#staticPage").hide();
+        }else{
+            $("#staticPage").hide();
+            $("#pseudoPage").hide();
+        }
+    });
+
+    //保存
+    $('#save').click(function () {
+
+        //状态
+        let url_model = $('div[data-name="url_model"]').find('.foxui-radio.is-checked input').val();
+        let column_page = $('div[data-name="column_page"]').find('.foxui-radio.is-checked input').val();
+        let document_page = $('div[data-name="document_page"]').find('.foxui-radio.is-checked input').val();
+        let pseudo_status = $('div[data-name="pseudo_status"]').hasClass("is-checked")?1:0
+        let datas = {url_model, column_page, document_page, pseudo_status};
+        foxui.dialog({
+            title: '保存',
+            content: '您确定要保存吗',
+            cancelText: '取消',
+            confirmText: '保存',
+            confirm: function (callback) {
+                $.ajax({
+                    type: "post",
+                    url: '{:url("save")}',
+                    dataType: "json",
+                    data: datas,
+                    success: function (res) {
+                        if (res.code == 1) {
+                            if (res.data == "") {
+                                foxui.message({
+                                    type: 'success',
+                                    text: res.msg
+                                })
+                                setTimeout('myrefresh()', 1000); //指定10秒刷新一次
+                            } else {
+                                foxui.message({
+                                    type: 'warning',
+                                    text: res.msg
+                                })
+                            }
+                        } else {
+                            foxui.message({
+                                type: 'warning',
+                                text: res.msg
+                            })
+                        }
+                    }, error: function (res) {
+                        foxui.message({
+                            type: 'warning',
+                            text: '操作失败'
+                        })
+                    }
+                });
+                callback();
+            },
+            cancel: function () {
+                foxui.message({
+                    type: 'warning',
+                    text: '取消操作'
+                })
+            },
+        });
+
+    })
+
+</script>
+
+{/block}
+

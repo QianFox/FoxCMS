@@ -1,0 +1,177 @@
+{extend name="foxcms" /}
+
+{block name="css"}
+{/block}
+
+{block name="body"}
+<input name="columnId" type="hidden" value="{$columnId}"/>
+
+<div class="foxcms-content-inner">
+    <!-- page content -->
+    <div class="contact-way-content">
+        <div class="section section-panel">
+            <div class="section-title">添加模型</div>
+            <div class="section-main">
+                <div class="section-main-item">
+                    <div class="foxui-input-group">
+                        <div class="input-label">
+                            <label>模型名称：</label>
+                        </div>
+                        <div class="input-box">
+                            <div class="foxui-input-suffix">
+                                <input class="foxui-size-small" maxlength="30" placeholder="请输入模型名称" name="name">
+                                <i class="foxui-suffix-icon foxui-suffix-count">0/30</i>
+                            </div>
+                        </div>
+                    </div>
+                </div>
+
+                <div class="section-main-item">
+                    <div class="foxui-input-group">
+                        <div class="input-label">
+                            <label>模型标识：</label>
+                        </div>
+                        <div class="input-box">
+                            <div class="foxui-input-suffix">
+                                <input class="foxui-size-small" name="nid" maxlength="30" placeholder="请输入模型标识" value="" onkeyup="this.value=this.value.replace(/[^a-z_0-9]/g,'');"/>
+                                <i class="foxui-suffix-icon foxui-suffix-count">0/60</i>
+                            </div>
+                        </div>
+                    </div>
+                    <p class="input-box-info">
+                        只能用英文字母,数字或下划线，数据表的真实表名，必须英文字母开头
+                        <br>
+                        列表模板是：list_模型标识.html
+                        <br>
+                        文档模板是：view_模型标识.html
+                    </p>
+                </div>
+
+                <div class="section-main-item">
+                    <div class="foxui-input-group">
+                        <div class="input-label">
+                            <label class="foxui-required">状态：</label>
+                        </div>
+                        <div class="input-box status">
+                            <div class="foxui-radio-group">
+                                <div class="foxui-radio is-checked">
+                                    <span class="foxui-radio-input">
+                                        <i class="foxui-radio-icon"></i>
+                                        <input type="radio" value="1" name="status">
+                                    </span>
+                                    <span class="foxui-radio-label">启用</span>
+                                </div>
+                                <div class="foxui-radio">
+                                    <span class="foxui-radio-input">
+                                        <i class="foxui-radio-icon"></i>
+                                        <input type="radio" value="0" name="status">
+                                    </span>
+                                    <span class="foxui-radio-label">禁用</span>
+                                </div>
+                            </div>
+                        </div>
+                    </div>
+                </div>
+
+                <div class="section-main-item">
+                    <div class="foxui-input-group">
+                        <div class="input-label">
+                            <label class="foxui-required">参照模型：</label>
+                        </div>
+                        <div class="input-box reference_model">
+                            <div class="foxui-radio-group">
+                                <div class="foxui-radio is-checked">
+                                    <span class="foxui-radio-input">
+                                        <i class="foxui-radio-icon"></i>
+                                        <input type="radio" value="0">
+                                    </span>
+                                    <span class="foxui-radio-label">文章模型</span>
+                                </div>
+                                <div class="foxui-radio">
+                                    <span class="foxui-radio-input">
+                                        <i class="foxui-radio-icon"></i>
+                                        <input type="radio" value="1">
+                                    </span>
+                                    <span class="foxui-radio-label">单页模型</span>
+                                </div>
+                            </div>
+                        </div>
+                    </div>
+                </div>
+
+            </div>
+        </div>
+    </div>
+</div>
+
+<div class="foxcms-content-footer">
+    <button class="is-long foxui-size-small foxui-solid-primary" id="save">保存</button>
+</div>
+{include file="footed-copy"/}
+{/block}
+
+{block name="js"}
+
+<script src="{$staticPath}js/jquery.validate.min.js"></script>
+
+<script>
+    // 检查字符串是否以英文字母开头
+    function letterBegin(str) {
+        return /^[a-z]/.test(str);
+    }
+
+    // 保存
+    $('#save').click(function () {
+        // 状态
+        let status = $('.status .foxui-radio.is-checked input').val();
+        let reference_model = $('.reference_model .foxui-radio.is-checked input').val();
+        let name = $('input[name="name"]').val();
+        let nid = $('input[name="nid"]').val();
+        let datas = { "name": name, "nid": nid, "status": status, reference_model };
+
+        // 验证模型标识是否以英文字母开头
+        if (!letterBegin(nid)) {
+            foxui.message({
+                type: 'warning',
+                text: '模型标识必须以英文字母开头'
+            });
+            return; // 阻止表单提交
+        }
+
+        foxui.dialog({
+            title: '保存',
+            content: '您确定要保存吗',
+            cancelText: '取消',
+            confirmText: '保存',
+            confirm: function (callback) {
+                ajaxR('add', 'post', datas, {}, function (res) {
+                    if (res.code == 1) {
+                        foxui.message({
+                            type: 'success',
+                            text: res.msg
+                        });
+                        window.location.href = document.referrer; // 返回并且刷新
+                    } else {
+                        foxui.message({
+                            type: 'warning',
+                            text: res.msg
+                        });
+                    }
+                }, function (res) {
+                    foxui.message({
+                        type: 'danger',
+                        text: res.msg
+                    });
+                });
+                callback();
+            },
+            cancel: function () {
+                foxui.message({
+                    type: 'warning',
+                    text: '取消操作'
+                });
+            },
+        });
+    });
+</script>
+{/block}

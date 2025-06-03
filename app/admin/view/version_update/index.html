@@ -1,0 +1,302 @@
+{extend name="foxcms" /}
+
+{block name="css"}
+{/block}
+
+{block name="body"}
+<input name="bcid" value="{$bcid}" type="hidden" />
+<input name="columnId" value="{$cid}" type="hidden" />
+<div class="foxcms-content-inner">
+	<!-- page content -->
+	<div class="diy-form-content">
+
+		<div class="section section-panel margin-top-10">
+			<div class="foxui-table foxui-table-border-bottom foxui-table-hover foxui-checkbox-group">
+
+				<ul class="foxui-table-thead foxui-checkbox-head">
+					<li class="foxui-table-tr">
+						<div class="foxui-table-th">版本号</div>
+						<div class="foxui-table-th">类型</div>
+						<div class="foxui-table-th">更新时间</div>
+						<div class="foxui-table-th">大小</div>
+						<div class="foxui-table-th">更新</div>
+						<div class="foxui-table-th">说明</div>
+						<div class="foxui-table-th">功能说明</div>
+					</li>
+				</ul>
+
+				<ul class="foxui-table-tbody foxui-checkbox-list loading-container" id="loadingContainer">
+					<!--表格内容-->
+				</ul>
+
+			</div>
+
+		</div>
+	</div>
+</div>
+
+{include file="footed-copy"/}
+{/block}
+
+
+{block name="js"}
+<script>
+
+	/**
+	 * 初始化数据
+	 */
+	function init(){
+		let keyword = $('input[name="keyword"]').val();
+		let bcid = $("input[name='bcid']").val()
+		let searchData = {
+			"keyword": keyword,
+			"bcid": bcid
+		};
+
+		$.ajax({
+			type: "post",
+			url: "index",
+			dataType: "json",
+			data: searchData,
+			success: function (res) {
+				if (res.code == 1 && res.data) {
+					let data = res.data;
+					initTable(data);
+				}
+				$('#loadingContainer').removeClass('loading-container');
+			}, error: function (res) {
+				$('#loadingContainer').removeClass('loading-container');
+			}
+		});
+	}
+
+	/**
+	 * @description: 初始化表格
+	 * @param {*} pageSize
+	 * @param {*} total
+	 * @param {*} currentPage
+	 * @param {*} dataList
+	 * @return {*}
+	 * @Date: 2022-01-12 10:55:11
+	 */
+	function initTable(dataList) {
+		// 追加表格 html
+		_appendToTable(dataList);
+	}
+
+	/**
+	 * @description: 追加表格 html
+	 * @param {*} dataList
+	 * @return {*}
+	 * @Date: 2022-01-12 00:18:40
+	 */
+	function _appendToTable(dataList) {
+		const html = _trsHtml(dataList);
+		$('.foxui-table-tbody').empty().append(html);
+	}
+
+	/**
+	 * @description: 表格 html
+	 * @param {*} dataList
+	 * @return {*}
+	 * @Date: 2022-01-12 00:18:52
+	 */
+	function _trsHtml(dataList) {
+		let htmlArr = [];
+		dataList.forEach(item => {
+			let updateHtml = ``;
+			if(item.iscopy == 1){
+				updateHtml = `<button class="foxui-plain-primary foxui-size-small"  id="${item.id}" onclick="restoreFile(this)" title="还原">
+					<i class="foxui-icon-fanhui-o"></i><span style="margin-left: 5px;">版本还原</span>
+					</button>`;
+			}else{
+				updateHtml = `<button class="foxui-solid-primary foxui-size-small"  id="${item.id}" onclick="updateFile(this)" title="更新">
+					<i class="foxui-icon-shangchuan-o"></i><span style="margin-left: 5px;">版本更新</span>
+					</button>`;
+			}
+			let curClass = "";
+			let curFontClass = "";
+			let curI = "";
+			let curText = "更新包";
+			if(item.iscur){
+				curClass="background-color: #d4e4ff;border-bottom:none;";
+				curI = '<i class="foxui-icon-banben-f" style="font-size: 22px;color: #2879fe"></i>';
+				curFontClass = "color: #2879fe";
+				curText = "当前版本";
+			}
+			htmlArr.push(`
+            <li class="foxui-table-tr" style="${curClass}">
+                <div class="foxui-table-td" style="${curFontClass}">${item.code}${curI}</div>
+                <div class="foxui-table-td" style="${curFontClass}">${curText}</div>
+                <div class="foxui-table-td" style="${curFontClass}">${item.create_time}</div>
+                <div class="foxui-table-td" style="${curFontClass}">${item.file_size}</div>
+                <div class="foxui-table-td">
+					${updateHtml}
+                </div>
+                <div class="foxui-table-td">
+                    <button class="foxui-text-primary foxui-size-medium"  id="${item.id}" title="说明" onclick="explain(this)">
+                    <i class="foxui-icon-ziti-o"></i>
+					</button>
+                </div>
+                <div class="foxui-table-td">
+                	<a href="${item.explain_url}" target="_blank">
+						<button class="foxui-text-primary foxui-size-medium" title="查看">
+							<i class="foxui-icon-wenzhang-f"></i><span>查看</span>
+						</button>
+					</a>
+                </div>
+            </li>
+        `);
+		});
+		if(htmlArr.length <= 0){
+			htmlArr.push(`
+			<li style="text-align: center;font-size: 18px; display: flex;justify-content: center;align-items: center;" class="foxui-margin-top-32 foxui-margin-bottom-18">
+				<i class="foxui-icon-tishi-o foxui-margin-right-4" style="font-size: 24px;color: red;"></i><span>没有获取到系统更新信息</span>
+			</li>
+			`);
+		}
+		return htmlArr.join('');
+	}
+
+	init();
+
+	//更新文件
+	function updateFile(obj){
+		let id = $(obj).attr("id");
+		$.ajax({
+			type: "get",
+			url: 'updateFile?id=' + id,
+			dataType: "json",
+			success: function(res) {
+				if (res.code == 1) {
+					let columnId = $('input[name="columnId"]').val();
+					if(res.data != ""){
+                        updateTip();
+					}else {
+						window.location.href = `updateFile?type=1&id=${id}&columnId=${columnId}`;
+					}
+				} else {
+					foxui.message({
+						text: res.msg,
+						type: 'warning',
+					});
+				}
+			},
+			error: function(res) {
+				foxui.message({
+					text: res.responseJSON.msg,
+					type: 'info',
+				});
+			}
+		});
+	}
+
+	//授权提示
+	function updateTip() {
+        let content = `
+						<div style="display: flex;flex-direction: column; align-items: center;">
+							<div style="font-size: 20px; color: #1a1a1a; display: flex;"><i style="font-size: 26px;margin-right: 3px;" class="foxui-icon-tishi-o"></i><span>非官方商业授权版，请下载更新包手动更新</span></div>
+							<div class="foxui-margin-top-24">
+								<button class="foxui-plain-primary" onclick="toAuthorize()">前往授权</button>
+								<button class="foxui-solid-primary" onclick="manualUpdate()">手动更新</button>
+							</div>
+						</div>
+						`;
+        foxui.dialog({
+            content: content,
+            width: '620px',
+        });
+    }
+
+	//去授权
+	function toAuthorize() {
+		window.open("//www.foxcms.cn");
+	}
+
+	//手动更新
+	function manualUpdate() {
+        window.open("//www.foxcms.cn/system/patch");
+	}
+
+	//说明
+	function explain(obj){
+		let id = $(obj).attr("id");
+		let columnId = $('input[name="columnId"]').val();
+        $.ajax({
+            type: "get",
+            url: 'explain',
+            dataType: "json",
+            data:{
+                id, columnId
+            },
+            success: function(res) {
+                if (res.code == 1) {
+                    if(res.data != ""){
+                        updateTip();
+                    }else {
+                        window.location.href = `explain?type=1&id=${id}&columnId=${columnId}`;
+                    }
+                } else {
+                    foxui.message({
+                        text: res.msg,
+                        type: 'warning',
+                    });
+                }
+            },
+            error: function(res) {
+                foxui.message({
+                    text: res.responseJSON.msg,
+                    type: 'info',
+                });
+            }
+        })
+
+	}
+	//还原
+	function restoreFile(obj){
+		let id = $(obj).attr("id");
+		foxui.dialog({
+			title: '系统还原',
+			content: '您确定要还原当前FoxCMS系统为上一个版本吗？',
+			confirmText: '确定',
+			cancelText: '取消',
+			buttonType: 'danger',
+			confirm: function (callback) {
+				foxui.loading({text:'还原中'})
+				$.ajax({
+					type: "get",
+					url: 'restoreFile?id=' + id,
+					dataType: "json",
+					success: function(res) {
+						if (res.code == 1) {
+							foxui.message({
+								text: "系统版本还原成功",
+								type: 'success',
+							});
+							init();
+						} else {
+							foxui.message({
+								text: res.msg,
+								type: 'warning',
+							});
+						}
+						foxui.closeLoading();
+					},
+					error: function(res) {
+						foxui.message({
+							text: res.responseJSON.msg,
+							type: 'info',
+						});
+						foxui.closeLoading();
+					}
+				});
+				callback();
+			},
+			cancel: function () {
+				console.log("取消")
+			},
+		});
+	}
+</script>
+
+{/block}

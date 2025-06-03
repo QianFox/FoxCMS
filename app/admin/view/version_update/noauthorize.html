@@ -1,0 +1,38 @@
+{extend name="foxcms" /}
+
+{block name="css"}
+<link rel="stylesheet" href="{$staticPath}authorize/common.min.css" />
+{/block}
+
+{block name="body"}
+
+<div class="authorize-page">
+    <!-- 内容 -->
+    <div class="authorize-content-inner" style="border-radius:0px;">
+        <div class="authorize-content-head unauthorized">域名未授权查询结果</div>
+        <div class="authorize-content-body">
+            <div class="foxui-padding-top-12 foxui-padding-bottom-20">
+                <i class="foxui-icon-warn-solid unauthorized-icon"></i>
+                <p class="unauthorized-info">尚未获得授权许可，为保障您的权利请购买授权!</p>
+            </div>
+            <div class="foxui-padding-top-12 foxui-padding-bottom-20">
+                <a href="{$authorize_url}" target="_blank">
+                    <button class="foxui-size-small foxui-plain-primary">
+                        <i class="foxui-icon-shuangxiangyou-o"></i>
+                        <span>前往授权</span>
+                    </button>
+                </a>
+            </div>
+        </div>
+    </div>
+</div>
+
+{include file="footed-copy"/}
+{/block}
+
+{block name="js"}
+<script src="{$staticPath}js/jquery-3.6.0.min.js"></script>
+<script src="{$staticPath}authorize/html2canvas.min.js"></script>
+<script src="{$staticPath}authorize/canvas-bg.js"></script>
+<script src="{$staticPath}authorize/authorize.js"></script>
+{/block}

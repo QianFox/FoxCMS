@@ -1,0 +1,482 @@
+{extend name="foxcms" /}
+
+{block name="css"}
+{/block}
+
+{block name="body"}
+
+
+
+<div class="foxcms-content-inner">
+    <!-- page content -->
+    <div class="basic-set-content">
+        <div class="section section-panel">
+            <div class="section-title">Sitemap网站地图</div>
+            <div class="section-main">
+                <!--<div class="section-main-item">
+                    <div class="foxui-input-group">
+                        <div class="input-label">
+                            <label class="foxui-required">自动生成：</label>
+                        </div>
+                        <div class="input-box is_auto">
+                            <div class="foxui-radio-group">
+                                <div class="foxui-radio {if ($sitemap.is_auto) == 1} is-checked {/if}">
+                                    <span class="foxui-radio-input">
+                                        <i class="foxui-radio-icon"></i>
+                                        <input type="radio" value="1"/>
+                                    </span>
+                                    <span class="foxui-radio-label">启用</span>
+                                </div>
+                                <div class="foxui-radio {if ($sitemap.is_auto) == 0} is-checked {/if}">
+                                    <span class="foxui-radio-input">
+                                        <i class="foxui-radio-icon"></i>
+                                        <input type="radio" value="0"/>
+                                    </span>
+                                    <span class="foxui-radio-label" name="is_auto">关闭</span>
+                                    <i id="wenti" class="foxui-icon-wenti-o foxui-margin-left-8"></i>
+                                </div>
+                            </div>
+                        </div>
+                    </div>
+                </div>-->
+
+                <div class="section-main-item">
+                    <div class="foxui-input-group">
+                        <div class="input-label">
+                            <label>过滤栏目及内容：</label>
+                        </div>
+                        <div class="input-box filter0">
+                            <div class="foxui-checkbox {if in_array('hide_column', $filters) }is-checked{/if}">
+								<span class="foxui-checkbox-input">
+									<i class="foxui-checkbox-icon"></i>
+									<input type="checkbox" value="hide_column" checked="checked"/>
+								</span>
+                                <span class="foxui-checkbox-label">过滤隐藏栏目</span>
+                            </div>
+                            <div class="foxui-checkbox {if in_array('outer_model', $filters) }is-checked{/if}">
+								<span class="foxui-checkbox-input">
+									<i class="foxui-checkbox-icon"></i>
+									<input type="checkbox" value="outer_model"/>
+								</span>
+                                <span class="foxui-checkbox-label">过滤外部模块</span>
+                            </div>
+                        </div>
+                    </div>
+                </div>
+
+                <div class="section-main-item sitemap_type">
+                    <div class="foxui-input-group foxui-align-items-start">
+                        <div class="input-label">
+                            <label>Sitemap类型：</label>
+                        </div>
+                        <div class="block-box foxui-radio-group foxui-display-flex foxui-flex-column">
+
+                            <div class="foxui-margin-bottom-24">
+                                <div onclick="checkItem(event)" class="foxui-checkbox foxui-margin-left-0 foxui-margin-bottom-12 {if in_array('xml',$sitemapTypes)}is-checked{/if}">
+                                    <span class="foxui-checkbox-input">
+                                        <i class="foxui-checkbox-icon"></i>
+                                        <input type="checkbox" value="xml">
+                                    </span>
+                                    <span class="foxui-radio-label">xml地图 </span>
+                                </div>
+                                <div class="foxui-display-inline-block {if !in_array('xml',$sitemapTypes)}display-none{/if}">
+                                    <span class="foxui-margin-left-8 blue-color" style="display: inline-block">
+                                        <a href="{$sm.xml_url}" target="_blank">{$sm.xml_url}</a>
+                                    </span>
+                                    <button class="foxui-plain-primary foxui-margin-left-8 foxui-size-mini" onclick="handUpdate('xml')">更新</button>
+                                </div>
+                            </div>
+
+                            <div class="foxui-margin-bottom-24">
+                                <div onclick="checkItem(event)" class="foxui-checkbox foxui-margin-left-0 foxui-margin-bottom-12 {if in_array('txt',$sitemapTypes)}is-checked{/if}">
+                                    <span class="foxui-checkbox-input">
+                                        <i class="foxui-checkbox-icon"></i>
+                                        <input type="checkbox" value="txt"/>
+                                    </span>
+                                    <span class="foxui-radio-label">txt地图 </span>
+                                </div>
+                                <div class="foxui-display-inline-block {if !in_array('txt',$sitemapTypes)}display-none{/if}">
+                                    <span class="foxui-margin-left-8 blue-color" style="display: inline-block">
+                                        <a href="{$sm.txt_url}" target="_blank">{$sm.txt_url}</a>
+                                    </span>
+                                    <button class="foxui-plain-primary foxui-margin-left-8 foxui-size-mini" onclick="handUpdate('txt')">更新</button>
+                                </div>
+                            </div>
+
+                            <div class="foxui-margin-bottom-24">
+                                <div onclick="checkItem(event)" class="foxui-checkbox foxui-margin-left-0 foxui-margin-bottom-12 {if in_array('html',$sitemapTypes)}is-checked{/if}">
+                                     <span class="foxui-checkbox-input">
+                                        <i class="foxui-checkbox-icon"></i>
+                                        <input type="checkbox" value="html"/>
+                                     </span>
+                                    <span class="foxui-radio-label">html地图 </span>
+                                </div>
+                                <div class="foxui-display-inline-block {if !in_array('html',$sitemapTypes)}display-none{/if}">
+                                    <span class="foxui-margin-left-8 blue-color" style="display: inline-block">
+                                        <span class="foxui-margin-left-8 blue-color" style="display: inline-block">
+                                            <a href="{$sm.html_url}" target="_blank">{$sm.html_url}</a>
+                                        </span>
+                                    </span>
+
+                                    <button class="foxui-plain-primary foxui-margin-left-8 foxui-size-mini" onclick="handUpdate('html')">更新</button>
+
+<!--                                    <span>(<a onclick="checkExample(event)">查看模板</a><span>: {$sitemap}</span>)</span>-->
+                                </div>
+                            </div>
+
+                        </div>
+                    </div>
+                </div>
+
+                <!--<div class="section-main-item frequency foxui-margin-top-4">
+                    <div class="foxui-input-group">
+                        <div class="input-label">
+                            <label>更新频率：</label>
+                        </div>
+                        <div class="input-box">
+                            <ul class="foxui-menu">
+                                <li class="foxui-menu-submenu up-item">
+                                    <div class="foxui-menu-handle foxui-menu-icon">
+                                        <span>首页</span>
+                                        {if sizeof($frequencys) > 0}
+                                        <span class="foxui-margin-left-4 value" data-value="{$frequencys[0]}">
+                                            {foreach $frequencyList as $key=>$vo}
+                                            {if $frequencys[0] == $vo.key}
+                                            {$vo.text}
+                                            {/if}
+                                            {/foreach}
+                                        </span>
+                                        {else /}
+                                        <span class="foxui-margin-left-4 value" data-value="{$frequencyList[0].key}">
+                                            {$frequencyList[0].text}
+                                        </span>
+                                        {/if}
+                                    </div>
+                                    <div class="foxui-menu-menu">
+                                        <ul class="foxui-menu-slide items">
+                                            {if sizeof($frequencys) > 0}
+                                            {foreach $frequencyList as $key=>$vo}
+                                            <li class="{if $frequencys[0]==$vo.key}foxui-menu-item-title{else/}foxui-menu-item{/if}" data-value="{$vo.key}">{$vo.text}</li>
+                                            {/foreach}
+                                            {else /}
+                                            {foreach $frequencyList as $key=>$vo}
+                                            <li class="{if $key==0}foxui-menu-item-title{else/}foxui-menu-item{/if}" data-value="{$vo.key}">{$vo.text}</li>
+                                            {/foreach}
+                                            {/if}
+                                        </ul>
+                                    </div>
+                                </li>
+
+                                <li class="foxui-menu-submenu up-item">
+                                    <div class="foxui-menu-handle foxui-menu-icon">
+                                        <span>列表页</span>
+                                        {if sizeof($frequencys) > 1}
+                                        <span class="foxui-margin-left-4 value" data-value="{$frequencys[1]}">
+                                            {foreach $frequencyList as $key=>$vo}
+                                            {if $frequencys[1] == $vo.key}
+                                            {$vo.text}
+                                            {/if}
+                                            {/foreach}
+                                        </span>
+                                        {else /}
+                                        <span class="foxui-margin-left-4 value" data-value="{$frequencyList[1].key}">
+                                            {$frequencyList[1].text}
+                                        </span>
+                                        {/if}
+                                    </div>
+                                    <div class="foxui-menu-menu">
+                                        <ul class="foxui-menu-slide items">
+                                            {if sizeof($frequencys) > 1}
+                                            {foreach $frequencyList as $key=>$vo}
+                                            <li class="{if $frequencys[1]==$vo.key}foxui-menu-item-title{else/}foxui-menu-item{/if}" data-value="{$vo.key}">{$vo.text}</li>
+                                            {/foreach}
+                                            {else /}
+                                            {foreach $frequencyList as $key=>$vo}
+                                            <li class="{if $key==1}foxui-menu-item-title{else/}foxui-menu-item{/if}" data-value="{$vo.key}">{$vo.text}</li>
+                                            {/foreach}
+                                            {/if}
+                                        </ul>
+                                    </div>
+                                </li>
+
+                                <li class="foxui-menu-submenu up-item">
+                                    <div class="foxui-menu-handle foxui-menu-icon">
+                                        <span>内容页</span>
+                                        {if sizeof($frequencys) > 2}
+                                        <span class="foxui-margin-left-4 value" data-value="{$frequencys[2]}">
+                                            {foreach $frequencyList as $key=>$vo}
+                                            {if $frequencys[2] == $vo.key}
+                                            {$vo.text}
+                                            {/if}
+                                            {/foreach}
+                                        </span>
+                                        {else /}
+                                        <span class="foxui-margin-left-4 value" data-value="{$frequencyList[2].key}">
+                                            {$frequencyList[2].text}
+                                        </span>
+                                        {/if}
+                                    </div>
+                                    <div class="foxui-menu-menu">
+                                        <ul class="foxui-menu-slide items">
+                                            {if sizeof($frequencys) > 2}
+                                            {foreach $frequencyList as $key=>$vo}
+                                            <li class="{if $frequencys[2]==$vo.key}foxui-menu-item-title{else/}foxui-menu-item{/if}" data-value="{$vo.key}">{$vo.text}</li>
+                                            {/foreach}
+                                            {else /}
+                                            {foreach $frequencyList as $key=>$vo}
+                                            <li class="{if $key==2}foxui-menu-item-title{else/}foxui-menu-item{/if}" data-value="{$vo.key}">{$vo.text}</li>
+                                            {/foreach}
+                                            {/if}
+                                        </ul>
+                                    </div>
+                                </li>
+
+                            </ul>
+                        </div>
+                    </div>
+                </div>-->
+
+                <div class="section-main-item level foxui-margin-top-4">
+                    <div class="foxui-input-group">
+                        <div class="input-label">
+                            <label>优先级别：</label>
+                        </div>
+                        <div class="input-box">
+                            <ul class="foxui-menu">
+                                <li class="foxui-menu-submenu up-item">
+                                    <div class="foxui-menu-handle foxui-menu-icon">
+                                        <span>首页</span>
+                                        {if sizeof($levels) > 0}
+                                        <span class="foxui-margin-left-4 value">{$levels[0]}</span>
+                                        {else /}
+                                        <span class="foxui-margin-left-4 value">{$levelList[0]}</span>
+                                        {/if}
+                                    </div>
+                                    <div class="foxui-menu-menu">
+                                        <ul class="foxui-menu-slide items">
+                                            {if sizeof($levels) > 0}
+                                            {foreach $levelList as $key=>$vo}
+                                            <li class="{if $levels[0]==$vo}foxui-menu-item-title{else/}foxui-menu-item{/if}">{$vo}</li>
+                                            {/foreach}
+                                            {else /}
+                                            {foreach $levelList as $key=>$vo}
+                                            <li class="{if $key==0}foxui-menu-item-title{else/}foxui-menu-item{/if}">{$vo}</li>
+                                            {/foreach}
+                                            {/if}
+                                        </ul>
+                                    </div>
+                                </li>
+                                <li class="foxui-menu-submenu up-item">
+                                    <div class="foxui-menu-handle foxui-menu-icon">
+                                        <span>列表页</span>
+                                        {if sizeof($levels) > 1}
+                                        <span class="foxui-margin-left-4 value">{$levels[1]}</span>
+                                        {else /}
+                                        <span class="foxui-margin-left-4 value">{$levels[1]}</span>
+                                        {/if}
+                                    </div>
+                                    <div class="foxui-menu-menu">
+                                        <ul class="foxui-menu-slide items">
+                                            {if sizeof($levels) > 1}
+                                            {foreach $levelList as $key=>$vo}
+                                            <li class="{if $levels[1]==$vo}foxui-menu-item-title{else/}foxui-menu-item{/if}">{$vo}</li>
+                                            {/foreach}
+                                            {else /}
+                                            {foreach $levelList as $key=>$vo}
+                                            <li class="{if $key==7}foxui-menu-item-title{else/}foxui-menu-item{/if}">{$vo}</li>
+                                            {/foreach}
+                                            {/if}
+                                        </ul>
+                                    </div>
+                                </li>
+                                <li class="foxui-menu-submenu up-item">
+                                    <div class="foxui-menu-handle foxui-menu-icon">
+                                        <span>内容页</span>
+                                        {if sizeof($levels) > 2}
+                                        <span class="foxui-margin-left-4 value">{$levels[2]}</span>
+                                        {else /}
+                                        <span class="foxui-margin-left-4 value">{$levels[4]}</span>
+                                        {/if}
+                                    </div>
+                                    <div class="foxui-menu-menu">
+                                        <ul class="foxui-menu-slide items">
+                                            {if sizeof($levels) > 2}
+                                            {foreach $levelList as $key=>$vo}
+                                            <li class="{if $levels[2]==$vo}foxui-menu-item-title{else/}foxui-menu-item{/if}">{$vo}</li>
+                                            {/foreach}
+                                            {else /}
+                                            {foreach $levelList as $key=>$vo}
+                                            <li class="{if $key==7}foxui-menu-item-title{else/}foxui-menu-item{/if}">{$vo}</li>
+                                            {/foreach}
+                                            {/if}
+                                        </ul>
+                                    </div>
+                                </li>
+                            </ul>
+                        </div>
+                    </div>
+                </div>
+
+            </div>
+        </div>
+    </div>
+</div>
+
+<div class="foxcms-content-footer">
+    <button class="is-long foxui-size-small foxui-solid-primary" id="save">保存</button>
+</div>
+
+{include file="footed-copy"/}
+{/block}
+
+
+{block name="js"}
+<script>
+    foxui.tooltip({
+        el: '#wenti',
+        content: '更新内容时候自动更新网站地图',
+        placement: ['right', 'center'],
+    });
+
+    function checkExample(event) {
+        event.stopPropagation();
+        let curObj = event.target;
+        let nextObj = $(curObj).next();
+        let showVal = $(nextObj).css('display');
+        if(showVal == "" || showVal == "none"){
+            $(nextObj).css({"display": "inline-block"});
+        }else{
+            $(nextObj).css({"display": "none"});
+        }
+    }
+
+    $('ul.items li').click(function () {
+        let val = $(this).text();
+        let dataV = $(this).attr("data-value");
+        let spanV = $(this).closest("li.up-item").find('span.value');
+        $(spanV).html(val);
+        $(spanV).attr("data-value", dataV);
+        $(this).siblings().removeClass("foxui-menu-item-title").removeClass("is-active");
+        $(this).siblings().addClass("foxui-menu-item");
+        $(this).removeClass("foxui-menu-item");
+        $(this).addClass("foxui-menu-item-title").addClass("is-active");
+    });
+
+    //切换显示
+    function checkItem(event) {
+       let obj = event.currentTarget;
+       let findObj = $(obj).next('div.foxui-display-inline-block');
+       if($(findObj).hasClass('display-none')){
+           $(findObj).removeClass('display-none');
+       }else{
+           $(findObj).addClass("display-none");
+       }
+    }
+    //手动更新
+    function handUpdate(type) {
+
+        $.ajax({
+            type: "post",
+            url: 'handUpdate',
+            dataType: "json",
+            data: {type},
+            success: function (res) {
+                if (res.code == 1) {
+                    foxui.message({
+                        type: 'success',
+                        text: res.msg
+                    })
+                } else {
+                    foxui.message({
+                        type: 'warning',
+                        text: res.msg
+                    })
+                }
+            }, error: function (res) {
+                foxui.message({
+                    type: 'warning',
+                    text: res.responseJSON.msg
+                })
+            }
+        });
+    }
+</script>
+
+
+<script>
+
+    //保存
+    $('#save').click(function () {
+
+        //自动生成
+        let is_auto = $('div.is_auto .foxui-radio.is-checked input').val();
+        //过滤栏目
+        let filter = '';
+        $('div.filter0').find('.foxui-checkbox.is-checked').each(function () {
+            filter += ($(this).find('input').val() + ",");
+        })
+        //sitemap类型
+        let sitemap_type = '';
+        $('div.sitemap_type').find('.foxui-checkbox.is-checked').each(function () {
+            sitemap_type += ($(this).find('input').val() + ",");
+        })
+        //更新频率
+        let frequency = '';
+        $('div.frequency').find('span.value').each(function () {
+            frequency += ($(this).attr("data-value") + ",");
+        })
+        //优先级别
+        let level = '';
+        $('div.level').find('span.value').each(function () {
+            level += ($(this).text() + ",");
+        })
+
+        let datas = {is_auto,filter,sitemap_type,frequency,level};
+
+        foxui.dialog({
+            title: '保存',
+            content: '您确定要保存吗',
+            cancelText: '取消',
+            confirmText: '保存',
+            confirm: function (callback) {
+                $.ajax({
+                    type: "post",
+                    url: 'index',
+                    dataType: "json",
+                    data: datas,
+                    success: function (res) {
+                        if (res.code == 1) {
+                            foxui.message({
+                                type: 'success',
+                                text: res.msg
+                            })
+                            setTimeout('myrefresh()', 1000); //指定10秒刷新一次
+                        } else {
+                            foxui.message({
+                                type: 'warning',
+                                text: res.msg
+                            })
+                        }
+                    }, error: function (res) {
+                        foxui.message({
+                            type: 'warning',
+                            text: res.responseJSON.msg
+                        })
+                    }
+                });
+                callback();
+            },
+            cancel: function () {
+                foxui.message({
+                    type: 'warning',
+                    text: '取消操作'
+                })
+            },
+        });
+
+    })
+
+</script>
+
+{/block}
+

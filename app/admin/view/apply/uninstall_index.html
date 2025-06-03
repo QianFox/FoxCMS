@@ -1,0 +1,101 @@
+{extend name="foxcms" /}
+
+{block name="css"}
+<link rel="stylesheet" href="{$staticPath}css/app.min.css" />
+{/block}
+
+{block name="body"}
+<input type="hidden" name="id" value="{$id}"/>
+<div class="foxcms-content-inner">
+	<!-- page content -->
+	<div class="apply-install-content">
+		<div class="foxui-bg-white foxui-padding-24">
+			<div class="foxui-display-flex foxui-align-items-center foxui-justify-content-between">
+				<div class="foxui-display-flex foxui-align-items-center">
+					<div class="app-pic">
+						<img src="{$version.icon}" alt="" />
+					</div>
+					<div class="app-text">
+						<h4 class="foxui-ellipsis-1">
+							<strong class="foxui-color-primary">{$version.name}</strong>
+							<span class="foxui-color-secondary">V{$version.version}</span>
+						</h4>
+						<p class="foxui-color-secondary foxui-ellipsis-1">{$version.description}</p>
+					</div>
+				</div>
+				<div>
+					<a class="primary-btn" href="{$version.link}" target="_blank">查看详情</a>
+				</div>
+			</div>
+			<div class="install-progress"></div>
+			<h2 class="foxui-color-primary fw-bold foxui-margin-top-24">应用卸载</h2>
+			<div class="uninstall-block foxui-border foxui-padding-28">
+				<div class="foxui-display-flex foxui-align-items-center foxui-justify-content-between">
+					<div class="text">
+						<h1 class="fs-24 foxui-color-dark foxui-margin-bottom-0">您确定要卸载此应用吗？</h1>
+						<p class="fs-12 foxui-color-regular foxui-margin-top-4">请确保您真正希望卸载此应用，一旦卸载完成，将无法恢复该应用的数据。</p>
+						<h4 class="fs-15 foxui-color-dark foxui-margin-bottom-8 foxui-margin-top-24">卸载此应用将会：</h4>
+						<ul>
+							<li>
+								<i class="fs-12 foxui-icon-xiangyou-o foxui-color-secondary"></i>
+								<span class="fs-12 foxui-color-secondary">删除应用及其数据</span>
+							</li>
+							<li>
+								<i class="fs-12 foxui-icon-xiangyou-o foxui-color-secondary"></i>
+								<span class="fs-12 foxui-color-secondary">您可能无法再次访问该应用中的任何数据或设置</span>
+							</li>
+							<li>
+								<i class="fs-12 foxui-icon-xiangyou-o foxui-color-secondary"></i>
+								<span class="fs-12 foxui-color-secondary">如果有其他应用依赖于此应用，可能会受到影响</span>
+							</li>
+						</ul>
+					</div>
+					<div class="icon">
+						<i class="foxui-icon-shanchu-o foxui-color-placeholder" style="font-size: 120px; opacity: 0.5"></i>
+					</div>
+				</div>
+				<div class="foxui-margin-top-40 foxui-display-flex foxui-justify-content-center foxui-align-items-center">
+					<button class="foxui-plain-primary foxui-size-small" style="width: 88px" onclick="history.go(-1)">返回</button>
+					<button class="foxui-solid-primary foxui-size-small foxui-margin-left-32" style="width: 88px" onclick="uninstallPlugin()">确定卸载</button>
+				</div>
+			</div>
+		</div>
+	</div>
+</div>
+{/block}
+
+{block name="js"}
+<script>
+	function uninstallPlugin() {
+		let id = $('input[name="id"]').val();
+		let data = {id};
+		$.ajax({
+			type: "post",
+			url: 'uninstallPlugin',
+			dataType: "json",
+			data: data,
+			success: function(res) {
+				if (res.code == 1) {
+					foxui.message({
+						type: 'success',
+						text: res.msg
+					})
+					window.location.href=document.referrer;//返回并且刷新
+				} else {
+					foxui.message({
+						type: 'warning',
+						text: res.msg
+					})
+				}
+			},
+			error: function(res) {
+				foxui.message({
+					text: res.responseJSON.msg,
+					type: 'info',
+				});
+			}
+		});
+	}
+</script>
+
+{/block}

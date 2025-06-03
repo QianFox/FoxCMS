@@ -1,0 +1,508 @@
+{extend name="foxcms" /}
+
+{block name="css"}
+<!--<link rel="stylesheet" href="{$staticPath}css/attach_set.min.css" />-->
+{/block}
+
+{block name="body"}
+<div class="foxcms-content-inner">
+	<input name="bcid" value="{$bcid}" type="hidden" />
+	<input name="id" value="{$attachment.id}" type="hidden" />
+	<!-- page content -->
+	<div class="attach-set-content">
+		<div class="foxui-tabs foxui-type-line">
+			<div class="foxui-tabs-header">
+				<div class="foxui-tabs-item {if $attachment.is_remote == 0} is-active {/if}">本地附件</div>
+				<div class="foxui-tabs-item {if $attachment.is_remote == 1} is-active {/if}">阿里云OSS附件</div>
+			</div>
+			<div class="foxui-tabs-content">
+				<div class="foxui-tabs-pane">
+					<div class="section">
+						<div class="section-top-info">
+							<p>PHP环境检测</p>
+							<p>
+								<span>1、当前 PHP 环境允许最大单个上传文件大小为：</span>
+								<strong>{$fileUpload}</strong>
+							</p>
+							<p>
+								<span>2、当前 PHP 环境允许最大 POST 表单大小为：</span>
+								<strong>{$postSize}</strong>
+							</p>
+						</div>
+						<div class="section-title">图片压缩设置</div>
+						<div class="section-main">
+							<div class="section-main-item">
+								<div class="foxui-input-group">
+									<div class="input-label">
+										<label>图片压缩：</label>
+									</div>
+									<div class="input-box display-flex foxui-align-items-center">
+										<p class="switch-label">是否开启图片压缩</p>
+										<div class="is_thumb foxui-switch {if $attachment.is_thumb == 1}is-checked {/if}">
+											<input type="checkbox" checked="checked" value="{$attachment.is_thumb}" name="is_thumb" class="foxui-switch-input" />
+											<span class="foxui-switch-core"></span>
+										</div>
+									</div>
+								</div>
+							</div>
+							<div class="section-main-item" id="pic_quality" style="display:{if $attachment.is_thumb == 1}{else/}none{/if}">
+								<div class="foxui-input-group">
+									<div class="input-label">
+										<label>图片质量：</label>
+									</div>
+									<div class="input-box">
+										<div class="foxui-input-append">
+											<input class="foxui-size-small" placeholder="" required value="{$attachment.thumb_pic_quality}" name="thumb_pic_quality" />
+											<div class="foxui-append-inner is-grey">%</div>
+										</div>
+									</div>
+								</div>
+								<p class="input-box-info">请输入0到100的整数,值越大,压缩比例越小,图片越清晰!</p>
+							</div>
+						</div>
+						<div class="section-title margin-top-46">图片附件设置</div>
+						<div class="section-main">
+							<div class="section-main-item">
+								<div class="foxui-input-group foxui-align-items-start">
+									<div class="input-label">
+										<label>支持文件后缀：</label>
+									</div>
+									<div class="input-box">
+										<div class="foxui-textarea">
+											<textarea autocomplete="off" rows="4" placeholder="" name="i_suffixs">{$attachment.i_suffixs}</textarea>
+										</div>
+									</div>
+								</div>
+								<p class="input-box-info">填写图片后缀名称，如：jpg  每个后缀名用空格分开（如果为空，则采用系统默认设置）</p>
+							</div>
+							<div class="section-main-item">
+								<div class="foxui-input-group">
+									<div class="input-label">
+										<label>支持文件大小：</label>
+									</div>
+									<div class="input-box">
+										<div class="foxui-input-append">
+											<input class="foxui-size-small" placeholder="" required value="{$attachment.i_file_size}" name="i_file_size" />
+											<div class="foxui-append-inner is-grey">MB</div>
+										</div>
+									</div>
+								</div>
+							</div>
+							<!--<div class="section-main-item">
+								<div class="foxui-input-group">
+									<div class="input-label">
+										<label>图片压缩：</label>
+									</div>
+									<div class="input-box">
+										<input class="foxui-size-small" placeholder="" required value="{$attachment.i_reduce_size}" name="i_reduce_size" />
+									</div>
+								</div>
+								<p class="input-box-info">请输入1到100的整数，100为不压缩， 值越大越清晰</p>
+							</div>-->
+						</div>
+						<div class="section-title margin-top-46">音频视频附件设置</div>
+						<div class="section-main">
+							<div class="section-main-item">
+								<div class="foxui-input-group foxui-align-items-start">
+									<div class="input-label">
+										<label>支持文件后缀：</label>
+									</div>
+									<div class="input-box">
+										<div class="foxui-textarea">
+											<textarea autocomplete="off" rows="2" placeholder="" name="a_suffixs">{$attachment.a_suffixs}</textarea>
+										</div>
+									</div>
+								</div>
+								<p class="input-box-info">填写音频视频后缀名称，如：mp4  每个后缀名用空格分开（如果为空，则采用系统默认设置）</p>
+							</div>
+							<div class="section-main-item">
+								<div class="foxui-input-group">
+									<div class="input-label">
+										<label>支持文件大小：</label>
+									</div>
+									<div class="input-box">
+										<div class="foxui-input-append">
+											<input class="foxui-size-small" placeholder="" required value="{$attachment.a_file_size}" name="a_file_size" />
+											<div class="foxui-append-inner is-grey">MB</div>
+										</div>
+									</div>
+								</div>
+							</div>
+						</div>
+						<div class="section-title margin-top-46">文件附件设置</div>
+						<div class="section-main">
+							<div class="section-main-item">
+								<div class="foxui-input-group foxui-align-items-start">
+									<div class="input-label">
+										<label>支持文件后缀：</label>
+									</div>
+									<div class="input-box">
+										<div class="foxui-textarea">
+											<textarea autocomplete="off" rows="2" placeholder=""name="f_suffixs">{$attachment.f_suffixs}</textarea>
+										</div>
+									</div>
+								</div>
+								<p class="input-box-info">填写图片后缀名称，如：pdf  每个后缀名用空格分开（如果为空，则采用系统默认设置）</p>
+							</div>
+							<div class="section-main-item">
+								<div class="foxui-input-group">
+									<div class="input-label">
+										<label>支持文件大小：</label>
+									</div>
+									<div class="input-box">
+										<div class="foxui-input-append">
+											<input class="foxui-size-small" placeholder="" required value="{$attachment.file_size}" name="file_size" />
+											<div class="foxui-append-inner is-grey">MB</div>
+										</div>
+									</div>
+								</div>
+							</div>
+						</div>
+					</div>
+				</div>
+				<div class="foxui-tabs-pane">
+					<div class="section">
+						<div class="section-top-info">
+							<p>
+								阿里云对象存储服务，简称
+								OSS，是一种面向海量数据规模的分布式存储服务，具有稳定、可靠、安全、低成本的特点。将网站上的附件分布式存储存至阿里云OSS，能够减轻网站服务器压力，提升网站访问速度。
+							</p>
+							<p>
+								<span>1、如何开通阿里云OSS，</span>
+								<a target="_blank" href="https://www.aliyun.com/product/oss">官方开通</a>
+							</p>
+							<p>
+								<span>2、启用阿里OSS后，请把/uploads目录（不包括此目录）下的子文件及子目录上传至阿里云</span>
+							</p>
+							<p>
+								<span>3、</span>
+								<a class="fox-text-primary" target="_blank" href="https://market.aliyun.com/products/53690006/cmgj000281.html#sku=biaozhunban">
+									官方推荐OSS客户端工具（Windows版）
+								</a>
+								<a target="_blank" href="https://market.aliyun.com/products/53690006/cmgj000282.html?spm=5176.8150156.427429.4.489a6fabWc2qVv#sku=biaozhunban">
+									官方推荐OSS客户端工具（MAC版）
+								</a>
+							</p>
+						</div>
+						<div class="section-title">图片附件设置</div>
+						<div class="section-main">
+							<div class="section-main-item">
+								<div class="foxui-input-group">
+									<div class="input-label">
+										<label>阿里云OSS：</label>
+									</div>
+									<div class="input-box display-flex foxui-align-items-center">
+										<p class="switch-label">是否开启远程附件</p>
+										<div class="is_remote foxui-switch {if $attachment.is_remote == 1}is-checked {/if}">
+											<input type="checkbox" checked="checked" name="is_remote" value="{$attachment.is_remote}" class="foxui-switch-input" />
+											<span class="foxui-switch-core"></span>
+										</div>
+									</div>
+								</div>
+							</div>
+							<div class="section-main-item">
+								<div class="foxui-input-group">
+									<div class="input-label">
+										<label>Access Key ID：</label>
+									</div>
+									<div class="input-box">
+										<input class="foxui-size-small" placeholder="" required name="access_key" value="{$attachment.access_key}" />
+									</div>
+								</div>
+								<p class="input-box-info">Access Key ID是您访问阿里云API的密钥，具有该账户完全的权限，请您妥善保管。</p>
+							</div>
+							<div class="section-main-item">
+								<div class="foxui-input-group">
+									<div class="input-label">
+										<label>Access Key Secret：</label>
+									</div>
+									<div class="input-box">
+										<input class="foxui-size-small" placeholder="" required name="access_key_secret" value="{$attachment.access_key_secret}" />
+									</div>
+								</div>
+								<p class="input-box-info">
+									Access Key Secret是您访问阿里云API的密钥，具有该账户完全的权限，请您妥善保管。(填写完Access Key ID 和 Access Key Secret 后请选择bucket)
+								</p>
+							</div>
+							<div class="section-main-item">
+								<div class="foxui-input-group">
+									<div class="input-label">
+										<label>Bucket名称：</label>
+									</div>
+									<div class="input-box">
+										<input class="foxui-size-small" placeholder="" required name="bucket" value="{$attachment.bucket}" />
+									</div>
+								</div>
+							</div>
+							<!--<div class="section-main-item">
+								<div class="foxui-input-group">
+									<div class="input-label">
+										<label>内网上传：</label>
+									</div>
+									<div class="input-box">
+										<div class="foxui-radio-group is_intranet">
+											<div class="foxui-radio {if ($attachment.is_intranet) == 1} is-checked {/if}">
+													<span class="foxui-radio-input">
+														<i class="foxui-radio-icon"></i>
+														<input type="radio" value="1" checked="checked" />
+													</span>
+												<span class="foxui-radio-label">是</span>
+											</div>
+											<div class="foxui-radio {if ($attachment.is_intranet) == 0} is-checked {/if}">
+													<span class="foxui-radio-input">
+														<i class="foxui-radio-icon"></i>
+														<input type="radio" value="0" />
+													</span>
+												<span class="foxui-radio-label">否</span>
+											</div>
+										</div>
+									</div>
+								</div>
+								<p class="input-box-info">
+									如果此站点使用的是阿里云ECS服务器，并且服务器与Bucket在同一地区（如：同在华北一区），您可以选择通过内网上传的方式上传附件，以加快上传速度、节省带宽。
+								</p>
+							</div>-->
+
+							<div class="section-main-item">
+								<div class="foxui-input-group">
+									<div class="input-label">
+										<label>Bucket域名：</label>
+									</div>
+									<div class="input-box">
+										<div class="foxui-input-prepend">
+											<div class="foxui-prepend-inner">
+												<div class="foxui-select">
+													<div class="foxui-select-handle foxui-select-icon">
+														<input class="foxui-select-input" readonly="readonly" value="{$attachment.endpoint_prefix}"  name="endpoint_prefix" />
+													</div>
+													<div class="foxui-select-menu">
+														<ul class="foxui-select-slide">
+															<li class="foxui-select-item" data-id="1">http://</li>
+															<li class="foxui-select-item" data-id="2">https://</li>
+														</ul>
+													</div>
+												</div>
+											</div>
+											<input class="foxui-size-small" placeholder="" required name="bucket_domain" value="{$attachment.bucket_domain}" />
+										</div>
+									</div>
+								</div>
+							</div>
+
+							<div class="section-main-item">
+								<div class="foxui-input-group">
+									<div class="input-label">
+										<label>是否自定义域名：</label>
+									</div>
+									<div class="input-box">
+										<div class="foxui-radio-group is_customize">
+											<div class="foxui-radio {if ($attachment.is_customize) == 1} is-checked {/if}" onclick="customize(this)">
+													<span class="foxui-radio-input">
+														<i class="foxui-radio-icon"></i>
+														<input type="radio" value="1"/>
+													</span>
+												<span class="foxui-radio-label">是</span>
+											</div>
+											<div class="foxui-radio {if ($attachment.is_customize) == 0} is-checked {/if}" onclick="customize(this)">
+													<span class="foxui-radio-input">
+														<i class="foxui-radio-icon"></i>
+														<input type="radio" value="0" />
+													</span>
+												<span class="foxui-radio-label">否</span>
+											</div>
+										</div>
+									</div>
+								</div>
+								<p class="input-box-info">
+									阿里云OSS支持用户自定义访问域名，如果自定义了URL则用自定义的URL，如果未自定义，则用系统生成出来的URL。注：自定义url需确定是http://或https://，例：http://abc.com。
+								</p>
+							</div>
+
+							<div class="section-main-item" id="customize">
+								<div class="foxui-input-group">
+									<div class="input-label">
+										<label>自定义URL：</label>
+									</div>
+									<div class="input-box">
+										<div class="foxui-input-prepend">
+											<div class="foxui-prepend-inner">
+												<div class="foxui-select">
+													<div class="foxui-select-handle foxui-select-icon">
+														<input class="foxui-select-input" readonly="readonly" value="{$attachment.url_prefix}"  name="url_prefix" />
+													</div>
+													<div class="foxui-select-menu">
+														<ul class="foxui-select-slide">
+															<li class="foxui-select-item" data-id="1">http://</li>
+															<li class="foxui-select-item" data-id="2">https://</li>
+														</ul>
+													</div>
+												</div>
+											</div>
+											<input class="foxui-size-small" placeholder="默认URL不需要填写（默认包含 aliyuncs.com 的URL不显示）" required value="{$attachment.url}" name="url" />
+										</div>
+									</div>
+								</div>
+							</div>
+
+						</div>
+					</div>
+				</div>
+			</div>
+		</div>
+	</div>
+</div>
+{include file="footed-copy"/}
+<div class="foxcms-content-footer">
+	<button class="is-long foxui-size-small foxui-solid-primary" id="save">保存</button>
+</div>
+{/block}
+
+{block name="js"}
+<script>
+	$(".is_thumb").on("click", function (){
+		//是否开启缩略图 0：未；1：开启
+		if($(this).is(".is-checked")){
+			$("#pic_quality").slideUp();
+		}else{
+			$("#pic_quality").slideDown();
+		}
+	})
+
+	//默认关闭
+	let iscustomize = "{$attachment.is_customize}";
+	if(iscustomize == 0){
+		$("#customize").hide();
+	}else{
+		$("#customize").show();
+	}
+
+	/**
+	 * 是否自定义域名
+	 * @param obj
+	 */
+	function customize(obj){
+		//是否开启自定义域名 0：未；1：开启
+		let is_customize = $(obj).find("input").val();
+		if(is_customize == 0){
+			$("#customize").hide();
+		}else{
+			$("#customize").show();
+		}
+	}
+
+
+	//面包屑
+	let bcid = $("input[name='bcid']").val();
+	let datas = {
+		"bcid": bcid
+	};
+
+
+	//保存
+	$('#save').click(function() {
+
+		let id = $('input[name="id"]').val();
+		//类型：0:本地设置；1:阿里设置
+		// let type = $('input[name="type"]').val();
+
+		//是否开启缩略图 0：未；1：开启
+		let is_thumb = ($('.is_thumb.is-checked').length > 0)?1:0;
+		//缩略图最大宽度px
+		let thumb_pic_quality = $('input[name="thumb_pic_quality"]').val();
+		//图片文件后缀逗号隔开
+		let i_suffixs = $('textarea[name="i_suffixs"]').val();
+		//图片文件大小kb
+		let i_file_size = $('input[name="i_file_size"]').val();
+		//图片文件压缩大小 越大越清晰100为不压缩
+		let i_reduce_size = $('input[name="i_reduce_size"]').val();
+		//音频后缀后缀逗号隔开
+		let a_suffixs = $('textarea[name="a_suffixs"]').val();
+		//音频文件大小kb
+		let a_file_size = $('input[name="a_file_size"]').val();
+		//文件后缀
+		let f_suffixs = $('textarea[name="f_suffixs"]').val();
+		//文件大小kb
+		let file_size = $('input[name="file_size"]').val();
+		//是否开启远程远程附件0：不开启；1：开启
+		let is_remote = ($('.is_remote.is-checked').length > 0)?1:0;
+		let bucket_domain = $('input[name="bucket_domain"]').val();
+		bucket_domain = $.trim(bucket_domain);
+		let endpoint_prefix = $('input[name="endpoint_prefix"]').val();//默认bucket域名前缀
+		//密钥key
+		let access_key = $('input[name="access_key"]').val();
+		access_key = $.trim(access_key);
+		//密钥secret
+		let access_key_secret = $('input[name="access_key_secret"]').val();
+		access_key_secret = $.trim(access_key_secret);
+		//存储空间名称 Bucket：
+		let bucket = $('input[name="bucket"]').val();
+		bucket = $.trim(bucket);
+		//内网上传0：否；1：是
+		// let is_intranet = $('.is_intranet .is-checked input').val();
+		//是否自定义域名
+		let is_customize = $('.is_customize .foxui-radio.is-checked input').val();
+
+		//访问路径前缀
+		let url_prefix = $('input[name="url_prefix"]').val();
+		//访问路径
+		let url = $('input[name="url"]').val();
+
+		let datas = {
+			"is_thumb": is_thumb,
+			"thumb_pic_quality": thumb_pic_quality,
+			"i_suffixs": i_suffixs,
+			"i_file_size": i_file_size,
+			"i_reduce_size": i_reduce_size,
+			"a_suffixs": a_suffixs,
+			"a_file_size": a_file_size,
+			"f_suffixs": f_suffixs,
+			"file_size": file_size,
+			"is_remote": is_remote,
+			"access_key": access_key,
+			"access_key_secret": access_key_secret,
+			is_customize,
+			bucket,
+			bucket_domain,
+			endpoint_prefix,
+			"url_prefix": url_prefix,
+			"url": url,
+			"id": id
+		};
+		foxui.dialog({
+			title: '保存',
+			content: '您确定要保存吗',
+			cancelText: '取消',
+			confirmText: '保存',
+			confirm: function(callback) {
+				ajaxR('{:url("Attachment/save")}','post',datas,{},function (res) {
+					if (res.code == 1) {
+						foxui.message({
+							type:'success',
+							text:res.msg
+						})
+						setTimeout('myrefresh()', 1000); //指定10秒刷新一次
+					} else {
+						foxui.message({
+							type:'warning',
+							text:res.msg
+						})
+					}
+				}, function (res) {
+					foxui.message({
+						type:'warning',
+						text:'操作失败'
+					})
+				})
+				callback();
+			},
+			cancel: function() {
+				foxui.message({
+					type: 'warning',
+					text: '取消操作'
+				})
+			},
+		});
+
+	})
+</script>
+{/block}

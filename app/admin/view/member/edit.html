@@ -1,0 +1,120 @@
+{extend name="foxcms" /}
+
+{block name="css"}
+{/block}
+
+{block name="body"}
+<input name="columnId" type="hidden" value="{$columnId}"/>
+<input name="id" type="hidden" value="{$id}"/>
+<input name="nid" type="hidden" value="{$nid}"/>
+<input name="member_model_id" type="hidden" value="{$member_model_id}"/>
+
+<div class="foxcms-content-inner">
+    <!-- page content -->
+    <div class="contact-way-content">
+        <div class="section section-panel">
+            <div class="section-title">编辑会员</div>
+            <div class="section-main">
+
+                <!--动态标签start-->
+                <div class="field">
+                    <?php echo memberFieldTag($nid, $id); ?>
+                </div>
+                <!--动态标签end-->
+
+                <!--动态标签start-->
+                <div class="field">
+                    <?php echo memberFieldTag($nid, $id, $member_model_id); ?>
+                </div>
+                <!--动态标签end-->
+            </div>
+        </div>
+    </div>
+</div>
+
+{include file="footed-copy"/}
+<div class="foxcms-content-footer">
+    <button class="is-long foxui-size-small foxui-solid-primary" id="save">保存</button>
+</div>
+{/block}
+
+{block name="js"}
+<script>
+
+    //保存
+    $('#save').click(function (){
+
+        let nid = $('input[name="nid"]').val();
+        if(nid == "" || !nid){
+            foxui.message({
+                type:'warning',
+                text:'请选择会员模型,如果没有用请先添加'
+            })
+            return;
+        }
+
+        let password = $('.input-box .password').val();
+        let apassword = $('.input-box .apassword').val();
+        if(password != apassword){
+            foxui.message({
+                type:'warning',
+                text:'两次输入密码不相同'
+            })
+            return;
+        }
+
+        let id = $('input[name="id"]').val();
+
+        let member_model_id = $('input[name="member_model_id"]').val();
+        let datas = {"id": id, "nid": nid};
+        //拉取会员属性
+        // let feildUrl = ADMIN_PATH + '/Member/getField?member_model_id=' + member_model_id;
+        let feildUrl = "{:url('Member/getField')}?member_model_id="+member_model_id;
+        let saveData = getField($(".field"), feildUrl);
+        let curData = Object.assign(datas, saveData);
+        foxui.dialog({
+            title: '保存',
+            content: '您确定要保存吗',
+            cancelText: '取消',
+            confirmText: '保存',
+            confirm: function (callback) {
+                $.ajax({
+                    type: "post",
+                    url: 'edit',
+                    dataType: "json",
+                    data: curData,
+                    success: function (res) {
+                        if (res.code == 1) {
+                            foxui.message({
+                                type:'success',
+                                text:res.msg
+                            })
+                            window.location.href=document.referrer;//返回并且刷新
+                        } else {
+                            foxui.message({
+                                type:'warning',
+                                text:res.msg
+                            })
+                        }
+                    }, error: function (res) {
+                        foxui.message({
+                            type:'danger',
+                            text:res.msg
+                        })
+                    }
+                });
+                callback();
+            },
+            cancel: function () {
+                foxui.message({
+                    type:'warning',
+                    text:res.msg
+                })
+            },
+        });
+
+    })
+
+
+</script>
+{/block}

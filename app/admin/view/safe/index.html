@@ -1,0 +1,466 @@
+{extend name="foxcms" /}
+
+{block name="css"}
+
+{/block}
+
+{block name="body"}
+
+<div class="foxcms-content-inner">
+	<input name="bcid" value="{$bcid}" type="hidden" />
+	<input name="id" value="{$contact.id}" type="hidden" />
+	<!-- page content -->
+	<div class="contact-way-content">
+		<div class="section section-panel">
+			<div class="section-title">安全管理</div>
+			<div class="section-main">
+
+				{foreach $saveList as $key=>$vo }
+				{if $vo.type == 'radio'}
+				<div class="section-main-item" data-id="{$vo.id}" data-type="{$vo.type}" data-name="{$vo.dict_label}">
+					<div class="foxui-input-group">
+						<div class="input-label">
+							<label>{$vo.description}：</label>
+						</div>
+						<div class="input-box">
+							<div class="foxui-radio-group">
+								<div class="foxui-radio {if ($vo.dict_value) == 1} is-checked {/if}">
+                                    <span class="foxui-radio-input">
+                                        <i class="foxui-radio-icon"></i>
+                                        <input type="radio" value="1"/>
+                                    </span>
+									<span class="foxui-radio-label">启用</span>
+								</div>
+								<div class="foxui-radio {if ($vo.dict_value) == 0} is-checked {/if}">
+                                    <span class="foxui-radio-input">
+                                        <i class="foxui-radio-icon"></i>
+                                        <input type="radio" value="0"/>
+                                    </span>
+									<span class="foxui-radio-label">禁用</span>
+								</div>
+							</div>
+						</div>
+					</div>
+				</div>
+				{/if}
+				{if $vo.type == 'text'}
+				<div class="section-main-item" data-id="{$vo.id}" data-type="{$vo.type}" data-name="{$vo.dict_label}">
+					<div class="foxui-input-group">
+						<div class="input-label">
+							<label>{$vo.description}：</label>
+						</div>
+						<div class="input-box">
+							<div class="foxui-input-suffix">
+								<input class="foxui-size-small" maxlength="30" placeholder="请输入您的{$vo.description}" value="{$vo.dict_value}" name="{$vo.dict_label}" />
+								<i class="foxui-suffix-icon foxui-suffix-count">0/30</i>
+							</div>
+						</div>
+					</div>
+				</div>
+				{/if}
+				{if $vo.type == 'multitext'}
+				<div class="section-main-item" data-id="{$vo.id}" data-type="{$vo.type}" data-name="{$vo.dict_label}">
+					<div class="foxui-input-group foxui-align-items-start">
+						<div class="input-label">
+							<label>{$vo.description}：</label>
+						</div>
+						<div class="input-box">
+							<div class="foxui-textarea">
+								<textarea style="height: 160px;" autocomplete="off" rows="2" placeholder="请输入{$vo.description}" name="{$vo.dict_label}">{$vo.dict_value}</textarea>
+							</div>
+						</div>
+					</div>
+				</div>
+				{/if}
+				{/foreach}
+
+				<div class="blacklist">
+					<div style="display: flex; align-items: center">
+						<div class="section-main-item">
+							<div class="foxui-input-group foxui-align-items-start">
+								<div class="input-label">
+									<label>IP黑名单：</label>
+								</div>
+								<div class="input-box">
+									<div class="foxui-textarea">
+										<textarea autocomplete="off" rows="4" placeholder="请输入IP" name="blacklist"></textarea>
+									</div>
+								</div>
+							</div>
+							<p class="input-box-info">
+								多个ip就换行
+							</p>
+						</div>
+						<div style="height: 66px; margin-left: 5px;">
+							<button class="foxui-size-mini foxui-solid-primary" name="blacklist_add">添加</button>
+						</div>
+					</div>
+
+					<div class="diy-form-content" id="blacklist_content">
+						<div class="section section-panel margin-top-10">
+							<div class="foxui-table foxui-table-border-bottom foxui-table-hover foxui-checkbox-group">
+
+								<ul class="foxui-table-thead foxui-checkbox-head">
+									<li class="foxui-table-tr">
+										<div class="foxui-table-th" style="flex: initial; width: 40px">
+											<div class="foxui-checkbox foxui-checkbox-all is-checked">
+											<span class="foxui-checkbox-input">
+												<i class="foxui-checkbox-icon"></i>
+												<input type="checkbox" value="" />
+											</span>
+											</div>
+										</div>
+										<div class="foxui-table-th">ID</div>
+										<div class="foxui-table-th">IP</div>
+										<div class="foxui-table-th">时间</div>
+										<div class="foxui-table-th">操作</div>
+									</li>
+								</ul>
+
+								<ul class="foxui-table-tbody foxui-checkbox-list loading-container" id="blacklist_table">
+									<!--表格内容-->
+								</ul>
+
+								<div class="table-footer foxui-checkbox-head">
+									<div class="left display-flex foxui-align-items-center">
+										<div class="foxui-checkbox foxui-checkbox-all margin-right-24">
+											<span class="foxui-checkbox-input">
+												<i class="foxui-checkbox-icon"></i>
+												<input type="checkbox" value="" />
+											</span>
+										</div>
+										<div class="display-flex">
+											<button class="foxui-size-mini enable-btn foxui-solid-danger">
+												<i class="foxui-icon-zhengque-o"></i>
+												<span>移除</span>
+											</button>
+										</div>
+									</div>
+								</div>
+							</div>
+						</div>
+					</div>
+				</div>
+
+			</div>
+		</div>
+	</div>
+</div>
+
+{include file="footed-copy"/}
+{if sizeof($saveList) > 0}
+<div class="foxcms-content-footer">
+	<button class="is-long foxui-size-small foxui-solid-primary" id="save">保存</button>
+</div>
+{/if}
+{/block}
+
+
+{block name="js"}
+<script>
+	/**
+	 * 初始化数据
+	 */
+	function init(){
+		let searchData = {
+		};
+		$.ajax({
+			type: "post",
+			url: "list",
+			dataType: "json",
+			data: searchData,
+			success: function (res) {
+				if (res.code == 1 && res.data) {
+					let data = res.data;
+					initTable(data);
+				}
+				$('#blacklist_table').removeClass('loading-container');
+			}, error: function (res) {
+				$('#blacklist_table').removeClass('loading-container');
+			}
+		});
+	}
+
+	/**
+	 * @description: 初始化表格
+	 * @param {*} pageSize
+	 * @param {*} total
+	 * @param {*} currentPage
+	 * @param {*} dataList
+	 * @return {*}
+	 * @Date: 2022-01-12 10:55:11
+	 */
+	function initTable(dataList) {
+		// 追加表格 html
+		_appendToTable(dataList);
+	}
+
+	/**
+	 * @description: 追加表格 html
+	 * @param {*} dataList
+	 * @return {*}
+	 * @Date: 2022-01-12 00:18:40
+	 */
+	function _appendToTable(dataList) {
+		const html = _trsHtml(dataList);
+		$('#blacklist_table').empty().append(html);
+	}
+
+	/**
+	 * @description: 表格 html
+	 * @param {*} dataList
+	 * @return {*}
+	 * @Date: 2022-01-12 00:18:52
+	 */
+	function _trsHtml(dataList) {
+		let htmlArr = [];
+		dataList.forEach(item => {
+			htmlArr.push(`
+            <li class="foxui-table-tr">
+                <div class="foxui-table-td" style="flex: initial; width: 40px">
+                    <div class="foxui-checkbox is-checked">
+                        <span class="foxui-checkbox-input">
+                            <i class="foxui-checkbox-icon"></i>
+                            <input type="checkbox" value="" />
+                        </span>
+                    </div>
+                </div>
+                <div class="foxui-table-td">${item.id}</div>
+                <div class="foxui-table-td">${item.ip}</div>
+                <div class="foxui-table-td">${item.create_time}</div>
+                <div class="foxui-table-td">
+                    <button class="foxui-text-danger foxui-size-medium edit-btn" id="${item.id}" onclick="operationItem(this)">移除</button>
+                </div>
+            </li>
+        `);
+		});
+		return htmlArr.join('');
+	}
+	init();
+
+	$('button[name="blacklist_add"]').click(function() {
+		let blacklists = $('textarea[name="blacklist"]').val();
+		foxui.dialog({
+			title: '添加',
+			content: '您确定要添加吗',
+			cancelText: '取消',
+			confirmText: '添加',
+			confirm: function(callback) {
+				$.ajax({
+					type: "post",
+					url: '{:url("Safe/saveBlack")}',
+					dataType: "json",
+					data: {blacklists},
+					success: function (res) {
+						if (res.code == 1) {
+							foxui.message({
+								type:'success',
+								text:res.msg
+							})
+							init();
+						} else {
+							foxui.message({
+								type:'warning',
+								text:res.msg
+							})
+						}
+					}, error: function (res) {
+						foxui.message({
+							type:'warning',
+							text:res.msg
+						})
+					}
+				});
+				callback();
+			},
+			cancel: function() {
+				foxui.message({
+					type: 'warning',
+					text: '取消操作'
+				})
+			},
+		});
+	});
+
+	//操作
+	function operationItem(obj) {
+		let title = "移除";
+		let id = $(obj).attr("id");
+		foxui.dialog({
+			title: `${title}`,
+			content: '您确定要' + title + '吗',
+			cancelText: '取消',
+			confirmText: `${title}`,
+			buttonType: 'danger',
+			confirm: function(callback) {
+				let idList = [];
+				idList.push(id);
+				$.ajax({
+					type: "post",
+					url: 'blackDeletes',
+					dataType: "json",
+					data: {
+						"idList": JSON.stringify(idList)
+					},
+					success: function(res) {
+						if (res.code == 1) {
+							foxui.message({
+								text: res.msg,
+								type: 'success',
+							});
+							init();
+						} else {
+							foxui.message({
+								text: res.msg,
+								type: 'warning',
+							});
+						}
+					},
+					error: function(res) {
+						foxui.message({
+							text: res.msg,
+							type: 'info',
+						});
+					}
+				});
+				callback();
+			},
+			cancel: function() {
+				foxui.message({
+					text: '取消删除',
+					type: 'info'
+				});
+			},
+		});
+	}
+
+	//操作移除所有
+	$('#blacklist_content .table-footer .enable-btn').click(function () {
+		let $isChecked = $('#blacklist_content .foxui-table-td .foxui-checkbox.is-checked'),
+				$checkedTr = $isChecked.closest('.foxui-table-tr'),
+				len = $isChecked.length,
+				idList = [];
+		if (len < 1) {
+			foxui.message({
+				text: '请先选译要拆分的数据！',
+				type: 'danger',
+			});
+		} else {
+			foxui.dialog({
+				title: '确认',
+				content: '您确定要移除选中的所有数据吗？',
+				confirmText: '移除',
+				cancelText: '取消',
+				buttonType: 'danger',
+				buttonSize: 'small',
+				confirm: function (callback) {
+					// 异步删除数据
+					$checkedTr.each(function () {
+						let table = $(this).find('.foxui-table-td:nth-child(2)').text();
+						idList.push(table);
+					});
+					$.ajax({
+						type: "post",
+						url: 'blackDeletes',
+						dataType: "json",
+						data: {
+							"idList": JSON.stringify(idList)
+						},
+						success: function(res) {
+							if (res.code == 1) {
+								foxui.message({
+									text: res.msg,
+									type: 'success',
+								});
+								init();
+							}else{
+								foxui.message({
+									text: res.msg,
+									type: 'warning',
+								});
+							}
+						},
+						error: function(res) {
+							foxui.message({
+								text: '操作失败',
+								type: 'warning',
+							});
+						}
+					});
+					callback();
+				},
+			});
+		}
+	});
+
+</script>
+
+<script>
+
+	//保存
+	$('#save').click(function() {
+		let saveData = [];
+		$('.section-main').find('.section-main-item').each(function () {
+			let id = $(this).attr('data-id');
+			if(!(id == undefined || id == "")){
+				let dict_label = $(this).attr('data-name');
+				let type = $(this).attr('data-type');
+				let dict_value = "";
+				if(type == 'radio'){
+					//单选项
+					dict_value = $(this).find('.is-checked').find('input').val();
+				}else if (type == 'multitext'){
+					//多行文本
+					dict_value = $(this).find('.input-box').find('textarea[name="'+dict_label+'"]').val();
+				}else if (type == 'text'){
+					//单行文本
+					dict_value = $(this).find('.input-box').find('input[name="'+dict_label+'"]').val();
+				}
+				saveData.push({id, dict_label, type, dict_value})
+			}
+		});
+
+		foxui.dialog({
+			title: '保存',
+			content: '您确定要保存吗',
+			cancelText: '取消',
+			confirmText: '保存',
+			confirm: function() {
+				$.ajax({
+					type: "post",
+					url: '{:url("Safe/save")}',
+					dataType: "json",
+					data: {"dataList":saveData},
+					success: function (res) {
+						if (res.code == 1) {
+							foxui.message({
+								type:'success',
+								text:res.msg
+							})
+							setTimeout('myrefresh()', 1000); //指定10秒刷新一次
+						} else {
+							foxui.message({
+								type:'warning',
+								text:res.msg
+							})
+						}
+					}, error: function (res) {
+						foxui.message({
+							type:'warning',
+							text:res.msg
+						})
+					}
+				});
+			},
+			cancel: function() {
+				foxui.message({
+					type: 'warning',
+					text: '取消操作'
+				})
+			},
+		});
+
+	})
+</script>
+
+{/block}

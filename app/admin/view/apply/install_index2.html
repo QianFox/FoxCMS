@@ -1,0 +1,65 @@
+{extend name="foxcms" /}
+
+{block name="css"}
+<link rel="stylesheet" href="{$staticPath}css/app.min.css" />
+{/block}
+
+{block name="body"}
+<div class="foxcms-content-inner">
+	<!-- page content -->
+	<div class="apply-install-content">
+		<div class="foxui-bg-white foxui-padding-24">
+			<div class="foxui-display-flex foxui-align-items-center foxui-justify-content-between">
+				<div class="foxui-display-flex foxui-align-items-center">
+					<div class="app-pic">
+						<img src="{$version.ask}" alt="" />
+					</div>
+					<div class="app-text">
+						<h4 class="foxui-ellipsis-1">
+							<strong class="foxui-color-primary">{$version.name}</strong>
+							<span class="foxui-color-secondary">V{$version.desc}</span>
+						</h4>
+						<p class="foxui-color-secondary foxui-ellipsis-1">{$version.remark}</p>
+					</div>
+				</div>
+				<div>
+					<a class="primary-btn" href="">查看详情</a>
+				</div>
+			</div>
+			<div class="install-progress"></div>
+			<div class="install-loading-progress foxui-border foxui-display-flex foxui-align-items-center foxui-justify-content-center">
+				<div class="install-loading-block">
+					<div class="icon foxui-margin-bottom-0">
+						<i class="foxui-icon-zhengque-f foxui-color-success"></i>
+					</div>
+					<h2 class="fw-bold foxui-color-dark foxui-align-center foxui-margin-top-4 foxui-margin-bottom-4">安装完成！</h2>
+					<p class="fs-12 foxui-align-center">恭喜您，已成功安装应用{$version.name}V{$version.desc}</p>
+					<p class="fs-12 foxui-align-center foxui-margin-top-12">请开始使用吧！</p>
+					<div class="foxui-margin-top-20">
+						<button class="foxui-plain-primary foxui-size-small" onclick="myApply()">
+							<i class="foxui-icon-yingyong-o"></i>
+							<span>我的应用</span>
+						</button>
+						<button class="foxui-solid-primary foxui-size-small" onclick="applyUrl()">
+							<i class="foxui-icon-xitong-o"></i>
+							<span>进入应用</span>
+						</button>
+					</div>
+				</div>
+			</div>
+		</div>
+	</div>
+</div>
+{/block}
+
+{block name="js"}
+<script>
+	function myApply() {
+		window.location.href = "{$myApply}";
+	}
+	function applyUrl() {
+		window.location.href = "{$apply_url}";
+	}
+</script>
+
+{/block}
