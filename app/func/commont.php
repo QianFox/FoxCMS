@@ -203,7 +203,7 @@ function fieldObjTag($field, $obj)
                                 <input class="foxui-size-small {$field->name}" placeholder="{$field->remark}" value="{$val}" />
                             </div>
                         </div>
-                    </div>       
+                    </div>
 php;
         return $html;
     } elseif ($field->dtype == "multitext") { //多行文本
@@ -286,7 +286,7 @@ php;
                                 </div>
                             </div>
                         </div>
-                                           
+
                     </div>
 
 php;
@@ -384,7 +384,7 @@ php;
                             </div>
                         </div>
                     </div>
-                    
+
 php;
         return $html;
     } elseif ($field->dtype == "datetime") { //日期和时间
@@ -397,7 +397,7 @@ php;
                         <div class="foxui-input-group">
                             <div class="input-label">
                                 <label>{$field->title}：</label>
-                            </div>  
+                            </div>
                             <div class="input-box">
                                 <div class="foxui-picker foxui-datetime-picker">
                                     <div class="foxui-picker-handle foxui-input-prefix">
@@ -425,7 +425,7 @@ php;
                                 <input type="text" onkeyup="this.value=this.value.replace(/[^0-9]/g,'');" class="foxui-size-small {$field->name}" placeholder="只允许纯数字" value="{$val}" />
                             </div>
                         </div>
-                   </div>     
+                   </div>
 php;
         return $html;
     } elseif ($field->dtype == "float") { //小数类型
@@ -661,7 +661,7 @@ php;
                             </div>
                         </div>
                     </div>
-                </div>       
+                </div>
 php;
         return $html;
     }
@@ -689,10 +689,10 @@ function fieldTag($field, $obj, $group = "")
                                 <input class="foxui-size-small {$field->name}" placeholder="{$field->remark}" value="{$val}" />
                             </div>
                         </div>
-                        
+
                         <div class="call-field">
                             <span class="foxui-tag foxui-light-info">{$call}</span>
-                        </div> 
+                        </div>
                     </div>
 php;
         return $html;
@@ -714,10 +714,10 @@ php;
                                  </div>
                              </div>
                         </div>
-                        
+
                         <div class="call-field">
                             <span class="foxui-tag foxui-light-info">{$call}</span>
-                        </div> 
+                        </div>
                    </div>
 
 php;
@@ -780,7 +780,7 @@ php;
                                 </div>
                             </div>
                         </div>
-                                           
+
                     </div>
 
 php;
@@ -875,12 +875,12 @@ php;
                                 </div>
                             </div>
                         </div>
-                        
+
                         <div class="call-field">
                             <span class="foxui-tag foxui-light-info">{$call}</span>
-                        </div> 
+                        </div>
                     </div>
-                    
+
 php;
         return $html;
     } elseif ($field->dtype == "datetime") { //日期和时间
@@ -893,7 +893,7 @@ php;
                         <div class="foxui-input-group">
                             <div class="input-label">
                                 <label>{$field->title}：</label>
-                            </div>  
+                            </div>
                             <div class="input-box">
                                 <div class="foxui-picker foxui-datetime-picker">
                                     <div class="foxui-picker-handle foxui-input-prefix">
@@ -903,10 +903,10 @@ php;
                                 </div>
                             </div>
                         </div>
-                        
+
                         <div class="call-field">
                             <span class="foxui-tag foxui-light-info">{$call}</span>
-                        </div> 
+                        </div>
                     </div>
 php;
         return $html;
@@ -925,11 +925,11 @@ php;
                                 <input type="text" onkeyup="this.value=this.value.replace(/[^0-9]/g,'');" class="foxui-size-small {$field->name}" placeholder="只允许纯数字" value="{$val}" />
                             </div>
                         </div>
-                        
+
                         <div class="call-field">
                             <span class="foxui-tag foxui-light-info">{$call}</span>
-                        </div> 
-                   </div>     
+                        </div>
+                   </div>
 php;
         return $html;
     } elseif ($field->dtype == "float") { //小数类型
@@ -947,10 +947,10 @@ php;
                                 <input type="text" onkeyup="this.value=this.value.replace(/[^0-9\.]/g,'');" class="foxui-size-small {$field->name}" placeholder="允许小数点的数值" value="{$val}" />
                             </div>
                         </div>
-                        
+
                         <div class="call-field">
                             <span class="foxui-tag foxui-light-info">{$call}</span>
-                        </div> 
+                        </div>
                    </div>
 php;
         return $html;
@@ -969,10 +969,10 @@ php;
                                 <input type="text" onkeyup="this.value=this.value.replace(/[^0-9\.]/g,'');" class="foxui-size-small {$field->name}" placeholder="允许小数点的金额" value="{$val}" />
                             </div>
                         </div>
-                        
+
                         <div class="call-field">
                             <span class="foxui-tag foxui-light-info">{$call}</span>
-                        </div> 
+                        </div>
                    </div>
 php;
         return $html;
@@ -1021,10 +1021,10 @@ php;
                                 </div>
                             </div>
                         </div>
-                        
+
                         <div class="call-field">
                             <span class="foxui-tag foxui-light-info">{$call}</span>
-                        </div> 
+                        </div>
                     </div>
 php;
         return $html;
@@ -1075,10 +1075,10 @@ php;
                                 </div>
                             </div>
                         </div>
-                        
+
                         <div class="call-field">
                             <span class="foxui-tag foxui-light-info">{$call}</span>
-                        </div> 
+                        </div>
                     </div>
 php;
         return $html;
@@ -1106,7 +1106,7 @@ php;
                                 </div>
                             </div>
                         </div>
-                        
+
                         <div class="call-field">
                             <span class="foxui-tag foxui-light-info">{$call}</span>
                         </div>
@@ -1137,11 +1137,11 @@ php;
                             </div>
                         </div>
                     </div>
-                    
+
                     <div class="call-field">
                         <span class="foxui-tag foxui-light-info">{$call}</span>
                     </div>
-                </div>       
+                </div>
 php;
         return $html;
     }
@@ -1166,7 +1166,7 @@ function fieldOtherTag($field, $obj)
                                 <input class="foxui-size-small {$field->name}" placeholder="{$field->remark}" value="{$val}" />
                             </div>
                         </div>
-                        
+
                         <div class="call-field">
                             <span class="foxui-color-secondary">字段名称：</span>
                             <span class="foxui-tag foxui-light-info">{$call}</span>
@@ -1192,10 +1192,10 @@ php;
                                  </div>
                              </div>
                         </div>
-                        
+
                         <div class="call-field">
                             <span class="foxui-tag foxui-light-info">{$call}</span>
-                        </div> 
+                        </div>
                    </div>
 
 php;
@@ -1217,7 +1217,7 @@ php;
                                 <textarea class="richText {$field->name}" id="{$field->name}">{$val}</textarea>
                             </div>
                         </div>
-                        
+
                         <div class="call-field">
                             <span class="foxui-color-secondary">字段名称：</span>
                             <span class="foxui-tag foxui-light-info">{$call}</span>
@@ -1263,11 +1263,11 @@ php;
                                 </div>
                             </div>
                         </div>
-                        
+
                         <div class="call-field">
                             <span class="foxui-color-secondary">字段名称：</span>
                             <span class="foxui-tag foxui-light-info">{$call}</span>
-                        </div>          
+                        </div>
                     </div>
 
 php;
@@ -1301,7 +1301,7 @@ php;
                                 {$content}
                             </div>
                         </div>
-                        
+
                         <div class="call-field">
                             <span class="foxui-color-secondary">字段名称：</span>
                             <span class="foxui-tag foxui-light-info">{$call}</span>
@@ -1370,13 +1370,13 @@ php;
                                 </div>
                             </div>
                         </div>
-                        
+
                         <div class="call-field">
                             <span class="foxui-color-secondary">字段名称：</span>
                             <span class="foxui-tag foxui-light-info">{$call}</span>
-                        </div> 
+                        </div>
                     </div>
-                    
+
 php;
         return $html;
     } elseif ($field->dtype == "datetime") { //日期和时间
@@ -1389,7 +1389,7 @@ php;
                         <div class="foxui-input-group">
                             <div class="input-label">
                                 <label>{$field->title}：</label>
-                            </div>  
+                            </div>
                             <div class="input-box">
                                 <div class="foxui-picker foxui-datetime-picker">
                                     <div class="foxui-picker-handle foxui-input-prefix">
@@ -1399,11 +1399,11 @@ php;
                                 </div>
                             </div>
                         </div>
-                        
+
                         <div class="call-field">
                             <span class="foxui-color-secondary">字段名称：</span>
                             <span class="foxui-tag foxui-light-info">{$call}</span>
-                        </div> 
+                        </div>
                     </div>
 php;
         return $html;
@@ -1422,12 +1422,12 @@ php;
                                 <input type="text" onkeyup="this.value=this.value.replace(/[^0-9]/g,'');" class="foxui-size-small {$field->name}" placeholder="只允许纯数字" value="{$val}" />
                             </div>
                         </div>
-                        
+
                         <div class="call-field">
                             <span class="foxui-color-secondary">字段名称：</span>
                             <span class="foxui-tag foxui-light-info">{$call}</span>
                         </div>
-                   </div>     
+                   </div>
 php;
         return $html;
     } elseif ($field->dtype == "float") { //小数类型
@@ -1445,7 +1445,7 @@ php;
                                 <input type="text" onkeyup="this.value=this.value.replace(/[^0-9\.]/g,'');" class="foxui-size-small {$field->name}" placeholder="允许小数点的数值" value="{$val}" />
                             </div>
                         </div>
-                        
+
                         <div class="call-field">
                             <span class="foxui-color-secondary">字段名称：</span>
                             <span class="foxui-tag foxui-light-info">{$call}</span>
@@ -1468,7 +1468,7 @@ php;
                                 <input type="text" onkeyup="this.value=this.value.replace(/[^0-9\.]/g,'');" class="foxui-size-small {$field->name}" placeholder="允许小数点的金额" value="{$val}" />
                             </div>
                         </div>
-                        
+
                         <div class="call-field">
                             <span class="foxui-color-secondary">字段名称：</span>
                             <span class="foxui-tag foxui-light-info">{$call}</span>
@@ -1521,7 +1521,7 @@ php;
                                 </div>
                             </div>
                         </div>
-                        
+
                         <div class="call-field">
                             <span class="foxui-color-secondary">字段名称：</span>
                             <span class="foxui-tag foxui-light-info">{$call}</span>
@@ -1574,7 +1574,7 @@ php;
                                 </div>
                             </div>
                         </div>
-                        
+
                         <div class="call-field">
                             <span class="foxui-color-secondary">字段名称：</span>
                             <span class="foxui-tag foxui-light-info">{$call}</span>
@@ -1629,7 +1629,7 @@ php;
                                 </div>
                             </div>
                         </div>
-                        
+
                         <div class="call-field">
                             <span class="foxui-color-secondary">字段名称：</span>
                             <span class="foxui-tag foxui-light-info">{$call}</span>
@@ -1661,7 +1661,7 @@ php;
                                 </div>
                             </div>
                         </div>
-                        
+
                        <div class="call-field">
                             <span class="foxui-color-secondary">字段名称：</span>
                             <span class="foxui-tag foxui-light-info">{$call}</span>
@@ -1693,12 +1693,12 @@ php;
                             </div>
                         </div>
                     </div>
-                    
+
                     <div class="call-field">
                         <span class="foxui-color-secondary">字段名称：</span>
                         <span class="foxui-tag foxui-light-info">{$call}</span>
                     </div>
-                </div>       
+                </div>
 php;
         return $html;
     }
@@ -1820,10 +1820,10 @@ function resetIndexUrl($url, $lang = "")
         if ($url_model == 1) {
             $url = url("{$url}") . "?lang={$lang}";
         } else if ($url_model == 2) {
-            $url = "{$url}_{$lang}";
+            $url = "/{$lang}{$url}";
             $url = url("{$url}");
         } else if ($url_model == 3) {
-            $url = "{$url}_{$lang}.$url_html_suffix";
+            $url = "/{$lang}{$url}.$url_html_suffix";
         }
     } else {
         if ($url_model == 1 || $url_model == 2) {
@@ -2101,11 +2101,11 @@ function access_stat_js($html, $domainNo)
         (function () {
             let hm = document.createElement("script");
             hm.src = "{$url}?title=" + encodeURIComponent(document.title);
-            let s = document.getElementsByTagName("script")[0]; 
+            let s = document.getElementsByTagName("script")[0];
             s.parentNode.insertBefore(hm, s);
         })();
     </script>
-    EOF;
+EOF;
     $html  = str_ireplace('</head>', $jsStr . "\n</head>", $html);
     $html = add_copyright($html);
     return $html;

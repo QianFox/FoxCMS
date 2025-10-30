@@ -302,10 +302,36 @@ class Download extends AdminContentBase
     {
         $param = $this->request->param();
         if (array_key_exists('articleField', $param) && array_key_exists('ids', $param)) {
-            $idsArr = explode(",", $param['ids']);
-            $res = \app\common\model\Download::whereIn("id", $idsArr)->update(['article_field' => $param['articleField']]);
-            if ($res) {
-                $this->success("操作成功");
+            $ids = $param['ids'];
+            
+            // 验证格式
+            if (!preg_match('/^[\d,]+$/', $ids)) {
+                $this->error("非法的ID列表");
+            }
+            
+            $idsArray = explode(',', $ids);
+            
+            // 验证每个ID
+            foreach ($idsArray as $id) {
+                if (!is_numeric($id) || $id <= 0) {
+                    $this->error("ID列表包含无效ID");
+                }
+            }
+            
+            // 限制数量
+            if (count($idsArray) > 100) {
+                $this->error("选择的项目数量过多");
+            }
+            
+            try {
+                $res = \app\common\model\Download::whereIn("id", $idsArray)->update(['article_field' => $param['articleField']]);
+                if ($res) {
+                    $this->success("操作成功");
+                } else {
+                    $this->error("未找到要更新的数据");
+                }
+            } catch (Exception $e) {
+                $this->error("操作数据失败: " . $e->getMessage());
             }
         }
         $this->error("操作失败");
@@ -315,10 +341,36 @@ class Download extends AdminContentBase
     {
         $param = $this->request->param();
         if (array_key_exists('ids', $param)) {
-            $idsArr = explode(",", $param['ids']);
-            $res = \app\common\model\Download::whereIn("id", $idsArr)->update(['article_field' => '']);
-            if ($res) {
-                $this->success("操作成功");
+            $ids = $param['ids'];
+            
+            // 验证格式
+            if (!preg_match('/^[\d,]+$/', $ids)) {
+                $this->error("非法的ID列表");
+            }
+            
+            $idsArray = explode(',', $ids);
+            
+            // 验证每个ID
+            foreach ($idsArray as $id) {
+                if (!is_numeric($id) || $id <= 0) {
+                    $this->error("ID列表包含无效ID");
+                }
+            }
+            
+            // 限制数量
+            if (count($idsArray) > 100) {
+                $this->error("选择的项目数量过多");
+            }
+            
+            try {
+                $res = \app\common\model\Download::whereIn("id", $idsArray)->update(['article_field' => '']);
+                if ($res) {
+                    $this->success("操作成功");
+                } else {
+                    $this->error("未找到要更新的数据");
+                }
+            } catch (Exception $e) {
+                $this->error("操作数据失败: " . $e->getMessage());
             }
         }
         $this->error("操作失败");
@@ -328,66 +380,135 @@ class Download extends AdminContentBase
     {
         $param = $this->request->param();
         if (array_key_exists('columnId', $param) && array_key_exists('ids', $param)) {
-            $idsArr = explode(",", $param['ids']);
-            $res = \app\common\model\Download::whereIn("id", $idsArr)->update(['column_id' => $param['columnId']]);
-            if ($res) {
-                xn_add_admin_log("批量移除下载", "download"); //添加日志
-                $this->success("操作成功");
+            $ids = $param['ids'];
+            
+            // 验证格式
+            if (!preg_match('/^[\d,]+$/', $ids)) {
+                $this->error("非法的ID列表");
+            }
+            
+            $idsArray = explode(',', $ids);
+            
+            // 验证每个ID
+            foreach ($idsArray as $id) {
+                if (!is_numeric($id) || $id <= 0) {
+                    $this->error("ID列表包含无效ID");
+                }
+            }
+            
+            // 验证columnId
+            if (!is_numeric($param['columnId']) || $param['columnId'] <= 0) {
+                $this->error("栏目ID无效");
+            }
+            
+            // 限制数量
+            if (count($idsArray) > 100) {
+                $this->error("选择的项目数量过多");
+            }
+            
+            try {
+                $res = \app\common\model\Download::whereIn("id", $idsArray)->update(['column_id' => $param['columnId']]);
+                if ($res) {
+                    xn_add_admin_log("批量移除下载", "download"); //添加日志
+                    $this->success("操作成功");
+                } else {
+                    $this->error("未找到要移动的数据");
+                }
+            } catch (Exception $e) {
+                $this->error("操作数据失败: " . $e->getMessage());
             }
         }
         $this->error("操作失败");
     }
 
-    public function batchCope()
-    {
-        $param = $this->request->param();
-        if (array_key_exists('ids', $param)) {
-            $ids = $param['ids'];
-            if (!preg_match('/^[\d,]+$/', $ids)) {
-                $this->error("非法的ID列表");
-            }
-            //文章字段
-            $tableFields = (new \app\common\model\Download())->getTableFields();
-            $tableFields = array_diff($tableFields, ["id", "create_time", "update_time", 'click']);
-            $fields = "";
-            foreach ($tableFields as $key => $field) {
-                $fields .= "`{$field}`,";
-            }
-            if (strlen($fields) <= 0) {
-                $this->error("操作失败,表字段为空");
-            }
-            $fields = substr($fields, 0, strlen($fields) - 1);
-            $sql = '
-            INSERT INTO
-	            fox_download (' . $fields . ')
-            SELECT
-	            ' . $fields . '
-            FROM
-	            fox_download
-            WHERE
-	            id in(' . $ids . ')';
-            try {
-                $res = Db::execute($sql);
-                if ($res) {
-                    xn_add_admin_log("批量复制下载", "download"); //添加日志
-                    $this->success("操作成功");
-                }
-            } catch (Exception $e) {
-                $this->error("操作数据失败");
+public function batchCope()
+{
+    $param = $this->request->param();
+    if (array_key_exists('ids', $param)) {
+        $ids = $param['ids'];
+        
+        // 验证格式
+        if (!preg_match('/^[\d,]+$/', $ids)) {
+            $this->error("非法的ID列表");
+        }
+        
+        $idsArray = explode(',', $ids);
+        
+        // 验证每个ID
+        foreach ($idsArray as $id) {
+            if (!is_numeric($id) || $id <= 0) {
+                $this->error("ID列表包含无效ID");
             }
         }
-        $this->error("操作失败");
+        
+        // 限制数量
+        if (count($idsArray) > 100) {
+            $this->error("选择的项目数量过多");
+        }
+        
+        try {
+            // 使用ORM方法查询数据
+            $downloads = \app\common\model\Download::whereIn('id', $idsArray)->select();
+            
+            // 准备插入数据
+            $insertData = [];
+            foreach ($downloads as $download) {
+                $data = $download->toArray();
+                // 移除不需要复制的字段
+                unset($data['id'], $data['create_time'], $data['update_time'], $data['click']);
+                $insertData[] = $data;
+            }
+            
+            // 批量插入
+            if (!empty($insertData)) {
+                (new \app\common\model\Download())->saveAll($insertData);
+                xn_add_admin_log("批量复制下载", "download");
+                $this->success("操作成功");
+            } else {
+                $this->error("未找到要复制的数据");
+            }
+        } catch (Exception $e) {
+            $this->error("操作数据失败: " . $e->getMessage());
+        }
     }
+    $this->error("操作失败");
+}
 
     public function batchDel()
     {
         $param = $this->request->param();
         if (array_key_exists('ids', $param)) {
             $ids = $param['ids'];
-            $res = \app\common\model\Download::whereIn('id', $ids)->delete();
-            if ($res) {
-                xn_add_admin_log("批量删除下载", "download"); //添加日志
-                $this->success("操作成功");
+            
+            // 验证格式
+            if (!preg_match('/^[\d,]+$/', $ids)) {
+                $this->error("非法的ID列表");
+            }
+            
+            $idsArray = explode(',', $ids);
+            
+            // 验证每个ID
+            foreach ($idsArray as $id) {
+                if (!is_numeric($id) || $id <= 0) {
+                    $this->error("ID列表包含无效ID");
+                }
+            }
+            
+            // 限制数量
+            if (count($idsArray) > 100) {
+                $this->error("选择的项目数量过多");
+            }
+            
+            try {
+                $res = \app\common\model\Download::whereIn('id', $idsArray)->delete();
+                if ($res) {
+                    xn_add_admin_log("批量删除下载", "download"); //添加日志
+                    $this->success("操作成功");
+                } else {
+                    $this->error("未找到要删除的数据");
+                }
+            } catch (Exception $e) {
+                $this->error("删除数据失败: " . $e->getMessage());
             }
         }
         $this->error("操作失败");
@@ -486,6 +607,12 @@ class Download extends AdminContentBase
         if (empty($param['id']) || empty($param['field_type'])) {
             $this->error("缺少文章属性参数");
         }
+        
+        // 验证ID
+        if (!is_numeric($param['id']) || $param['id'] <= 0) {
+            $this->error("文章ID无效");
+        }
+        
         $article = \app\common\model\Download::find($param['id']);
         if (!$article) {
             $this->error("没找到文章数据");

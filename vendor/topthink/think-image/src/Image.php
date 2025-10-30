@@ -85,7 +85,6 @@ class Image
         if (empty($this->im)) {
             throw new ImageException('Failed to create image resources!');
         }
-
     }
 
     /**
@@ -236,7 +235,6 @@ class Image
 
             imagedestroy($this->im);
             $this->im = $img;
-
         } while (!empty($this->gif) && $this->gifNext());
 
         return $this;
@@ -363,7 +361,7 @@ class Image
                 $this->info['width']  = (int) $width;
                 $this->info['height'] = (int) $height;
                 return $this;
-            /* 固定 */
+                /* 固定 */
             case self::THUMB_FIXED:
                 $x = $y = 0;
                 break;
@@ -387,83 +385,74 @@ class Image
         if (!is_file($source)) {
             throw new ImageException('水印图像不存在');
         }
-        //获取水印图像信息
+
+        // 获取水印图像信息
         $info = getimagesize($source);
         if (false === $info || (IMAGETYPE_GIF === $info[2] && empty($info['bits']))) {
             throw new ImageException('非法水印文件');
         }
-        //创建水印图像资源
+
+        // 创建水印图像资源
         $fun   = 'imagecreatefrom' . image_type_to_extension($info[2], false);
         $water = $fun($source);
-        //设定水印图像的混色模式
-        imagealphablending($water, true);
+
+        // 启用 alpha 通道
+        imagealphablending($water, false); // 禁用混色模式以保留透明度
+        imagesavealpha($water, true);     // 保存完整的 alpha 通道
+
         /* 设定水印位置 */
         switch ($locate) {
-            /* 右下角水印 */
             case self::WATER_SOUTHEAST:
                 $x = $this->info['width'] - $info[0];
                 $y = $this->info['height'] - $info[1];
                 break;
-            /* 左下角水印 */
             case self::WATER_SOUTHWEST:
                 $x = 0;
                 $y = $this->info['height'] - $info[1];
                 break;
-            /* 左上角水印 */
             case self::WATER_NORTHWEST:
                 $x = $y = 0;
                 break;
-            /* 右上角水印 */
             case self::WATER_NORTHEAST:
                 $x = $this->info['width'] - $info[0];
                 $y = 0;
                 break;
-            /* 居中水印 */
             case self::WATER_CENTER:
                 $x = ($this->info['width'] - $info[0]) / 2;
                 $y = ($this->info['height'] - $info[1]) / 2;
                 break;
-            /* 下居中水印 */
-            case self::WATER_SOUTH:
-                $x = ($this->info['width'] - $info[0]) / 2;
-                $y = $this->info['height'] - $info[1];
-                break;
-            /* 右居中水印 */
-            case self::WATER_EAST:
-                $x = $this->info['width'] - $info[0];
-                $y = ($this->info['height'] - $info[1]) / 2;
-                break;
-            /* 上居中水印 */
-            case self::WATER_NORTH:
-                $x = ($this->info['width'] - $info[0]) / 2;
-                $y = 0;
-                break;
-            /* 左居中水印 */
-            case self::WATER_WEST:
-                $x = 0;
-                $y = ($this->info['height'] - $info[1]) / 2;
-                break;
             default:
-                /* 自定义水印坐标 */
                 if (is_array($locate)) {
                     list($x, $y) = $locate;
                 } else {
                     throw new ImageException('不支持的水印位置类型');
                 }
         }
+
         do {
-            //添加水印
+            // 创建临时图像并保留透明通道
             $src = imagecreatetruecolor($info[0], $info[1]);
-            // 调整默认颜色
-            $color = imagecolorallocate($src, 255, 255, 255);
-            imagefill($src, 0, 0, $color);
+
+            // 启用 alpha 通道
+            imagealphablending($src, false);
+            imagesavealpha($src, true);
+
+            // 填充完全透明背景
+            $transparent = imagecolorallocatealpha($src, 0, 0, 0, 127);
+            imagefilledrectangle($src, 0, 0, $info[0], $info[1], $transparent);
+
+            // 将目标区域复制到临时图像中
             imagecopy($src, $this->im, 0, 0, $x, $y, $info[0], $info[1]);
+
+            // 将水印图层绘制到临时图像上（保持透明通道）
             imagecopy($src, $water, 0, 0, 0, 0, $info[0], $info[1]);
-            imagecopymerge($this->im, $src, $x, $y, 0, 0, $info[0], $info[1], $alpha);
-            //销毁零时图片资源
+
+            // 将临时图像合并回主图像
+            imagecopy($this->im, $src, $x, $y, 0, 0, $info[0], $info[1]);
+
             imagedestroy($src);
         } while (!empty($this->gif) && $this->gifNext());
-        //销毁水印资源
+
         imagedestroy($water);
         return $this;
     }
@@ -482,8 +471,15 @@ class Image
      * @return $this
      * @throws ImageException
      */
-    public function text($text, $font, $size, $color = '#00000000',
-        $locate = self::WATER_SOUTHEAST, $offset = 0, $angle = 0) {
+    public function text(
+        $text,
+        $font,
+        $size,
+        $color = '#00000000',
+        $locate = self::WATER_SOUTHEAST,
+        $offset = 0,
+        $angle = 0
+    ) {
 
         if (!is_file($font)) {
             throw new ImageException("不存在的字体文件：{$font}");
@@ -606,5 +602,4 @@ class Image
     {
         empty($this->im) || imagedestroy($this->im);
     }
-
 }

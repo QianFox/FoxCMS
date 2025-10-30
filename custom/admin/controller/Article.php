@@ -231,10 +231,36 @@ class Custom extends AdminContentBase
     {
         $param = $this->request->param();
         if (array_key_exists('articleField', $param) && array_key_exists('ids', $param)) {
-            $idsArr = explode(",", $param['ids']);
-            $res = \app\common\model\Custom::whereIn("id", $idsArr)->update(['article_field' => $param['articleField']]);
-            if ($res) {
-                $this->success("操作成功");
+            $ids = $param['ids'];
+            
+            // 验证格式
+            if (!preg_match('/^[\d,]+$/', $ids)) {
+                $this->error("非法的ID列表");
+            }
+            
+            $idsArray = explode(',', $ids);
+            
+            // 验证每个ID
+            foreach ($idsArray as $id) {
+                if (!is_numeric($id) || $id <= 0) {
+                    $this->error("ID列表包含无效ID");
+                }
+            }
+            
+            // 限制数量
+            if (count($idsArray) > 100) {
+                $this->error("选择的项目数量过多");
+            }
+            
+            try {
+                $res = \app\common\model\Custom::whereIn("id", $idsArray)->update(['article_field' => $param['articleField']]);
+                if ($res) {
+                    $this->success("操作成功");
+                } else {
+                    $this->error("未找到要更新的数据");
+                }
+            } catch (Exception $e) {
+                $this->error("操作数据失败: " . $e->getMessage());
             }
         }
         $this->error("操作失败");
@@ -244,24 +270,36 @@ class Custom extends AdminContentBase
     {
         $param = $this->request->param();
         if (array_key_exists('ids', $param)) {
-            $idsArr = explode(",", $param['ids']);
-            $res = \app\common\model\Custom::whereIn("id", $idsArr)->update(['article_field' => '']);
-            if ($res) {
-                $this->success("操作成功");
+            $ids = $param['ids'];
+            
+            // 验证格式
+            if (!preg_match('/^[\d,]+$/', $ids)) {
+                $this->error("非法的ID列表");
             }
-        }
-        $this->error("操作失败");
-    }
-
-    public function batchMove()
-    {
-        $param = $this->request->param();
-        if (array_key_exists('columnId', $param) && array_key_exists('ids', $param)) {
-            $idsArr = explode(",", $param['ids']);
-            $res = \app\common\model\Custom::whereIn("id", $idsArr)->update(['column_id' => $param['columnId']]);
-            if ($res) {
-                xn_add_admin_log("批量移除", "custom"); //添加日志
-                $this->success("操作成功");
+            
+            $idsArray = explode(',', $ids);
+            
+            // 验证每个ID
+            foreach ($idsArray as $id) {
+                if (!is_numeric($id) || $id <= 0) {
+                    $this->error("ID列表包含无效ID");
+                }
+            }
+            
+            // 限制数量
+            if (count($idsArray) > 100) {
+                $this->error("选择的项目数量过多");
+            }
+            
+            try {
+                $res = \app\common\model\Custom::whereIn("id", $idsArray)->update(['article_field' => '']);
+                if ($res) {
+                    $this->success("操作成功");
+                } else {
+                    $this->error("未找到要更新的数据");
+                }
+            } catch (Exception $e) {
+                $this->error("操作数据失败: " . $e->getMessage());
             }
         }
         $this->error("操作失败");
@@ -272,37 +310,49 @@ class Custom extends AdminContentBase
         $param = $this->request->param();
         if (array_key_exists('ids', $param)) {
             $ids = $param['ids'];
+            
+            // 验证格式
             if (!preg_match('/^[\d,]+$/', $ids)) {
                 $this->error("非法的ID列表");
             }
-            //文章字段
-            $tableFields = (new \app\common\model\Custom())->getTableFields();
-            $tableFields = array_diff($tableFields, ["id", "create_time", "update_time", 'click']);
-            $fields = "";
-            foreach ($tableFields as $key => $field) {
-                $fields .= "`{$field}`,";
+            
+            $idsArray = explode(',', $ids);
+            
+            // 验证每个ID
+            foreach ($idsArray as $id) {
+                if (!is_numeric($id) || $id <= 0) {
+                    $this->error("ID列表包含无效ID");
+                }
             }
-            if (strlen($fields) <= 0) {
-                $this->error("操作失败,表字段为空");
+            
+            // 限制数量
+            if (count($idsArray) > 100) {
+                $this->error("选择的项目数量过多");
             }
-            $fields = substr($fields, 0, strlen($fields) - 1);
-            $sql = '
-            INSERT INTO
-	            fox_custom (' . $fields . ')
-            SELECT
-	            ' . $fields . '
-            FROM
-	            fox_custom
-            WHERE
-	            id in(' . $ids . ')';
+            
             try {
-                $res = Db::execute($sql);
-                if ($res) {
-                    xn_add_admin_log("批量复制", "custom"); //添加日志
+                // 使用ORM方法查询数据
+                $articles = \app\common\model\Custom::whereIn('id', $idsArray)->select();
+                
+                // 准备插入数据
+                $insertData = [];
+                foreach ($articles as $article) {
+                    $data = $article->toArray();
+                    // 移除不需要复制的字段
+                    unset($data['id'], $data['create_time'], $data['update_time'], $data['click']);
+                    $insertData[] = $data;
+                }
+                
+                // 批量插入
+                if (!empty($insertData)) {
+                    (new \app\common\model\Custom())->saveAll($insertData);
+                    xn_add_admin_log("自定义内容批量复制", "custom");
                     $this->success("操作成功");
+                } else {
+                    $this->error("未找到要复制的数据");
                 }
             } catch (Exception $e) {
-                $this->error("操作数据失败");
+                $this->error("操作数据失败: " . $e->getMessage());
             }
         }
         $this->error("操作失败");
@@ -313,15 +363,40 @@ class Custom extends AdminContentBase
         $param = $this->request->param();
         if (array_key_exists('ids', $param)) {
             $ids = $param['ids'];
-            $res = \app\common\model\Custom::whereIn('id', $ids)->delete();
-            if ($res) {
-                xn_add_admin_log("批量删除", "custom"); //添加日志
-                $this->success("操作成功");
+            
+            // 验证格式
+            if (!preg_match('/^[\d,]+$/', $ids)) {
+                $this->error("非法的ID列表");
+            }
+            
+            $idsArray = explode(',', $ids);
+            
+            // 验证每个ID
+            foreach ($idsArray as $id) {
+                if (!is_numeric($id) || $id <= 0) {
+                    $this->error("ID列表包含无效ID");
+                }
+            }
+            
+            // 限制数量
+            if (count($idsArray) > 100) {
+                $this->error("选择的项目数量过多");
+            }
+            
+            try {
+                $res = \app\common\model\Custom::whereIn('id', $idsArray)->delete();
+                if ($res) {
+                    xn_add_admin_log("自定义内容批量删除", "custom");
+                    $this->success("操作成功");
+                } else {
+                    $this->error("未找到要删除的数据");
+                }
+            } catch (Exception $e) {
+                $this->error("删除数据失败: " . $e->getMessage());
             }
         }
         $this->error("操作失败");
     }
-
     public function saveDict()
     {
         $param = $this->request->param();

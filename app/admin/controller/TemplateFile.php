@@ -6,7 +6,7 @@
  * @Date: 2023/6/26   15:34
  * @version: V1.08
  * @copyright: ©2021-现在 贵州黔狐科技股份有限公司 版权所有
- * @LastEditTime: 2024/12/27   15:34
+ * @LastEditTime: 2025/08/04   09:34
  */
 
 namespace app\admin\controller;
@@ -26,6 +26,54 @@ class TemplateFile extends AdminBase
         '.jsp', '.jspx', '.cfm', '.cfml', '.js', '.vbs',
         '.hta', '.bat', '.cmd', '.exe', '.dll'
     ];
+
+    /**
+     * 获取危险内容检测模式
+     */
+    private function getDangerousPatterns()
+    {
+        return [
+            '#<\?=.*\?>#i',                          // PHP 短标签
+            '#<\?php#i',                             // 标准 PHP 开标签
+            '#<\?.*?\?>#is',                         // 任意 PHP 标签
+            '#\{fox\:php([^\}]*)\}#i',               // 自定义 PHP 标签
+            '#\{php([^\}]*)\}#i',                    // 自定义 PHP 标签
+            '#\beval\s*\(#i',                        // eval 函数
+            '#\bassert\s*\(#i',                      // assert 函数
+            '#\bexec\s*\(#i',                        // exec 函数
+            '#\bshell_exec\s*\(#i',                  // shell_exec 函数
+            '#\bsystem\s*\(#i',                      // system 函数
+            '#\bpassthru\s*\(#i',                    // passthru 函数
+            '#\bproc_open\s*\(#i',                   // proc_open 函数
+            '#\bpopen\s*\(#i',                       // popen 函数
+            '#\bpcntl_exec\s*\(#i',                  // pcntl_exec 函数
+            '#\$_REQUEST#i',                         // $_REQUEST 变量
+            '#\$_GET#i',                             // $_GET 变量
+            '#\$_POST#i',                            // $_POST 变量
+            '#\$_COOKIE#i',                          // $_COOKIE 变量
+            '#\$_SESSION#i',                         // $_SESSION 变量
+            '#\$_SERVER#i',                          // $_SERVER 变量
+            '#\$_ENV#i',                             // $_ENV 变量
+            '#\$GLOBALS#i',                          // $GLOBALS 变量
+            '#\$_FILES#i'                            // $_FILES 变量
+        ];
+    }
+
+    /**
+     * 检查内容是否包含危险代码
+     */
+    private function hasDangerousContent($content)
+    {
+        $dangerous_patterns = $this->getDangerousPatterns();
+        
+        foreach ($dangerous_patterns as $pattern) {
+            if (preg_match($pattern, $content)) {
+                return true;
+            }
+        }
+        
+        return false;
+    }
 
     /**
      * 显示模板文件列表
@@ -151,17 +199,12 @@ public function addFile()
         $file = $basePath . DIRECTORY_SEPARATOR . $fileName;
 
         if (!is_writable(dirname($file))) {
-            return "请把模板文件目录设置为可写入权限！" . $file;
+            $this->error("请把模板文件目录设置为可写入权限！" . $file);
         }
 
-        // 检查文件内容是否包含 PHP 代码
-        if (
-            preg_match('#<([^?]*)\?php#i', $content) ||
-            (preg_match('#<\?#i', $content) && preg_match('#\?>#i', $content)) ||
-            preg_match('#\{fox\:php([^\}]*)\}#i', $content) ||
-            preg_match('#\{php([^\}]*)\}#i', $content)
-        ) {
-            return "模板里不允许有php语法，为了安全考虑，请通过FTP工具进行编辑上传。";
+        // 检查文件内容是否包含危险代码
+        if ($this->hasDangerousContent($content)) {
+            $this->error("模板里包含不安全的内容，为了安全考虑，请通过FTP工具进行编辑上传。");
         }
 
         // 写入文件内容
@@ -225,17 +268,12 @@ public function editFile()
         $content = input("content", '', null);
 
         if (!is_writable(dirname($file))) {
-            return "请把模板文件目录设置为可写入权限！";
+            $this->error("请把模板文件目录设置为可写入权限！");
         }
 
-        // 检查文件内容是否包含 PHP 代码
-        if (
-            preg_match('#<([^?]*)\?php#i', $content) ||
-            (preg_match('#<\?#i', $content) && preg_match('#\?>#i', $content)) ||
-            preg_match('#\{fox\:php([^\}]*)\}#i', $content) ||
-            preg_match('#\{php([^\}]*)\}#i', $content)
-        ) {
-            return "模板里不允许有php语法，为了安全考虑，请通过FTP工具进行编辑上传。";
+        // 检查文件内容是否包含危险代码
+        if ($this->hasDangerousContent($content)) {
+            $this->error("模板里包含不安全的内容，为了安全考虑，请通过FTP工具进行编辑上传。");
         }
 
         // 写入文件内容

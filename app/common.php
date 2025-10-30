@@ -200,6 +200,39 @@ function xn_add_admin_log($remark, $type = 'system', $content = "")
  */
 function xn_cfg($name, $default = '', $path = 'cfg')
 {
+    // 特殊处理 base.home_lang
+    if ($name === 'base.home_lang') {
+        static $cachedHomeLang = null;
+        if ($cachedHomeLang !== null) {
+            return $cachedHomeLang;
+        }
+
+        try {
+            // 尝试从数据库获取默认语言
+            $defaultLangRecord = \think\facade\Db::name('lang')
+                ->where('status', 1)
+                ->where('is_default', 1)
+                ->cache(true)
+                ->find();
+
+            if ($defaultLangRecord && !empty($defaultLangRecord['lang'])) {
+                $cachedHomeLang = $defaultLangRecord['lang'];
+                return $cachedHomeLang;
+            }
+        } catch (\Exception $e) {
+            // 数据库查询失败，继续使用配置文件
+            // 可以记录日志: \think\facade\Log::error('Failed to get home_lang from database: ' . $e->getMessage());
+        }
+
+        // 如果数据库查询失败或未找到，则回退到配置文件的值
+        $name_arr = ['base', 'home_lang'];
+        $filename = 'base';
+        $config = \think\facade\Config::load($path . '/' . $filename, $filename);
+        $cachedHomeLang = $config[$name_arr[1]] ?? $default;
+        return $cachedHomeLang;
+    }
+
+    // 原有逻辑处理其他配置项
     if (false === strpos($name, '.')) {
         $name = strtolower($name);
         $config  = \think\facade\Config::load($path . '/' . $name, $name);
@@ -836,22 +869,22 @@ if (!function_exists("get_column_down")) {
         $sql = <<<php
                 SELECT
                     ID.`level`,
-                   `data`.* 
+                   `data`.*
                 FROM
                     (
                     SELECT
                         @ids AS _ids,
                         ( SELECT @ids := GROUP_CONCAT( id ) FROM fox_column WHERE FIND_IN_SET( pid, @ids ) ) AS cids,
-                        @l := @l + 1 AS `level` 
+                        @l := @l + 1 AS `level`
                     FROM
                         fox_column,
-                        ( SELECT @ids:= $columnId, @l := 0 ) b 
+                        ( SELECT @ids:= $columnId, @l := 0 ) b
                     WHERE
-                        @ids IS NOT NULL 
+                        @ids IS NOT NULL
                     ) ID,
-                    fox_column `data` 
+                    fox_column `data`
                 WHERE
-                    FIND_IN_SET( `data`.id, ID._ids ) 
+                    FIND_IN_SET( `data`.id, ID._ids )
                     AND $condition
                 ORDER BY
                     ID.`level`
@@ -877,14 +910,14 @@ if (!function_exists("get_down")) {
                     SELECT
                         @ids AS _ids,
                         ( SELECT @ids := GROUP_CONCAT( id ) FROM {$tableName} WHERE FIND_IN_SET( pid, @ids ) ) AS cids,
-                        @l := @l + 1 AS `level` 
+                        @l := @l + 1 AS `level`
                     FROM
                         {$tableName},
-                        ( SELECT @ids:= $id, @l := 0 ) b 
+                        ( SELECT @ids:= $id, @l := 0 ) b
                     WHERE
-                        @ids IS NOT NULL 
+                        @ids IS NOT NULL
                     ) ID,
-                    {$tableName} `data` 
+                    {$tableName} `data`
                 WHERE
                     FIND_IN_SET( `data`.id, ID._ids )
                 ORDER BY
@@ -957,14 +990,14 @@ if (!function_exists("get_up")) {
                     SELECT
                         @pid AS _id,
                         ( SELECT @pid := pid FROM {$tableName} WHERE id = _id ) AS pid,
-                        @LEVEL := @LEVEL + 1 AS lvl 
+                        @LEVEL := @LEVEL + 1 AS lvl
                     FROM
                         ( SELECT @pid := {$id}, @LEVEL := 0 ) vars,
-                        {$tableName} c 
+                        {$tableName} c
                     WHERE
-                        @pid <> 0 
+                        @pid <> 0
                     ) t1
-                    JOIN ( SELECT * FROM {$tableName} ) t2 ON t1._id = t2.id 
+                    JOIN ( SELECT * FROM {$tableName} ) t2 ON t1._id = t2.id
                 ORDER BY
                     t1.lvl DESC
 php;
@@ -1508,45 +1541,45 @@ if (!function_exists('pattern_replace')) {
 }
 
 if (!function_exists('form_replace')) {
-/**
- * 替换和清理表单输入值中的潜在威胁
- */
-function form_replace($fieldVal)
-{
-    // 使用 filter_var 进行基本的输入验证
-    $fieldVal = filter_var($fieldVal, FILTER_SANITIZE_STRING);
-    // 使用白名单机制，只允许特定字符通过，包括中文字符
-    $fieldVal = preg_replace('/[^a-zA-Z0-9\s.,!?-，。！？、《》“”‘’（）【】《》\x{4e00}-\x{9fa5}]/u', '', $fieldVal);
-    // 使用黑名单机制过滤特定模式
-    $patterns = [
-        '/sleep\(\d+\)/i', // 过滤 sleep(数字)
-        '/(Response\.Write|print|die|eval|system|exec|passthru|shell_exec|popen|proc_open|\.php)/i', // 过滤特定单词和文件扩展名
-        '/(by|By|bY)\s*\d+/i', // 去掉 by 加数字
-        '/\d+\'|(\d+-+)/', // 去掉数字'或数字--
-        '/\d+=\d+/', // 去掉数字=数字
-        '/(\.*\/)+/', // 去掉多个 ./ 和 /
-        '/\)+/', // 去掉过多 )
-        '/\.+/', // 去掉多余的点
-        '/(and|or)/i', // 过滤 and 或 or
-        '/(<|>)/', // 过滤 < 或 >
-        '/--/', // 过滤 --
-        '/\bselect\b|\binsert\b|\bupdate\b|\bdelete\b|\bdrop\b|\bcreate\b/i', // 过滤 SQL 关键字
-        '/\bjavascript\b|\bon\w+\b/i', // 过滤 JavaScript 关键字和事件处理程序
-        '/\balert\b|\bconfirm\b|\bprompt\b/i', // 过滤 JavaScript 函数
-    ];
+    /**
+     * 替换和清理表单输入值中的潜在威胁
+     */
+    function form_replace($fieldVal)
+    {
+        // 使用 filter_var 进行基本的输入验证
+        $fieldVal = filter_var($fieldVal, FILTER_SANITIZE_STRING);
+        // 使用白名单机制，只允许特定字符通过，包括中文字符
+        $fieldVal = preg_replace('/[^a-zA-Z0-9\s.,!?-，。！？、《》“”‘’（）【】《》\x{4e00}-\x{9fa5}]/u', '', $fieldVal);
+        // 使用黑名单机制过滤特定模式
+        $patterns = [
+            '/sleep\(\d+\)/i', // 过滤 sleep(数字)
+            '/(Response\.Write|print|die|eval|system|exec|passthru|shell_exec|popen|proc_open|\.php)/i', // 过滤特定单词和文件扩展名
+            '/(by|By|bY)\s*\d+/i', // 去掉 by 加数字
+            '/\d+\'|(\d+-+)/', // 去掉数字'或数字--
+            '/\d+=\d+/', // 去掉数字=数字
+            '/(\.*\/)+/', // 去掉多个 ./ 和 /
+            '/\)+/', // 去掉过多 )
+            '/\.+/', // 去掉多余的点
+            '/(and|or)/i', // 过滤 and 或 or
+            '/(<|>)/', // 过滤 < 或 >
+            '/--/', // 过滤 --
+            '/\bselect\b|\binsert\b|\bupdate\b|\bdelete\b|\bdrop\b|\bcreate\b/i', // 过滤 SQL 关键字
+            '/\bjavascript\b|\bon\w+\b/i', // 过滤 JavaScript 关键字和事件处理程序
+            '/\balert\b|\bconfirm\b|\bprompt\b/i', // 过滤 JavaScript 函数
+        ];
 
-    foreach ($patterns as $pattern) {
-        $fieldVal = preg_replace($pattern, '', $fieldVal);
+        foreach ($patterns as $pattern) {
+            $fieldVal = preg_replace($pattern, '', $fieldVal);
+        }
+        // 输入长度限制
+        $maxLength = 255;
+        if (strlen($fieldVal) > $maxLength) {
+            $fieldVal = substr($fieldVal, 0, $maxLength);
+        }
+        // 使用 htmlentities 转换特殊字符为 HTML 实体
+        $fieldVal = htmlentities($fieldVal, ENT_QUOTES | ENT_HTML5, 'UTF-8');
+        return $fieldVal;
     }
-    // 输入长度限制
-    $maxLength = 255;
-    if (strlen($fieldVal) > $maxLength) {
-        $fieldVal = substr($fieldVal, 0, $maxLength);
-    }
-    // 使用 htmlentities 转换特殊字符为 HTML 实体
-    $fieldVal = htmlentities($fieldVal, ENT_QUOTES | ENT_HTML5, 'UTF-8');
-    return $fieldVal;
-}
 }
 if (!function_exists('dataD')) {
     function dataD($string, $key = 'foxcms')
@@ -1601,7 +1634,7 @@ if (!function_exists('err_code_translate')) {
                 break;
             }
         }
-  
+
         return $message;
     }
 }

@@ -2,7 +2,7 @@
 return [
 	'sys_name' => 'FOXCMS黔狐内容管理系统',
 	'login_vercode' => '1',
-	'status_desc' => '网站暂时关闭，升级维护中…',
+	'status_desc' => '网站暂时关闭，升级维护中',
 	'status' => '1',
 	'frame_exception' => '0',
 	'copyright_mark' => '2',

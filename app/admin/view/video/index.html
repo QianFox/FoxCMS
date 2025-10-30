@@ -187,7 +187,7 @@
 				buttonType: 'danger',
 				confirm: function (callback) {
 					// 上传数据
-					ajaxR("{:url('batchDelField')}","get",{ids},{},function(res) {
+					ajaxR("{:url('batchDelField')}","post",{ids},{},function(res) {
 								if (res.code == 1) {
 									foxui.message({
 										text: res.msg,
@@ -301,7 +301,7 @@
 				buttonSize: 'small',
 				confirm: function (callback) {
 					// 上传数据
-					ajaxR("{:url('batchCope')}","get",{ids},{},function(res) {
+					ajaxR("{:url('batchCope')}","post",{ids},{},function(res) {
 								if (res.code == 1) {
 									foxui.message({
 										text: res.msg,
@@ -342,7 +342,7 @@
 				buttonType: 'danger',
 				confirm: function (callback) {
 					// 上传数据
-					ajaxR("{:url('batchDel')}","get",{ids},{},function(res) {
+					ajaxR("{:url('batchDel')}","post",{ids},{},function(res) {
 								if (res.code == 1) {
 									foxui.message({
 										text: res.msg,
@@ -446,7 +446,7 @@
 			confirmText: '确定',
 			confirm: function (callback) {
 				//复制文章信息
-				ajaxR("{:url('batchCope')}","get",{"ids":id},{},function(res) {
+				ajaxR("{:url('batchCope')}","post",{"ids":id},{},function(res) {
 							if (res.code == 1) {
 								foxui.message({
 									text: res.msg,

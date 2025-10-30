@@ -300,7 +300,7 @@
 				buttonSize: 'small',
 				confirm: function (callback) {
 					// 上传数据
-					ajaxR("{:url('batchCope')}","get",{ids},{},function(res) {
+					ajaxR("{:url('batchCope')}","post",{ids},{},function(res) {
 								if (res.code == 1) {
 									foxui.message({
 										text: res.msg,

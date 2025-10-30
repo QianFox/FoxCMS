@@ -296,30 +296,27 @@ class Images extends AdminContentBase
             if (!preg_match('/^[\d,]+$/', $ids)) {
                 $this->error("非法的ID列表");
             }
-            //文章字段
-            $tableFields = (new \app\common\model\Images())->getTableFields();
-            $tableFields = array_diff($tableFields, ["id", "create_time", "update_time", 'click']);
-            $fields = "";
-            foreach ($tableFields as $key => $field) {
-                $fields .= "`{$field}`,";
+            
+            $idsArray = explode(',', $ids);
+            
+            // 使用ORM方法查询数据
+            $images = \app\common\model\Images::whereIn('id', $idsArray)->select();
+            
+            // 准备插入数据
+            $insertData = [];
+            foreach ($images as $image) {
+                $data = $image->toArray();
+                // 移除不需要复制的字段
+                unset($data['id'], $data['create_time'], $data['update_time'], $data['click']);
+                $insertData[] = $data;
             }
-            if (strlen($fields) <= 0) {
-                $this->error("操作失败,表字段为空");
-            }
-            $fields = substr($fields, 0, strlen($fields) - 1);
-            $sql = '
-            INSERT INTO
-	            fox_images (' . $fields . ')
-            SELECT
-	            ' . $fields . '
-            FROM
-	            fox_images
-            WHERE
-	            id in(' . $ids . ')';
-            $res = Db::execute($sql);
-            if ($res) {
-                xn_add_admin_log("批量复制图片集", "images"); //添加日志
+            
+            // 批量插入
+            if (!empty($insertData)) {
+                (new \app\common\model\Images())->saveAll($insertData);
                 $this->success("操作成功");
+            } else {
+                $this->error("未找到要复制的数据");
             }
         }
         $this->error("操作失败");
@@ -330,6 +327,12 @@ class Images extends AdminContentBase
         $param = $this->request->param();
         if (array_key_exists('ids', $param)) {
             $ids = $param['ids'];
+            
+            // 验证格式
+            if (!preg_match('/^[\d,]+$/', $ids)) {
+                $this->error("非法的ID列表");
+            }
+            
             $res = \app\common\model\Images::whereIn('id', $ids)->delete();
             if ($res) {
                 xn_add_admin_log("批量删除图片集", "images"); //添加日志

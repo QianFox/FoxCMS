@@ -103,12 +103,12 @@ class Seo extends AdminBase
             $serverSoftware = strtolower($_SERVER['SERVER_SOFTWARE']) ?? '';
             if (strpos($serverSoftware, 'apache') !== false) {
                 $wFile = root_path().".htaccess";
-                $contet = '<IfModule mod_rewrite.c> 
-    Options +FollowSymlinks -Multiviews 
-    RewriteEngine on 
-    RewriteCond %{REQUEST_FILENAME} !-d 
-    RewriteCond %{REQUEST_FILENAME} !-f 
-    RewriteRule ^(.*)$ index.php [L,E=PATH_INFO:$1] 
+                $contet = '<IfModule mod_rewrite.c>
+    Options +FollowSymlinks -Multiviews
+    RewriteEngine on
+    RewriteCond %{REQUEST_FILENAME} !-d
+    RewriteCond %{REQUEST_FILENAME} !-f
+    RewriteRule ^(.*)$ index.php [L,E=PATH_INFO:$1]
 </IfModule>';
                 $this->config($contet, $wFile);
                 $this->success("Apache服务器伪静配置生成成功");
@@ -116,22 +116,22 @@ class Seo extends AdminBase
                 $this->success("Nginx服务请手动配置");
             } elseif (strpos($serverSoftware, 'iis') !== false) {
                 $wFile = root_path()."/web.config";
-                $contet = '<?xml version="1.0" encoding="UTF-8"?>  
-<configuration>  
-  <system.webServer>  
-    <rewrite>  
-      <rules>  
-        <rule name="WPurls" enabled="true" stopProcessing="true">  
-          <match url=".*" />  
-          <conditions logicalGrouping="MatchAll">  
-            <add input="{REQUEST_FILENAME}" matchType="IsFile" negate="true" />  
-            <add input="{REQUEST_FILENAME}" matchType="IsDirectory" negate="true" />  
-          </conditions>  
-          <action type="Rewrite" url="index.php/{R:0}" />  
-        </rule>  
-      </rules>  
+                $contet = '<?xml version="1.0" encoding="UTF-8"?>
+<configuration>
+  <system.webServer>
+    <rewrite>
+      <rules>
+        <rule name="WPurls" enabled="true" stopProcessing="true">
+          <match url=".*" />
+          <conditions logicalGrouping="MatchAll">
+            <add input="{REQUEST_FILENAME}" matchType="IsFile" negate="true" />
+            <add input="{REQUEST_FILENAME}" matchType="IsDirectory" negate="true" />
+          </conditions>
+          <action type="Rewrite" url="index.php/{R:0}" />
+        </rule>
+      </rules>
     </rewrite>
-  </system.webServer>  
+  </system.webServer>
 </configuration>';
                 $this->config($contet, $wFile);
                 $this->success("IIS服务器伪静配置生成成功");
@@ -684,7 +684,7 @@ private function buildIndexHtml($htmlpath) {
 EOF;
         $html  = str_ireplace('</head>', $jsStr . "\n</head>", $html);
         return $html;
-        } 
+        }
 		else {
 			 // 模板类型为 1、2 或 4，直接返回 $html，不做任何修改
 			return $html;
@@ -693,18 +693,18 @@ EOF;
 
     public function save(){
         $param = $this->request->param();
-    
+
         // 仅保留允许的配置项
         $allowedKeys = ['url_model', 'column_page', 'document_page', 'pseudo_status'];
         $filteredParam = array_intersect_key($param, array_flip($allowedKeys));
-    
+
         // 验证每个值是否为数字
         foreach ($filteredParam as $key => $val) {
             if (!ctype_digit((string)$val)) {
                 unset($filteredParam[$key]); // 或设置默认值
             }
         }
-        
+
         $this->_set($filteredParam);
         $this->_set($param);
         xn_add_admin_log('SEO保存配置', "seo");
@@ -716,17 +716,17 @@ EOF;
     protected function _set($param, $filename = "seo") {
         // 允许的配置项白名单
         $allowedKeys = ['url_model', 'column_page', 'document_page', 'pseudo_status'];
-        
+
         if (is_array($param) && !empty($param)) {
             $file = config_path() . $this->folder . "/" . $filename . '.php';
             $str = "<?php\r\nreturn [\r\n";
-            
+
             foreach ($param as $key => $val) {
                 // 仅处理白名单内的键
                 if (!in_array($key, $allowedKeys)) {
                     continue;
                 }
-                
+
                 // 验证值是否为纯数字字符串
                 if (ctype_digit((string)$val)) {
                     $str .= "\t'$key' => '$val',\r\n";
@@ -869,7 +869,7 @@ EOF;
         }
         $htmlpathD = root_path()."/{$this->html_save_path}/".$htmlpathD."/";
         $htmlpathD = replaceSymbol(replaceSymbol($htmlpathD));
-        $rInfo = $this->buildHtml($modelData["id"], $column_model, $modelData["id"], $htmlpathD, "detail");
+        $rInfo = $this->buildHtml($modelData["id"], $column_model, $modelData["id"], $htmlpathD, "detail", $column);
         $this->success("详情页面生成成功: " . $rInfo);
     }
-} 
+}

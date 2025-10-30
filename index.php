@@ -74,36 +74,6 @@ if ($seo['pseudo_status'] == 1) {
         config($contet, $wFile);
     }
 }
-
-if ($_SERVER['REQUEST_URI'] == "/") {
-    if ($_SERVER["SERVER_PORT"] == 80) {
-        $domain = $_SERVER["SERVER_NAME"];
-    } else {
-        $domain = $_SERVER["SERVER_NAME"] . ":" . $_SERVER["SERVER_PORT"];
-    }
-    $prefixURL = 'http';
-    if ($_SERVER["HTTPS"] == "on") {
-        $prefixURL .= "s";
-    }
-    $url = "{$prefixURL}://{$domain}/plus/Access/check";
-    $ch = curl_init();
-    $timeout = 1; // 设置超时的时间[单位：秒]
-    curl_setopt($ch, CURLOPT_FOLLOWLOCATION, 1);
-    curl_setopt($ch, CURLOPT_RETURNTRANSFER, 1);
-    curl_setopt($ch, CURLOPT_HEADER, 1);
-    curl_setopt($ch, CURLOPT_CONNECTTIMEOUT, $timeout);
-    curl_setopt($ch, CURLOPT_URL, $url);
-    curl_exec($ch);
-    # 获取状态码赋值
-    $httpcode = curl_getinfo($ch, CURLINFO_HTTP_CODE);
-    curl_close($ch);
-
-    if (!($httpcode == 200)) {
-        header('Location:index.php');
-        die("访问失败");
-    }
-}
-
 // 执行HTTP应用并响应
 $http = (new App())->http;
 define("RUNTIME", __DIR__);
@@ -130,15 +100,23 @@ function isApply()
     $adminconfig = require('./config/adminconfig.php');
     $applys = require('./config/cfg/apply.php');
     $isApply = false;
+
     $uriArr = explode("/", $uri);
+
     if (str_starts_with($uri, "/index.php")) {
-        $app_name = $uriArr[2];
+        $app_name = $uriArr[2] ?? null;
     } else {
-        $app_name = $uriArr[1];
+        $app_name = $uriArr[1] ?? null;
     }
+
+    if (!$app_name) {
+        return false;
+    }
+
     if ($adminconfig["admin_path"] == $app_name) {
         $isApply = true;
     }
+
     if (!$isApply) {
         foreach ($applys as $apply) {
             if ($apply == $app_name) {
@@ -147,6 +125,7 @@ function isApply()
             }
         }
     }
+
     return $isApply;
 }
 
